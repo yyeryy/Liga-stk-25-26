@@ -37,6 +37,7 @@ function App() {
   return (
     <div style={{ padding: "2rem", fontFamily: "sans-serif" }}>
       <h1>Mi Liga Biwenger</h1>
+      <h2>Funciona</h2>
 
       <div style={{ marginBottom: "1rem" }}>
         <input

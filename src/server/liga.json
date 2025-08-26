@@ -1,0 +1,20 @@
+{
+  "jugadores": [
+    {
+      "id": 1,
+      "nombre": "Yeray",
+      "equipo": "STK A",
+      "puntos": 18,
+      "descripcion": "Delantero estrella",
+      "imagen": ""
+    },
+    {
+      "id": 2,
+      "nombre": "Ana",
+      "equipo": "STK B",
+      "puntos": 20,
+      "descripcion": "Centrocampista rápido",
+      "imagen": ""
+    }
+  ]
+}

@@ -13,7 +13,7 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect }) => {
       <Container>
         <Navbar.Brand>Liga STK</Navbar.Brand>
         <Nav className="me-auto">
-          <Nav.Link onClick={() => onSelect(TiposVista.Inicio)}>Inicio</Nav.Link>
+          <Nav.Link onClick={() => onSelect(TiposVista.Jornadas)}>Jornadas</Nav.Link>
           <Nav.Link onClick={() => onSelect(TiposVista.Jugadores)}>Jugadores</Nav.Link>
           <Nav.Link onClick={() => onSelect(TiposVista.Pagos)}>Configuración</Nav.Link>
         </Nav>

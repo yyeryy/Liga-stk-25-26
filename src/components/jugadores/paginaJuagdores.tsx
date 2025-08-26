@@ -1,33 +1,53 @@
-import React, { useState } from "react";
-import { Col, ListGroup, Row, Card, Container } from "react-bootstrap";
-
-interface Jugador {
-  id: number;
-  nombre: string;
-  equipo: string;
-  puntos: number;
-  descripcion: string;
-  imagen?: string;
-}
-
-const mockJugadores: Jugador[] = [
-  { id: 1, nombre: "Yeray", equipo: "Steven", puntos: 15, descripcion: "Delantero estrella", imagen: "/imagenes/prueba.png" },  
-  { id: 1, nombre: "Yeray", equipo: "STK A", puntos: 15, descripcion: "Delantero estrella", imagen: "/imagenes/prueba.png" },
-  { id: 2, nombre: "Ana", equipo: "STK B", puntos: 20, descripcion: "Centrocampista rápido", imagen: "" },
-  { id: 3, nombre: "Luis", equipo: "STK A", puntos: 10, descripcion: "Defensa sólido", imagen: "" },
-  { id: 4, nombre: "Marta", equipo: "STK C", puntos: 18, descripcion: "Portera confiable", imagen: "" },
-];
+import React, { useEffect, useState } from "react";
+import { Col, ListGroup, Row, Card, Container, Button } from "react-bootstrap";
+import { supabase } from '../../supabase.js';
+import { Jugador } from "../../models/models.js";
 
 const JugadoresPanel: React.FC = () => {
-  const [jugadorSeleccionado, setJugadorSeleccionado] = useState<Jugador>(mockJugadores[0]);
+  const [jugadores, setJugadores] = useState<Jugador[]>([]);
+  const [jugadorSeleccionado, setJugadorSeleccionado] = useState<Jugador | null>(null);
+
+  const fetchJugadores = async () => {
+  const { data, error } = await supabase
+    .from('jugadores')
+    .select('*');
+
+  if (error) {
+    console.error(error);
+    return;
+  }
+
+  if (data) {
+    const jugadoresMapeados: Jugador[] = data.map((item: any) => ({
+      id: item.id,
+      nombre: item.nombre,
+      apodo: item.apodo,
+      puntos: item.puntos,
+      descripcion: item.descripcion,
+      imagen: item.rutaImagen || '',
+    }));
+
+    setJugadores(jugadoresMapeados);
+    setJugadorSeleccionado(jugadoresMapeados[0])
+  }
+};
+
+
+  useEffect(() => {
+    fetchJugadores();
+
+  }, []);
+
+  // Guardar datos en el servi
+
+  if (!jugadorSeleccionado) return <div>Cargando...</div>;
 
   return (
     <Container fluid className="d-flex justify-content-center align-items-center" style={{ height: "calc(100vh - 70px)" }}>
       <Row className="w-75">
-        {/* Lista de jugadores */}
         <Col sm={4}>
           <ListGroup>
-            {mockJugadores.map((j) => (
+            {jugadores.map((j) => (
               <ListGroup.Item
                 key={j.id}
                 action
@@ -39,8 +59,6 @@ const JugadoresPanel: React.FC = () => {
             ))}
           </ListGroup>
         </Col>
-
-        {/* Ficha del jugador */}
         <Col sm={8}>
           <Card>
             {jugadorSeleccionado.imagen && (
@@ -48,13 +66,9 @@ const JugadoresPanel: React.FC = () => {
             )}
             <Card.Body>
               <Card.Title>{jugadorSeleccionado.nombre}</Card.Title>
-              <Card.Subtitle className="mb-2 text-muted">{jugadorSeleccionado.equipo}</Card.Subtitle>
-              <Card.Text>
-                {jugadorSeleccionado.descripcion}
-              </Card.Text>
-              <Card.Text>
-                <strong>Puntos:</strong> {jugadorSeleccionado.puntos}
-              </Card.Text>
+              <Card.Subtitle><strong>Alias: </strong>{jugadorSeleccionado.apodo}</Card.Subtitle>
+              <Card.Text><strong>Descripcion: </strong>{jugadorSeleccionado.descripcion}</Card.Text>
+              <Card.Text><strong>Puntos: </strong> {jugadorSeleccionado.puntos}</Card.Text>
             </Card.Body>
           </Card>
         </Col>

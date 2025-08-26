@@ -1,0 +1,98 @@
+.panelContainer {
+  display: flex;
+  justify-content: center; /* centro en pantalla */
+  padding: 20px;
+}
+
+.card {
+  background-color: #f0fff0;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  padding: 20px;
+  width: 600px; /* ancho fijo para centrado */
+}
+
+.title {
+  text-align: center;
+  font-size: 1.5rem;
+  font-weight: bold;
+  margin-bottom: 16px;
+}
+
+.selectWrapper {
+  display: flex;
+  justify-content: center;
+  margin-bottom: 16px;
+}
+
+.tableWrapper {
+  overflow-x: auto;
+}
+
+.table {
+  width: 100%;
+  border-collapse: collapse;
+}
+
+.table th,
+.table td {
+  border: 1px solid #ccc;
+  padding: 8px;
+  text-align: center;
+}
+
+.table th {
+  background-color: #d0f0c0;
+}
+
+.table tr:hover {
+  background-color: #e6ffe6;
+}
+
+.input {
+  width: 60px;
+  text-align: center;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+}
+
+.btnWrapper {
+  display: flex;
+  justify-content: center;
+  margin-top: 16px;
+}
+
+.btn {
+  background-color: #4caf50;
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}
+
+.btn:hover {
+  background-color: #45a049;
+}
+
+.loading {
+  text-align: center;
+  color: gray;
+}
+
+/* Contenedor del botón a la derecha */
+.btnWrapperRight {
+  display: flex;
+  justify-content: flex-end; /* mueve a la derecha */
+  margin-top: 16px;
+}
+
+/* Botón verde sólido */
+.btnGreen {
+  background-color: #4caf50; /* verde */
+  color: white;
+  padding: 8px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+}

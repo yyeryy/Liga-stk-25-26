@@ -1,62 +1,140 @@
-import React, { useState, useEffect } from 'react';
-import { useJornada } from '../hooks/obtenerJornada.tsx';
+import React, { useState, useEffect } from "react";
+import { useJornada } from "../hooks/obtenerJornada.tsx";
+import { supabase } from "../supabase";
 
 export const JornadasPanel = () => {
   const [selectedJornada, setSelectedJornada] = useState(1);
+  const [jornadaTerminada, setJornadaTerminada] = useState(1);
+
   const { jornada: jornadaOriginal, loading } = useJornada(selectedJornada);
+  const [jornada, setJornada] = useState<
+    {
+      jugador: string;
+      puntos: number;
+      pago: number;
+      posicion: number;
+      idJugador: number;
+    }[]
+  >([]);
 
-  const [jornada, setJornada] = useState(
-    [] as { jugador: string; puntos: number; pago: number; posicion: number }[]
-  );
+  const pagosPorPosicion: Record<number, number> = {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 0,
+    6: 2,
+    7: 4,
+    8: 5,
+    9: 6,
+    10: 7,
+    11: 8,
+  };
 
-  // Inicializamos la jornada editable cuando cambie la original
   useEffect(() => {
-    setJornada(jornadaOriginal);
+    if (jornadaOriginal?.length) {
+      setJornada(
+        jornadaOriginal.map((j) => ({
+          ...j,
+          jugador: j.jugador,
+        }))
+      );
+    }
   }, [jornadaOriginal]);
 
-  // Maneja el cambio de puntos en la tabla
+  useEffect(() => {
+    const jornadaAcabada = async () => {
+      const { data, error } = await supabase
+        .from("cfgJornadasAcabadas")
+        .select("*")
+        .eq("idJornada", selectedJornada)
+        .single();
+
+      if (error) {
+        console.error("Error cargando la jornada:", error);
+        return;
+      }
+
+      if (data) {
+        setJornadaTerminada(data.acabada);
+      }
+    };
+
+    jornadaAcabada();
+  }, [selectedJornada]);
+
+  const calcularPosiciones = (
+    lista: { jugador: string; puntos: number; idJugador: number }[]
+  ) => {
+    const ordenada = [...lista].sort((a, b) => b.puntos - a.puntos);
+    let lastPuntos: number | null = null;
+    let lastPosicion = 0;
+
+    const conPosiciones = ordenada.map((j, idx) => {
+      if (j.puntos === lastPuntos) return { ...j, posicion: lastPosicion };
+      lastPosicion = idx + 1;
+      lastPuntos = j.puntos;
+      return { ...j, posicion: lastPosicion };
+    });
+
+    return conPosiciones.map((jugador) => {
+      const empatados = conPosiciones.filter(
+        (j) => j.puntos === jugador.puntos
+      );
+      if (empatados.length > 1) {
+        const sumPagos = empatados.reduce(
+          (acc, j) => acc + (pagosPorPosicion[j.posicion] || 0),
+          0
+        );
+        return { ...jugador, pago: sumPagos / empatados.length };
+      }
+      return { ...jugador, pago: pagosPorPosicion[jugador.posicion] || 0 };
+    });
+  };
+
   const handleChangePuntos = (idx: number, value: number) => {
     const updated = [...jornada];
     updated[idx].puntos = value;
     setJornada(updated);
   };
 
-  // Función para calcular posiciones
-  const calcularPosiciones = (lista: typeof jornada) => {
-    const ordenada = [...lista].sort((a, b) => b.puntos - a.puntos);
-    let lastPuntos = 0;
-    let lastPosicion = 0;
-
-    return ordenada.map((j, idx) => {
-      if (j.puntos === lastPuntos) {
-        return { ...j, posicion: lastPosicion };
-      } else {
-        lastPosicion = idx + 1;
-        lastPuntos = j.puntos;
-        return { ...j, posicion: lastPosicion };
-      }
-    });
-  };
-
-  const handleGuardar = () => {
+  const handleGuardar = async () => {
     const jornadaConPosiciones = calcularPosiciones(jornada);
     setJornada(jornadaConPosiciones);
-    console.log('Datos guardados:', jornadaConPosiciones);
-    alert('Datos guardados en consola. Aquí puedes enviar a tu backend.');
+
+    try {
+      await supabase
+        .from("jornadas")
+        .delete()
+        .eq("numeroJornada", selectedJornada);
+
+      const { error } = await supabase.from("jornadas").insert(
+        jornadaConPosiciones.map((j) => ({
+          numeroJornada: selectedJornada,
+          idJugador: j.idJugador,
+          puntos: j.puntos,
+          pago: j.pago,
+          posicion: j.posicion,
+        }))
+      );
+
+      if (error) throw error;
+
+      alert("Jornada guardada correctamente en BBDD ✅");
+    } catch (err) {
+      console.error(err);
+      alert("Error al guardar en BBDD ❌");
+    }
   };
 
   return (
-    <div className="flex justify-start p-6">
-      <div className="w-1/2 bg-white rounded-2xl shadow-lg p-4">
-        <h2 className="text-2xl font-bold mb-4 text-center">
-          Jornada {selectedJornada}
-        </h2>
-
-        <div className="mb-4 flex justify-center">
+    <div className="panelContainer">
+      <div className="card">
+        <h2 className="title">Jornada {selectedJornada}</h2>
+        <div className="selectWrapper">
           <select
             value={selectedJornada}
             onChange={(e) => setSelectedJornada(Number(e.target.value))}
-            className="border border-gray-300 rounded-md p-2 focus:outline-none focus:ring-2 focus:ring-blue-500"
           >
             {Array.from({ length: 38 }, (_, i) => i + 1).map((j) => (
               <option key={j} value={j}>
@@ -67,52 +145,63 @@ export const JornadasPanel = () => {
         </div>
 
         {loading ? (
-          <p className="text-center text-gray-500">Cargando...</p>
+          <p className="loading">Cargando...</p>
         ) : (
           <>
-            <div className="overflow-x-auto">
-              <table className="table-auto w-full border-collapse border border-gray-300">
-                <thead className="bg-gray-100">
+            <div className="tableWrapper">
+              <table className="table">
+                <thead>
                   <tr>
-                    <th className="border border-gray-300 px-4 py-2">Posición</th>
-                    <th className="border border-gray-300 px-4 py-2">Jugador</th>
-                    <th className="border border-gray-300 px-4 py-2">Puntos</th>
-                    <th className="border border-gray-300 px-4 py-2">Pago</th>
+                    <th>Posición</th>
+                    <th>Jugador</th>
+                    <th>Puntos</th>
+                    <th>Pago</th>
                   </tr>
                 </thead>
                 <tbody>
-                  {jornada.map((j, idx) => (
-                    <tr key={idx} className="hover:bg-gray-100">
-                      <td className="border border-gray-300 px-4 py-2 text-center">
-                        {j.posicion}
-                      </td>
-                      <td className="border border-gray-300 px-4 py-2">{j.jugador}</td>
-                      <td className="border border-gray-300 px-4 py-2 text-center">
-                        <input
-                          type="number"
-                          value={j.puntos}
-                          onBlur={(e) =>
-                            handleChangePuntos(idx, Number(e.target.value))
-                          }
-                          className="w-16 text-center border rounded"
-                        />
-                      </td>
-                      <td className="border border-gray-300 px-4 py-2 text-center">
-                        {j.pago}
-                      </td>
-                    </tr>
-                  ))}
+                  {jornada.map((j, idx) => {
+                    let backgroundColor = "";
+                    if (j.pago === 0) backgroundColor = "transparent";
+                    else if (j.pago === 1)
+                      backgroundColor = "#ffcccc"; // rojo clarito
+                    else if (j.pago === 2) backgroundColor = "#ff9999";
+                    else if (j.pago === 3) backgroundColor = "#ff6666";
+                    else if (j.pago === 4) backgroundColor = "#ff3333";
+                    else backgroundColor = "#cc0000"; // pagos grandes
+
+                    return (
+                      <tr key={idx} style={{ backgroundColor }}>
+                        <td>{j.posicion}</td>
+                        <td>{j.jugador}</td>
+                        {jornadaTerminada ? (
+                          <td>{j.puntos}</td>
+                        ) : (
+                          <td>
+                            <input
+                              type="number"
+                              value={j.puntos}
+                              onChange={(e) =>
+                                handleChangePuntos(idx, Number(e.target.value))
+                              }
+                              className="input"
+                            />
+                          </td>
+                        )}
+                        <td>{j.pago} €</td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>
-            <div className="mt-4 flex justify-center">
-              <button
-                onClick={handleGuardar}
-                className="bg-green-500 text-white px-4 py-2 rounded hover:bg-green-600"
-              >
-                Guardar
-              </button>
-            </div>
+
+            {!jornadaTerminada && (
+              <div className="btnWrapperRight">
+                <button onClick={handleGuardar} className="btnGreen">
+                  Guardar
+                </button>
+              </div>
+            )}
           </>
         )}
       </div>

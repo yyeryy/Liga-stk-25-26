@@ -1,7 +1,8 @@
 export enum TiposVista {
   Jornadas,
   Jugadores,
-  Pagos
+  Pagos,
+  Estadisticas,
 }
 
 export interface Jornada {

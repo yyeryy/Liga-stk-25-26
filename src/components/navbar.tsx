@@ -1,7 +1,7 @@
-import Container from 'react-bootstrap/Container';
-import Nav from 'react-bootstrap/Nav';
-import Navbar from 'react-bootstrap/Navbar';
-import { TiposVista } from '../models/models.ts';
+import Container from "react-bootstrap/Container";
+import Nav from "react-bootstrap/Nav";
+import Navbar from "react-bootstrap/Navbar";
+import { TiposVista } from "../models/models.ts";
 
 interface NavBarProps {
   onSelect: (id: TiposVista) => void;
@@ -13,9 +13,16 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect }) => {
       <Container>
         <Navbar.Brand>Liga STK</Navbar.Brand>
         <Nav className="me-auto">
-          <Nav.Link onClick={() => onSelect(TiposVista.Jornadas)}>Jornadas</Nav.Link>
-          <Nav.Link onClick={() => onSelect(TiposVista.Jugadores)}>Jugadores</Nav.Link>
-          <Nav.Link onClick={() => onSelect(TiposVista.Pagos)}>Configuración</Nav.Link>
+          <Nav.Link onClick={() => onSelect(TiposVista.Jornadas)}>
+            Jornadas
+          </Nav.Link>
+          <Nav.Link onClick={() => onSelect(TiposVista.Jugadores)}>
+            Jugadores
+          </Nav.Link>
+          <Nav.Link onClick={() => onSelect(TiposVista.Pagos)}>Pagos</Nav.Link>
+          <Nav.Link onClick={() => onSelect(TiposVista.Estadisticas)}>
+            Estadisticas
+          </Nav.Link>
         </Nav>
       </Container>
     </Navbar>

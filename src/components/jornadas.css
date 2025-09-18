@@ -48,6 +48,9 @@
 .table tr:hover {
   background-color: #e6ffe6;
 }
+.table tr {
+  background-color: inherit; /* deja que el inline style funcione */
+}
 
 .input {
   width: 60px;
@@ -95,4 +98,33 @@
   border-radius: 8px;
   border: none;
   cursor: pointer;
+}
+
+.spinnerWrapper {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px;
+}
+
+.rotatingImage {
+  width: 80px; /* ajusta tamaño */
+  height: 80px;
+  animation: spin 1.5s linear infinite;
+  margin-bottom: 10px;
+}
+
+@keyframes spin {
+  from {
+    transform: rotate(0deg);
+  }
+  to {
+    transform: rotate(360deg);
+  }
+}
+
+.spinnerWrapper p {
+  font-size: 1rem;
+  color: #555;
 }

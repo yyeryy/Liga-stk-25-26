@@ -1,23 +1,25 @@
 import React, { useState, useEffect } from "react";
-import { useJornada } from "../hooks/obtenerJornada.tsx";
-import { supabase } from "../supabase";
+import { data } from "../data/data.ts"; // tu data.ts
+import { Apodos } from "../models/models.ts";
+import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
+
+// Tipo de jornada
+type JornadaJugador = {
+  jugador: Apodos;
+  puntos: number;
+  pago?: number;
+  posicion?: number;
+};
 
 export const JornadasPanel = () => {
   const [selectedJornada, setSelectedJornada] = useState(1);
-  const [jornadaTerminada, setJornadaTerminada] = useState(1);
+  const [jornada, setJornada] = useState<JornadaJugador[]>([]);
 
-  const { jornada: jornadaOriginal, loading } = useJornada(selectedJornada);
-  const [jornada, setJornada] = useState<
-    {
-      jugador: string;
-      puntos: number;
-      pago: number;
-      posicion: number;
-      idJugador: number;
-    }[]
-  >([]);
+  // Todos los jugadores del torneo
+  const todosJugadores = Object.values(Apodos);
 
-  const pagosPorPosicion: Record<number, number> = {
+  // Tabla de pagos
+  const pagos11: Record<number, number> = {
     1: 0,
     2: 0,
     3: 0,
@@ -30,42 +32,33 @@ export const JornadasPanel = () => {
     10: 7,
     11: 8,
   };
+  const pagos10: Record<number, number> = {
+    1: 0,
+    2: 0,
+    3: 0,
+    4: 0,
+    5: 2,
+    6: 4,
+    7: 5,
+    8: 6,
+    9: 7,
+    10: 8,
+  };
+  const getPagosPorPosicion = (numJornada: number) =>
+    numJornada <= 2 ? pagos11 : pagos10;
 
+  // Cuando cambia la jornada seleccionada, calculamos
   useEffect(() => {
-    if (jornadaOriginal?.length) {
-      setJornada(
-        jornadaOriginal.map((j) => ({
-          ...j,
-          jugador: j.jugador,
-        }))
-      );
-    }
-  }, [jornadaOriginal]);
-
-  useEffect(() => {
-    const jornadaAcabada = async () => {
-      const { data, error } = await supabase
-        .from("cfgJornadasAcabadas")
-        .select("*")
-        .eq("idJornada", selectedJornada)
-        .single();
-
-      if (error) {
-        console.error("Error cargando la jornada:", error);
-        return;
-      }
-
-      if (data) {
-        setJornadaTerminada(data.acabada);
-      }
-    };
-
-    jornadaAcabada();
+    setJornada(
+      calcularAcumulado(data.jornadas, selectedJornada, selectedJornada)
+    );
   }, [selectedJornada]);
 
-  const calcularPosiciones = (
-    lista: { jugador: string; puntos: number; idJugador: number }[]
-  ) => {
+  // Calcular posiciones y pagos
+  const calcularPosiciones = (lista: JornadaJugador[], numJornada: number) => {
+    const pagosPorPosicion = getPagosPorPosicion(numJornada);
+
+    // ordenar por puntos descendente
     const ordenada = [...lista].sort((a, b) => b.puntos - a.puntos);
     let lastPuntos: number | null = null;
     let lastPosicion = 0;
@@ -92,39 +85,21 @@ export const JornadasPanel = () => {
     });
   };
 
-  const handleChangePuntos = (idx: number, value: number) => {
-    const updated = [...jornada];
-    updated[idx].puntos = value;
-    setJornada(updated);
-  };
+  const getColorByPago = (pago: number) => {
+    const colores: Record<number, string> = {
+      0: "#f0fff0", // verde muy clarito
+      1: "#fff5f5", // rojo extremadamente suave
+      2: "#ffecec",
+      3: "#ffe0e0",
+      4: "#ffcccc",
+      5: "#ffb3b3",
+      6: "#ff9999",
+      7: "#ff7f7f",
+      8: "#ff6666", // máximo pago
+    };
 
-  const handleGuardar = async () => {
-    const jornadaConPosiciones = calcularPosiciones(jornada);
-    setJornada(jornadaConPosiciones);
-
-    try {
-      await supabase
-        .from("jornadas")
-        .delete()
-        .eq("numeroJornada", selectedJornada);
-
-      const { error } = await supabase.from("jornadas").insert(
-        jornadaConPosiciones.map((j) => ({
-          numeroJornada: selectedJornada,
-          idJugador: j.idJugador,
-          puntos: j.puntos,
-          pago: j.pago,
-          posicion: j.posicion,
-        }))
-      );
-
-      if (error) throw error;
-
-      alert("Jornada guardada correctamente en BBDD ✅");
-    } catch (err) {
-      console.error(err);
-      alert("Error al guardar en BBDD ❌");
-    }
+    const pagoEntero = Math.round(pago);
+    return colores[pagoEntero] || "#ff6666"; // color por defecto si supera los pagos
   };
 
   return (
@@ -144,66 +119,61 @@ export const JornadasPanel = () => {
           </select>
         </div>
 
-        {loading ? (
-          <p className="loading">Cargando...</p>
-        ) : (
-          <>
-            <div className="tableWrapper">
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Posición</th>
-                    <th>Jugador</th>
-                    <th>Puntos</th>
-                    <th>Pago</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {jornada.map((j, idx) => {
-                    let backgroundColor = "";
-                    if (j.pago === 0) backgroundColor = "transparent";
-                    else if (j.pago === 1)
-                      backgroundColor = "#ffcccc"; // rojo clarito
-                    else if (j.pago === 2) backgroundColor = "#ff9999";
-                    else if (j.pago === 3) backgroundColor = "#ff6666";
-                    else if (j.pago === 4) backgroundColor = "#ff3333";
-                    else backgroundColor = "#cc0000"; // pagos grandes
-
-                    return (
-                      <tr key={idx} style={{ backgroundColor }}>
-                        <td>{j.posicion}</td>
-                        <td>{j.jugador}</td>
-                        {jornadaTerminada ? (
-                          <td>{j.puntos}</td>
-                        ) : (
-                          <td>
-                            <input
-                              type="number"
-                              value={j.puntos}
-                              onChange={(e) =>
-                                handleChangePuntos(idx, Number(e.target.value))
-                              }
-                              className="input"
-                            />
-                          </td>
-                        )}
-                        <td>{j.pago} €</td>
-                      </tr>
-                    );
-                  })}
-                </tbody>
-              </table>
+        <div className="tableWrapper">
+          {jornada.every((j) => j.puntos === 0) ? (
+            <div className="spinnerWrapper">
+              <img
+                src="../imagenes/spinner.jp"
+                alt="Jornada no jugada"
+                className="rotatingImage"
+              />
+              <p>Jornada aún no jugada</p>
             </div>
-
-            {!jornadaTerminada && (
-              <div className="btnWrapperRight">
-                <button onClick={handleGuardar} className="btnGreen">
-                  Guardar
-                </button>
-              </div>
-            )}
-          </>
-        )}
+          ) : (
+            <table className="table">
+              <thead>
+                <tr>
+                  <th>Posición</th>
+                  <th>Jugador</th>
+                  <th>Puntos</th>
+                  <th>Pago</th>
+                </tr>
+              </thead>
+              <tbody>
+                {jornada.map((j, idx) => (
+                  <tr
+                    key={idx}
+                    style={{
+                      backgroundColor:
+                        getColorByPago(j.pago ?? 0) + " !important",
+                    }}
+                  >
+                    <td
+                      style={{ backgroundColor: getColorByPago(j.pago ?? 0) }}
+                    >
+                      {j.posicion}
+                    </td>
+                    <td
+                      style={{ backgroundColor: getColorByPago(j.pago ?? 0) }}
+                    >
+                      {j.jugador}
+                    </td>
+                    <td
+                      style={{ backgroundColor: getColorByPago(j.pago ?? 0) }}
+                    >
+                      {j.puntos}
+                    </td>
+                    <td
+                      style={{ backgroundColor: getColorByPago(j.pago ?? 0) }}
+                    >
+                      {j.pago} €
+                    </td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          )}
+        </div>
       </div>
     </div>
   );

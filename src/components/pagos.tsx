@@ -1,10 +1,12 @@
 import React, { useState, useEffect } from "react";
-import { useJornada } from "../hooks/obtenerJornada.tsx";
-import { supabase } from "../supabase";
+import { data } from "../data/data.ts";
+import { Apodos } from "../models/models.ts";
+import { calcularAcumulado, JugadorPago } from "../utils/calcularAcumulado.ts";
 
 export const PagosPanel = () => {
-  const [selectedJornada, setSelectedJornada] = useState(1);
-  const [jornadaTerminada, setJornadaTerminada] = useState(1);
+  const [selectedBloque, setSelectedBloque] = useState(0);
+  const [pagos, setPagos] = useState<JugadorPago[]>([]);
+
   const bloques = [
     { id: 0, nombre: "General", desde: 1, hasta: 38 },
     { id: 1, nombre: "Jornadas 1-5", desde: 1, hasta: 5 },
@@ -15,183 +17,63 @@ export const PagosPanel = () => {
     { id: 6, nombre: "Jornadas 26-30", desde: 26, hasta: 30 },
     { id: 7, nombre: "Jornadas 31-35", desde: 31, hasta: 35 },
     { id: 8, nombre: "Jornadas 36-38", desde: 36, hasta: 38 },
+    // ... el resto
   ];
-  const [selectedBloque, setSelectedBloque] = useState(0); // 0 = General
 
-  const { jornada: jornadaOriginal, loading } = useJornada(selectedJornada);
-  const [jornada, setJornada] = useState<
-    {
-      jugador: string;
-      puntos: number;
-      pago: number;
-      posicion: number;
-      idJugador: number;
-    }[]
-  >([]);
+  // Gradiente verde muy suave -> rojo claro (sin amarillo intermedio)
+  // Gradiente verde pastel -> rojo pastel un poco más fuerte
+  const getColorByPago = (pago: number, maxPago: number) => {
+    if (maxPago === 0) return "#e6ffe6"; // verde muy clarito por defecto
 
-  const pagosPorPosicion: Record<number, number> = {
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 2,
-    7: 4,
-    8: 5,
-    9: 6,
-    10: 7,
-    11: 8,
+    const ratio = Math.min(1, pago / maxPago); // 0..1
+
+    // colores extremos
+    const start = { r: 230, g: 255, b: 230 }; // #e6ffe6 (verde pastel)
+    const end = { r: 255, g: 128, b: 128 }; // #ff8080 (rojo pastel más fuerte)
+
+    const r = Math.round(start.r + (end.r - start.r) * ratio);
+    const g = Math.round(start.g + (end.g - start.g) * ratio);
+    const b = Math.round(start.b + (end.b - start.b) * ratio);
+
+    return `rgb(${r},${g},${b})`;
   };
 
   useEffect(() => {
-    if (jornadaOriginal?.length) {
-      setJornada(
-        jornadaOriginal.map((j) => ({
-          ...j,
-          jugador: j.jugador,
-        }))
-      );
-    }
-  }, [jornadaOriginal]);
+    const bloque = bloques.find((b) => b.id === selectedBloque);
+    if (!bloque) return;
 
-  useEffect(() => {
-    const cargarBloque = async () => {
-      const bloque = bloques.find((b) => b.id === selectedBloque);
-      if (!bloque) return;
+    // Calcular acumulado
+    const resultado = calcularAcumulado(
+      data.jornadas,
+      bloque.desde,
+      bloque.hasta
+    );
 
-      let query = supabase.from("jornadas").select("*");
+    // Ordenar por pago descendente
+    const resultadoOrdenado = [...resultado].sort((a, b) => a.pago - b.pago);
 
-      // Si no es bloque general
-      if (bloque.id !== 0) {
-        query = query
-          .gte("numeroJornada", bloque.desde)
-          .lte("numeroJornada", bloque.hasta);
+    // Asignar posiciones según pago
+    let lastPago: number | null = null;
+    let lastPos = 0;
+    resultadoOrdenado.forEach((j, idx) => {
+      if (j.pago === lastPago) {
+        j.posicion = lastPos;
+      } else {
+        lastPos = idx + 1;
+        lastPago = j.pago;
+        j.posicion = lastPos;
       }
+    });
 
-      const { data, error } = await query;
-
-      if (error) {
-        console.error("Error cargando jornadas:", error);
-        return;
-      }
-
-      // Mapear los datos a tu estado de jornada, calculando promedios si hay varias jornadas
-      if (data) {
-        // ejemplo simple: sumar puntos por jugador
-        const jugadoresMap: Record<
-          number,
-          { idJugador: number; jugador: string; puntos: number }
-        > = {};
-        data.forEach((j) => {
-          if (!jugadoresMap[j.idJugador]) {
-            jugadoresMap[j.idJugador] = { ...j };
-          } else {
-            jugadoresMap[j.idJugador].puntos += j.puntos;
-          }
-        });
-
-        setJornada(
-          Object.values(jugadoresMap).map((j) => ({
-            ...j,
-            pago: pagosPorPosicion[0],
-            posicion: 0,
-          }))
-        );
-      }
-    };
-
-    cargarBloque();
+    setPagos(resultadoOrdenado);
   }, [selectedBloque]);
-
-  useEffect(() => {
-    const jornadaAcabada = async () => {
-      const { data, error } = await supabase
-        .from("cfgJornadasAcabadas")
-        .select("*")
-        .eq("idJornada", selectedJornada)
-        .single();
-
-      if (error) {
-        console.error("Error cargando la jornada:", error);
-        return;
-      }
-
-      if (data) {
-        setJornadaTerminada(data.acabada);
-      }
-    };
-
-    jornadaAcabada();
-  }, [selectedJornada]);
-
-  const calcularPosiciones = (
-    lista: { jugador: string; puntos: number; idJugador: number }[]
-  ) => {
-    const ordenada = [...lista].sort((a, b) => b.puntos - a.puntos);
-    let lastPuntos: number | null = null;
-    let lastPosicion = 0;
-
-    const conPosiciones = ordenada.map((j, idx) => {
-      if (j.puntos === lastPuntos) return { ...j, posicion: lastPosicion };
-      lastPosicion = idx + 1;
-      lastPuntos = j.puntos;
-      return { ...j, posicion: lastPosicion };
-    });
-
-    return conPosiciones.map((jugador) => {
-      const empatados = conPosiciones.filter(
-        (j) => j.puntos === jugador.puntos
-      );
-      if (empatados.length > 1) {
-        const sumPagos = empatados.reduce(
-          (acc, j) => acc + (pagosPorPosicion[j.posicion] || 0),
-          0
-        );
-        return { ...jugador, pago: sumPagos / empatados.length };
-      }
-      return { ...jugador, pago: pagosPorPosicion[jugador.posicion] || 0 };
-    });
-  };
-
-  const handleChangePuntos = (idx: number, value: number) => {
-    const updated = [...jornada];
-    updated[idx].puntos = value;
-    setJornada(updated);
-  };
-
-  const handleGuardar = async () => {
-    const jornadaConPosiciones = calcularPosiciones(jornada);
-    setJornada(jornadaConPosiciones);
-
-    try {
-      await supabase
-        .from("jornadas")
-        .delete()
-        .eq("numeroJornada", selectedJornada);
-
-      const { error } = await supabase.from("jornadas").insert(
-        jornadaConPosiciones.map((j) => ({
-          numeroJornada: selectedJornada,
-          idJugador: j.idJugador,
-          puntos: j.puntos,
-          pago: j.pago,
-          posicion: j.posicion,
-        }))
-      );
-
-      if (error) throw error;
-
-      alert("Jornada guardada correctamente en BBDD ✅");
-    } catch (err) {
-      console.error(err);
-      alert("Error al guardar en BBDD ❌");
-    }
-  };
 
   return (
     <div className="panelContainer">
       <div className="card">
-        <h2 className="title">Jornada {selectedJornada}</h2>
+        <h2 className="title">
+          Pagos - {bloques.find((b) => b.id === selectedBloque)?.nombre}
+        </h2>
         <div className="selectWrapper">
           <select
             value={selectedBloque}
@@ -205,11 +87,14 @@ export const PagosPanel = () => {
           </select>
         </div>
 
-        {loading ? (
-          <p className="loading">Cargando...</p>
-        ) : (
-          <>
-            <div className="tableWrapper">
+        <div className="tableWrapper">
+          {pagos.every((p) => p.puntos === 0) ? (
+            <div className="spinnerWrapper">
+              <img src={"../imagenes/spinner.jpg"} className="rotatingImage" />
+              <p>Pagos aún no registrados</p>
+            </div>
+          ) : (
+            <>
               <table className="table">
                 <thead>
                   <tr>
@@ -220,51 +105,70 @@ export const PagosPanel = () => {
                   </tr>
                 </thead>
                 <tbody>
-                  {jornada.map((j, idx) => {
-                    let backgroundColor = "";
-                    if (j.pago === 0) backgroundColor = "transparent";
-                    else if (j.pago === 1)
-                      backgroundColor = "#ffcccc"; // rojo clarito
-                    else if (j.pago === 2) backgroundColor = "#ff9999";
-                    else if (j.pago === 3) backgroundColor = "#ff6666";
-                    else if (j.pago === 4) backgroundColor = "#ff3333";
-                    else backgroundColor = "#cc0000"; // pagos grandes
-
-                    return (
-                      <tr key={idx} style={{ backgroundColor }}>
-                        <td>{j.posicion}</td>
-                        <td>{j.jugador}</td>
-                        {jornadaTerminada ? (
-                          <td>{j.puntos}</td>
-                        ) : (
-                          <td>
-                            <input
-                              type="number"
-                              value={j.puntos}
-                              onChange={(e) =>
-                                handleChangePuntos(idx, Number(e.target.value))
-                              }
-                              className="input"
-                            />
-                          </td>
-                        )}
-                        <td>{j.pago} €</td>
-                      </tr>
-                    );
-                  })}
+                  {pagos.map((j, idx) => (
+                    <tr
+                      key={idx}
+                      style={{
+                        backgroundColor: getColorByPago(
+                          j.pago ?? 0,
+                          Math.max(...pagos.map((p) => p.pago))
+                        ),
+                      }}
+                    >
+                      <td
+                        style={{
+                          backgroundColor: getColorByPago(
+                            j.pago ?? 0,
+                            Math.max(...pagos.map((p) => p.pago))
+                          ),
+                        }}
+                      >
+                        {j.posicion}
+                      </td>
+                      <td
+                        style={{
+                          backgroundColor: getColorByPago(
+                            j.pago ?? 0,
+                            Math.max(...pagos.map((p) => p.pago))
+                          ),
+                        }}
+                      >
+                        {j.jugador}
+                      </td>
+                      <td
+                        style={{
+                          backgroundColor: getColorByPago(
+                            j.pago ?? 0,
+                            Math.max(...pagos.map((p) => p.pago))
+                          ),
+                        }}
+                      >
+                        {j.puntos}
+                      </td>
+                      <td
+                        style={{
+                          backgroundColor: getColorByPago(
+                            j.pago ?? 0,
+                            Math.max(...pagos.map((p) => p.pago))
+                          ),
+                        }}
+                      >
+                        {j.pago} €
+                      </td>
+                    </tr>
+                  ))}
                 </tbody>
               </table>
-            </div>
 
-            {!jornadaTerminada && (
-              <div className="btnWrapperRight">
-                <button onClick={handleGuardar} className="btnGreen">
-                  Guardar
-                </button>
-              </div>
-            )}
-          </>
-        )}
+              {selectedBloque == 0 && (
+                <div className="zarrakatzSection">
+                  <p>* Zarrakatz debe: 14€</p>
+                  <p>* Polfovich debe: 19€</p>
+                </div>
+              )}
+            </>
+          )}
+        </div>
       </div>
     </div>
   );

@@ -16,9 +16,6 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect }) => {
           <Nav.Link onClick={() => onSelect(TiposVista.Jornadas)}>
             Jornadas
           </Nav.Link>
-          <Nav.Link onClick={() => onSelect(TiposVista.Jugadores)}>
-            Jugadores
-          </Nav.Link>
           <Nav.Link onClick={() => onSelect(TiposVista.Pagos)}>Pagos</Nav.Link>
           <Nav.Link onClick={() => onSelect(TiposVista.Estadisticas)}>
             Estadisticas

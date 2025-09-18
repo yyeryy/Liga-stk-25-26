@@ -7,7 +7,7 @@ import { PagosPanel } from "./components/pagos.tsx";
 import { EstadisticasPanel } from "./components/estadisticas.tsx";
 
 const App: React.FC = () => {
-  const [vista, setVista] = useState<TiposVista>(TiposVista.Jornadas);
+  const [vista, setVista] = useState<TiposVista>(TiposVista.Pagos);
   return (
     <div>
       <NavBar onSelect={setVista} />

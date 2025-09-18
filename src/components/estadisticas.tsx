@@ -92,7 +92,12 @@ export const EstadisticasPanel = ({}: {}) => {
                         {j}
                       </td>
                       <td style={{ padding: "4px 8px" }}>
-                        {stat.data[j].toFixed(0)}
+                        {stat.title === "Puntuación media"
+                          ? new Intl.NumberFormat("es-ES", {
+                              minimumFractionDigits: 2,
+                              maximumFractionDigits: 2,
+                            }).format(stat.data[j])
+                          : stat.data[j].toFixed(0)}
                       </td>
                     </tr>
                   ))}

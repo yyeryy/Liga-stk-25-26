@@ -1,3 +1,4 @@
+import { data } from "../data/data.ts";
 import { Apodos } from "../models/models.ts";
 
 export type JugadorPago = {
@@ -41,7 +42,6 @@ const getPagosPorPosicion = (numJornada: number) =>
  * Calcula puntos y pagos acumulados de los jugadores en un rango de jornadas.
  */
 export const calcularAcumulado = (
-  jornadas: typeof import("../data/data.ts").data.jornadas,
   desde: number,
   hasta: number,
   esEstadistica?: boolean
@@ -79,7 +79,7 @@ export const calcularAcumulado = (
     acumulado[j] = { jugador: j, puntos: 0, pago: 0, posicion: 0 };
   });
 
-  const jornadasDelRango = jornadas.filter(
+  const jornadasDelRango = data.jornadas.filter(
     (j) => j.numero >= desde && j.numero <= hasta
   );
 
@@ -140,4 +140,132 @@ export const calcularAcumulado = (
   });
 
   return listaFinal;
+};
+
+// Devuelve el máximo de puntos por jugador en un rango de jornadas
+export const obtenerMaximos = (): Record<Apodos, number> => {
+  const maximos: Record<Apodos, number> = {} as Record<Apodos, number>;
+  Object.values(Apodos).forEach((j) => (maximos[j] = 0));
+
+  const jornadasDelRango = data.jornadas.filter(
+    (j) => j.numero >= 1 && j.numero <= 38
+  );
+
+  jornadasDelRango.forEach((jornada) => {
+    if (!Array.isArray(jornada.resultados)) return;
+
+    jornada.resultados.forEach((r) => {
+      if (!r) return;
+      maximos[r.jugador] = Math.max(maximos[r.jugador] ?? 0, r.puntos);
+    });
+  });
+
+  return maximos;
+};
+
+// Devuelve el mínimo de puntos por jugador en un rango de jornadas
+export const obtenerMinimos = (): Record<Apodos, number> => {
+  const minimos: Record<Apodos, number> = {} as Record<Apodos, number>;
+  Object.values(Apodos).forEach((j) => (minimos[j] = Infinity));
+
+  const jornadasDelRango = data.jornadas.filter(
+    (j) => j.numero >= 1 && j.numero <= 38
+  );
+
+  jornadasDelRango.forEach((jornada) => {
+    if (!Array.isArray(jornada.resultados)) return;
+
+    jornada.resultados.forEach((r) => {
+      if (!r) return;
+      minimos[r.jugador] = Math.min(minimos[r.jugador] ?? Infinity, r.puntos);
+    });
+  });
+
+  return minimos;
+};
+
+export const obtenerPromedios = (): Record<Apodos, number> => {
+  const sumas: Record<Apodos, number> = {} as Record<Apodos, number>;
+  const conteos: Record<Apodos, number> = {} as Record<Apodos, number>;
+
+  Object.values(Apodos).forEach((j) => {
+    sumas[j] = 0;
+    conteos[j] = 0;
+  });
+
+  const jornadasDelRango = data.jornadas.filter(
+    (j) => j.numero >= 1 && j.numero <= 38
+  );
+
+  jornadasDelRango.forEach((jornada) => {
+    if (!Array.isArray(jornada.resultados)) return;
+
+    jornada.resultados.forEach((r) => {
+      if (!r) return;
+      sumas[r.jugador] += r.puntos;
+      conteos[r.jugador] += 1;
+    });
+  });
+
+  const promedios: Record<Apodos, number> = {} as Record<Apodos, number>;
+  Object.values(Apodos).forEach((j) => {
+    promedios[j] = conteos[j] > 0 ? sumas[j] / conteos[j] : 0;
+  });
+
+  return promedios;
+};
+
+export const vecesTop1 = (): Record<Apodos, number> => {
+  const top1: Record<Apodos, number> = {} as Record<Apodos, number>;
+  Object.values(Apodos).forEach((j) => (top1[j] = 0));
+
+  data.jornadas.forEach((jornada) => {
+    if (!Array.isArray(jornada.resultados)) return;
+    const resultados = [...jornada.resultados].sort(
+      (a, b) => b.puntos - a.puntos
+    );
+    if (resultados[0]) top1[resultados[0].jugador]++;
+  });
+
+  return top1;
+};
+
+// Veces en el top 3
+export const vecesTop3 = (): Record<Apodos, number> => {
+  const top3: Record<Apodos, number> = {} as Record<Apodos, number>;
+  Object.values(Apodos).forEach((j) => (top3[j] = 0));
+
+  data.jornadas.forEach((jornada) => {
+    if (!Array.isArray(jornada.resultados)) return;
+    const resultados = [...jornada.resultados].sort(
+      (a, b) => b.puntos - a.puntos
+    );
+    for (let i = 0; i < 3 && i < resultados.length; i++) {
+      if (resultados[i]) top3[resultados[i].jugador]++;
+    }
+  });
+
+  return top3;
+};
+
+// Jornadas libradas (pagando 0)
+export const jornadasLibradas = (): Record<Apodos, number> => {
+  const libradas: Record<Apodos, number> = {} as Record<Apodos, number>;
+  Object.values(Apodos).forEach((j) => (libradas[j] = 0));
+
+  data.jornadas.forEach((jornada) => {
+    if (!Array.isArray(jornada.resultados)) return;
+
+    const pagosPos = getPagosPorPosicion(jornada.numero);
+
+    jornada.resultados.forEach((r, idx) => {
+      if (!r) return;
+
+      // obtener el pago real del jugador en esa jornada
+      const pagoJugador = pagosPos[idx + 1] ?? 0; // idx +1 porque las posiciones empiezan en 1
+      if (pagoJugador === 0) libradas[r.jugador]++;
+    });
+  });
+
+  return libradas;
 };

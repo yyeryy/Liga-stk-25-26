@@ -43,11 +43,7 @@ export const PagosPanel = () => {
     if (!bloque) return;
 
     // Calcular acumulado
-    const resultado = calcularAcumulado(
-      data.jornadas,
-      bloque.desde,
-      bloque.hasta
-    );
+    const resultado = calcularAcumulado(bloque.desde, bloque.hasta);
 
     // Ordenar por pago descendente
     const resultadoOrdenado = [...resultado].sort((a, b) => a.pago - b.pago);

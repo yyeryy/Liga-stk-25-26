@@ -49,9 +49,7 @@ export const JornadasPanel = () => {
 
   // Cuando cambia la jornada seleccionada, calculamos
   useEffect(() => {
-    setJornada(
-      calcularAcumulado(data.jornadas, selectedJornada, selectedJornada)
-    );
+    setJornada(calcularAcumulado(selectedJornada, selectedJornada));
   }, [selectedJornada]);
 
   // Calcular posiciones y pagos

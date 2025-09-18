@@ -1,5 +1,4 @@
 import React, { useState, useEffect } from "react";
-import { data } from "../data/data.ts"; // tu data.ts
 import { Apodos } from "../models/models.ts";
 import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
 
@@ -120,11 +119,6 @@ export const JornadasPanel = () => {
         <div className="tableWrapper">
           {jornada.every((j) => j.puntos === 0) ? (
             <div className="spinnerWrapper">
-              <img
-                src="../imagenes/spinner.jp"
-                alt="Jornada no jugada"
-                className="rotatingImage"
-              />
               <p>Jornada aún no jugada</p>
             </div>
           ) : (

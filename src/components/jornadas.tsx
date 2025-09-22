@@ -43,44 +43,11 @@ export const JornadasPanel = () => {
     9: 7,
     10: 8,
   };
-  const getPagosPorPosicion = (numJornada: number) =>
-    numJornada <= 2 ? pagos11 : pagos10;
 
   // Cuando cambia la jornada seleccionada, calculamos
   useEffect(() => {
     setJornada(calcularAcumulado(selectedJornada, selectedJornada));
   }, [selectedJornada]);
-
-  // Calcular posiciones y pagos
-  const calcularPosiciones = (lista: JornadaJugador[], numJornada: number) => {
-    const pagosPorPosicion = getPagosPorPosicion(numJornada);
-
-    // ordenar por puntos descendente
-    const ordenada = [...lista].sort((a, b) => b.puntos - a.puntos);
-    let lastPuntos: number | null = null;
-    let lastPosicion = 0;
-
-    const conPosiciones = ordenada.map((j, idx) => {
-      if (j.puntos === lastPuntos) return { ...j, posicion: lastPosicion };
-      lastPosicion = idx + 1;
-      lastPuntos = j.puntos;
-      return { ...j, posicion: lastPosicion };
-    });
-
-    return conPosiciones.map((jugador) => {
-      const empatados = conPosiciones.filter(
-        (j) => j.puntos === jugador.puntos
-      );
-      if (empatados.length > 1) {
-        const sumPagos = empatados.reduce(
-          (acc, j) => acc + (pagosPorPosicion[j.posicion] || 0),
-          0
-        );
-        return { ...jugador, pago: sumPagos / empatados.length };
-      }
-      return { ...jugador, pago: pagosPorPosicion[jugador.posicion] || 0 };
-    });
-  };
 
   const getColorByPago = (pago: number) => {
     const colores: Record<number, string> = {

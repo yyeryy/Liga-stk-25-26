@@ -92,9 +92,8 @@ export const calcularAcumulado = (
 
     const pagosPos = getPagosPorPosicion(jornada.numero);
 
-    // Calcular posiciones de la jornada
-    let lastPuntos: number | null = null;
-    let lastPos = 0;
+    const factor = jornada.numero % 5 === 0 ? 2 : 1;
+
     const conPosiciones = resultados
       .map((r, idx) => {
         if (!r) return null;
@@ -111,9 +110,13 @@ export const calcularAcumulado = (
       const empatados = conPosiciones.filter((x) => x.puntos === r.puntos);
       const pago =
         empatados.length > 1
-          ? empatados.reduce((acc, x) => acc + (pagosPos[x.posicion] || 0), 0) /
-            empatados.length
-          : pagosPos[r.posicion] || 0;
+          ? (empatados.reduce(
+              (acc, x) => acc + (pagosPos[x.posicion] || 0),
+              0
+            ) /
+              empatados.length) *
+            factor
+          : (pagosPos[r.posicion] || 0) * factor;
 
       acumulado[r.jugador].puntos += r.puntos;
       acumulado[r.jugador].pago += pago;
@@ -220,29 +223,49 @@ export const vecesTop1 = (): Record<Apodos, number> => {
   Object.values(Apodos).forEach((j) => (top1[j] = 0));
 
   data.jornadas.forEach((jornada) => {
-    if (!Array.isArray(jornada.resultados)) return;
+    if (!Array.isArray(jornada.resultados) || jornada.resultados.length === 0)
+      return;
+
     const resultados = [...jornada.resultados].sort(
       (a, b) => b.puntos - a.puntos
     );
-    if (resultados[0]) top1[resultados[0].jugador]++;
+
+    // puntos máximos de la jornada
+    const maxPuntos = resultados[0].puntos;
+    // incrementa a todos los que tienen esos puntos (empate en 1º)
+    resultados
+      .filter((r) => r.puntos === maxPuntos)
+      .forEach((r) => {
+        top1[r.jugador]++;
+      });
   });
 
   return top1;
 };
 
-// Veces en el top 3
+// Veces en el top 3 (teniendo en cuenta empates)
 export const vecesTop3 = (): Record<Apodos, number> => {
   const top3: Record<Apodos, number> = {} as Record<Apodos, number>;
   Object.values(Apodos).forEach((j) => (top3[j] = 0));
 
   data.jornadas.forEach((jornada) => {
-    if (!Array.isArray(jornada.resultados)) return;
+    if (!Array.isArray(jornada.resultados) || jornada.resultados.length === 0)
+      return;
+
     const resultados = [...jornada.resultados].sort(
       (a, b) => b.puntos - a.puntos
     );
-    for (let i = 0; i < 3 && i < resultados.length; i++) {
-      if (resultados[i]) top3[resultados[i].jugador]++;
-    }
+
+    // Asignamos posiciones con manejo de empates: si puntos iguales -> misma posición
+    let lastPuntos: number | null = null;
+    let lastPos = 0;
+    resultados.forEach((r, idx) => {
+      const posicion = r.puntos === lastPuntos ? lastPos : idx + 1;
+      lastPuntos = r.puntos;
+      lastPos = posicion;
+
+      if (posicion <= 3) top3[r.jugador]++;
+    });
   });
 
   return top3;

@@ -65,5 +65,20 @@ export const data = {
         { jugador: Apodos.Polfovich, puntos: 28 },
       ],
     },
+    {
+      numero: 5,
+      resultados: [
+        { jugador: Apodos.Karabinieri, puntos: 89 },
+        { jugador: Apodos.Golo, puntos: 77 },
+        { jugador: Apodos.Acierillo, puntos: 75 },
+        { jugador: Apodos.Steven, puntos: 75 },
+        { jugador: Apodos.LesbianaMadamme, puntos: 67 },
+        { jugador: Apodos.Fognini, puntos: 67 },
+        { jugador: Apodos.MitxiJR, puntos: 65 },
+        { jugador: Apodos.Pitxu15pesos, puntos: 62 },
+        { jugador: Apodos.ElManito, puntos: 59 },
+        { jugador: Apodos.Dennis, puntos: 55 },
+      ],
+    },
   ],
 };

@@ -35,8 +35,23 @@ const pagos10: Record<number, number> = {
   10: 8,
 };
 
-const getPagosPorPosicion = (numJornada: number) =>
-  numJornada <= 2 ? pagos11 : pagos10;
+const pagos9: Record<number, number> = {
+  1: 0,
+  2: 0,
+  3: 0,
+  4: 0,
+  5: 2,
+  6: 4,
+  7: 5,
+  8: 6,
+  9: 7,
+};
+
+const getPagosPorPosicion = (numJornada: number) => {
+  if (numJornada <= 2) return pagos11;
+  if (numJornada <= 5) return pagos10;
+  return pagos9;
+};
 
 /**
  * Calcula puntos y pagos acumulados de los jugadores en un rango de jornadas.
@@ -53,7 +68,10 @@ export const calcularAcumulado = (
   if (!esEstadistica) {
     if (desde == 1 && hasta == 38) {
       jugadoresFiltrados = jugadoresFiltrados.filter(
-        (j) => j !== Apodos.Zarrakatz && j !== Apodos.Polfovich
+        (j) =>
+          j !== Apodos.Zarrakatz &&
+          j !== Apodos.Polfovich &&
+          j !== Apodos.ElManito
       );
     } else {
       if (desde > 2 || (desde == 1 && hasta == 5)) {
@@ -69,6 +87,11 @@ export const calcularAcumulado = (
       if (desde < 5 && !(desde == 1 && hasta == 5)) {
         jugadoresFiltrados = jugadoresFiltrados.filter(
           (j) => j !== Apodos.Pitxu15pesos
+        );
+      }
+      if (desde > 5) {
+        jugadoresFiltrados = jugadoresFiltrados.filter(
+          (j) => j !== Apodos.ElManito
         );
       }
     }

@@ -80,5 +80,33 @@ export const data = {
         { jugador: Apodos.Dennis, puntos: 55 },
       ],
     },
+    {
+      numero: 6,
+      resultados: [
+        { jugador: Apodos.LesbianaMadamme, puntos: 79 },
+        { jugador: Apodos.Karabinieri, puntos: 67 },
+        { jugador: Apodos.Pitxu15pesos, puntos: 61 },
+        { jugador: Apodos.Fognini, puntos: 61 },
+        { jugador: Apodos.Acierillo, puntos: 59 },
+        { jugador: Apodos.Dennis, puntos: 55 },
+        { jugador: Apodos.MitxiJR, puntos: 50 },
+        { jugador: Apodos.Steven, puntos: 49 },
+        { jugador: Apodos.Golo, puntos: 48 },
+      ],
+    },
+    {
+      numero: 7,
+      resultados: [
+        { jugador: Apodos.Steven, puntos: 62 },
+        { jugador: Apodos.Fognini, puntos: 59 },
+        { jugador: Apodos.Pitxu15pesos, puntos: 58 },
+        { jugador: Apodos.Karabinieri, puntos: 57 },
+        { jugador: Apodos.Dennis, puntos: 53 },
+        { jugador: Apodos.Golo, puntos: 52 },
+        { jugador: Apodos.MitxiJR, puntos: 51 },
+        { jugador: Apodos.Acierillo, puntos: 44 },
+        { jugador: Apodos.LesbianaMadamme, puntos: 38 },
+      ],
+    },
   ],
 };

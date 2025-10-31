@@ -22,7 +22,7 @@ const pagos11: Record<number, number> = {
   11: 8,
 };
 
-const pagos10: Record<number, number> = {
+const pagos10v1: Record<number, number> = {
   1: 0,
   2: 0,
   3: 0,
@@ -33,6 +33,19 @@ const pagos10: Record<number, number> = {
   8: 6,
   9: 7,
   10: 8,
+};
+
+const pagos10v2: Record<number, number> = {
+  1: 0,
+  2: 0,
+  3: 0,
+  4: 0,
+  5: 1,
+  6: 2,
+  7: 3,
+  8: 4,
+  9: 5,
+  10: 6,
 };
 
 const pagos9: Record<number, number> = {
@@ -49,8 +62,9 @@ const pagos9: Record<number, number> = {
 
 const getPagosPorPosicion = (numJornada: number) => {
   if (numJornada <= 2) return pagos11;
-  if (numJornada <= 5) return pagos10;
-  return pagos9;
+  if (numJornada <= 5) return pagos10v1;
+  if (numJornada <= 7) return pagos9;
+  return pagos10v2;
 };
 
 /**
@@ -68,10 +82,7 @@ export const calcularAcumulado = (
   if (!esEstadistica) {
     if (desde == 1 && hasta == 38) {
       jugadoresFiltrados = jugadoresFiltrados.filter(
-        (j) =>
-          j !== Apodos.Zarrakatz &&
-          j !== Apodos.Polfovich &&
-          j !== Apodos.ElManito
+        (j) => j !== Apodos.Zarrakatz && j !== Apodos.Polfovich
       );
     } else {
       if (desde > 2 || (desde == 1 && hasta == 5)) {
@@ -89,7 +100,7 @@ export const calcularAcumulado = (
           (j) => j !== Apodos.Pitxu15pesos
         );
       }
-      if (desde > 5) {
+      if ((desde === 6 && hasta === 6) || (desde === 7 && hasta === 7)) {
         jugadoresFiltrados = jugadoresFiltrados.filter(
           (j) => j !== Apodos.ElManito
         );
@@ -148,6 +159,9 @@ export const calcularAcumulado = (
 
   if ((desde == 1 && hasta == 38) || (desde == 1 && hasta == 5))
     acumulado[Apodos.Pitxu15pesos].pago += 12;
+
+  if ((desde == 1 && hasta == 38) || (desde == 6 && hasta == 10))
+    acumulado[Apodos.ElManito].pago += 5;
 
   // Calcular posiciones finales del rango
   const listaFinal = Object.values(acumulado).sort(

@@ -93,22 +93,22 @@ export const calcularAcumulado = (
   let jugadoresFiltrados = [...todosJugadores];
 
   if (!esEstadistica) {
-    if (desde == 1 && hasta == 38) {
+    if (desde === 1 && hasta === 38) {
       jugadoresFiltrados = jugadoresFiltrados.filter(
         (j) => j !== Apodos.Zarrakatz && j !== Apodos.Polfovich
       );
     } else {
-      if (desde > 2 || (desde == 1 && hasta == 5)) {
+      if (desde > 2 || (desde === 1 && hasta === 5)) {
         jugadoresFiltrados = jugadoresFiltrados.filter(
           (j) => j !== Apodos.Zarrakatz
         );
       }
-      if (desde > 4 || (desde == 1 && hasta == 5)) {
+      if (desde > 4 || (desde === 1 && hasta === 5)) {
         jugadoresFiltrados = jugadoresFiltrados.filter(
           (j) => j !== Apodos.Polfovich
         );
       }
-      if (desde < 5 && !(desde == 1 && hasta == 5)) {
+      if (desde < 5 && !(desde === 1 && hasta === 5)) {
         jugadoresFiltrados = jugadoresFiltrados.filter(
           (j) => j !== Apodos.Pitxu15pesos
         );
@@ -175,10 +175,10 @@ export const calcularAcumulado = (
     });
   });
 
-  if ((desde == 1 && hasta == 38) || (desde == 1 && hasta == 5))
+  if ((desde === 1 && hasta === 38) || (desde === 1 && hasta === 5))
     acumulado[Apodos.Pitxu15pesos].pago += 12;
 
-  if ((desde == 1 && hasta == 38) || (desde == 6 && hasta == 10))
+  if ((desde === 1 && hasta === 38) || (desde === 6 && hasta === 10))
     acumulado[Apodos.ElManito].pago += 5;
 
   // Calcular posiciones finales del rango

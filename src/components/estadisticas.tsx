@@ -9,7 +9,7 @@ import {
   jornadasLibradas,
 } from "../utils/calcularAcumulado.ts";
 
-export const EstadisticasPanel = ({}: {}) => {
+export const EstadisticasPanel = () => {
   const [stats, setStats] = useState<{
     max: Record<Apodos, number>;
     min: Record<Apodos, number>;

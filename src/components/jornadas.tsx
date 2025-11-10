@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Apodos } from "../models/models.ts";
 import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
 
@@ -13,36 +13,6 @@ type JornadaJugador = {
 export const JornadasPanel = () => {
   const [selectedJornada, setSelectedJornada] = useState(1);
   const [jornada, setJornada] = useState<JornadaJugador[]>([]);
-
-  // Todos los jugadores del torneo
-  const todosJugadores = Object.values(Apodos);
-
-  // Tabla de pagos
-  const pagos11: Record<number, number> = {
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 0,
-    6: 2,
-    7: 4,
-    8: 5,
-    9: 6,
-    10: 7,
-    11: 8,
-  };
-  const pagos10: Record<number, number> = {
-    1: 0,
-    2: 0,
-    3: 0,
-    4: 0,
-    5: 2,
-    6: 4,
-    7: 5,
-    8: 6,
-    9: 7,
-    10: 8,
-  };
 
   // Cuando cambia la jornada seleccionada, calculamos
   useEffect(() => {

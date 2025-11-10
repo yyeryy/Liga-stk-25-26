@@ -1,6 +1,4 @@
-import React, { useState, useEffect } from "react";
-import { data } from "../data/data.ts";
-import { Apodos } from "../models/models.ts";
+import { useState, useEffect } from "react";
 import { calcularAcumulado, JugadorPago } from "../utils/calcularAcumulado.ts";
 
 export const PagosPanel = () => {
@@ -62,7 +60,7 @@ export const PagosPanel = () => {
     });
 
     setPagos(resultadoOrdenado);
-  }, [selectedBloque]);
+  }, [selectedBloque, bloques]);
 
   return (
     <div className="panelContainer">
@@ -156,7 +154,7 @@ export const PagosPanel = () => {
                 </tbody>
               </table>
 
-              {selectedBloque == 0 && (
+              {selectedBloque === 0 && (
                 <div className="zarrakatzSection">
                   <p>* Zarrakatz debe: 14€</p>
                   <p>* Polfovich debe: 19€</p>

@@ -56,7 +56,11 @@ export const JornadasPanel = () => {
         <div className="tableWrapper">
           {jornada.every((j) => j.puntos === 0) ? (
             <div className="spinnerWrapper">
-              <img src={"../imagenes/spinner.jpg"} className="rotatingImage" />
+              <img
+                src="../imagenes/spinner.jpg"
+                alt=""
+                className="rotatingImage"
+              />
               <p>Jornada aún no jugada</p>
             </div>
           ) : (

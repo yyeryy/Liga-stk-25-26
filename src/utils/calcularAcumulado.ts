@@ -60,24 +60,23 @@ const pagos9v1: Record<number, number> = {
   9: 7,
 };
 
-const pagos9v2: Record<number, number> = {
-  1: 0,
-  2: 0,
-  3: 0,
-  4: 0,
-  5: 1,
-  6: 2,
-  7: 3,
-  8: 4,
-  9: 5,
-};
+// const pagos9v2: Record<number, number> = {
+//   1: 0,
+//   2: 0,
+//   3: 0,
+//   4: 0,
+//   5: 1,
+//   6: 2,
+//   7: 3,
+//   8: 4,
+//   9: 5,
+// };
 
 const getPagosPorPosicion = (numJornada: number) => {
   if (numJornada <= 2) return pagos11;
   if (numJornada <= 5) return pagos10v1;
   if (numJornada <= 7) return pagos9v1;
-  if (numJornada <= 10) return pagos10v2;
-  return pagos9v2;
+  return pagos10v2;
 };
 
 /**
@@ -116,11 +115,6 @@ export const calcularAcumulado = (
       if ((desde === 6 && hasta === 6) || (desde === 7 && hasta === 7)) {
         jugadoresFiltrados = jugadoresFiltrados.filter(
           (j) => j !== Apodos.ElManito
-        );
-      }
-      if (desde > 10) {
-        jugadoresFiltrados = jugadoresFiltrados.filter(
-          (j) => j !== Apodos.Dennis
         );
       }
     }

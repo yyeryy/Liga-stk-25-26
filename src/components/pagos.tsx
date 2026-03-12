@@ -7,7 +7,7 @@ export const PagosPanel = () => {
 
   const bloques = useMemo(
     () => [
-      { id: 0, nombre: "General", desde: 1, hasta: 38 },
+      { id: 0, nombre: "General (Total)", desde: 1, hasta: 38 },
       { id: 1, nombre: "Jornadas 1-5", desde: 1, hasta: 5 },
       { id: 2, nombre: "Jornadas 6-10", desde: 6, hasta: 10 },
       { id: 3, nombre: "Jornadas 11-15", desde: 11, hasta: 15 },
@@ -16,40 +16,34 @@ export const PagosPanel = () => {
       { id: 6, nombre: "Jornadas 26-30", desde: 26, hasta: 30 },
       { id: 7, nombre: "Jornadas 31-35", desde: 31, hasta: 35 },
       { id: 8, nombre: "Jornadas 36-38", desde: 36, hasta: 38 },
-      // ... el resto
     ],
-    [] // solo se inicializa una vez
+    [],
   );
 
-  // Gradiente verde muy suave -> rojo claro (sin amarillo intermedio)
-  // Gradiente verde pastel -> rojo pastel un poco más fuerte
   const getColorByPago = (pago: number, maxPago: number) => {
-    if (maxPago === 0) return "#e6ffe6"; // verde muy clarito por defecto
-
-    const ratio = Math.min(1, pago / maxPago); // 0..1
-
-    // colores extremos
-    const start = { r: 230, g: 255, b: 230 }; // #e6ffe6 (verde pastel)
-    const end = { r: 255, g: 128, b: 128 }; // #ff8080 (rojo pastel más fuerte)
-
+    if (maxPago === 0 || pago === 0) return "#e8f5e9";
+    const ratio = Math.min(1, pago / maxPago);
+    const start = { r: 232, g: 245, b: 233 };
+    const end = { r: 255, g: 205, b: 210 };
     const r = Math.round(start.r + (end.r - start.r) * ratio);
     const g = Math.round(start.g + (end.g - start.g) * ratio);
     const b = Math.round(start.b + (end.b - start.b) * ratio);
-
     return `rgb(${r},${g},${b})`;
+  };
+
+  const getMedal = (pos: number) => {
+    if (pos === 1) return "🥇";
+    if (pos === 2) return "🥈";
+    if (pos === 3) return "🥉";
+    return null;
   };
 
   useEffect(() => {
     const bloque = bloques.find((b) => b.id === selectedBloque);
     if (!bloque) return;
-
-    // Calcular acumulado
     const resultado = calcularAcumulado(bloque.desde, bloque.hasta);
-
-    // Ordenar por pago descendente
     const resultadoOrdenado = [...resultado].sort((a, b) => a.pago - b.pago);
 
-    // Asignar posiciones según pago
     let lastPago: number | null = null;
     let lastPos = 0;
     resultadoOrdenado.forEach((j, idx) => {
@@ -61,20 +55,53 @@ export const PagosPanel = () => {
         j.posicion = lastPos;
       }
     });
-
     setPagos(resultadoOrdenado);
   }, [selectedBloque, bloques]);
 
+  const maxPagoActual = Math.max(...pagos.map((p) => p.pago), 0);
+
+  // Definimos anchos fijos en % para asegurar que NO haya scroll
+  const colWidths = {
+    pos: "15%",
+    jugador: "45%",
+    puntos: "20%",
+    pago: "20%",
+  };
+
   return (
-    <div className="panelContainer">
-      <div className="card">
-        <h2 className="title">
-          Pagos - {bloques.find((b) => b.id === selectedBloque)?.nombre}
-        </h2>
-        <div className="selectWrapper">
+    <div
+      style={{
+        padding: "10px",
+        width: "100%",
+        maxWidth: "100vw",
+        boxSizing: "border-box",
+        overflowX: "hidden", // Prohibido el scroll horizontal en el contenedor
+        fontFamily: "system-ui, sans-serif",
+      }}
+    >
+      <div
+        style={{
+          background: "#fff",
+          borderRadius: "15px",
+          boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
+          padding: "15px",
+          border: "1px solid #f0f0f0",
+        }}
+      >
+        {/* Selector ajustado al ancho */}
+        <div style={{ marginBottom: "20px", textAlign: "center" }}>
           <select
             value={selectedBloque}
             onChange={(e) => setSelectedBloque(Number(e.target.value))}
+            style={{
+              padding: "10px",
+              borderRadius: "10px",
+              border: "2px solid #6c5ce7",
+              width: "100%", // Ocupa todo el ancho disponible
+              fontSize: "0.9rem",
+              fontWeight: "600",
+              color: "#6c5ce7",
+            }}
           >
             {bloques.map((b) => (
               <option key={b.id} value={b.id}>
@@ -84,92 +111,106 @@ export const PagosPanel = () => {
           </select>
         </div>
 
-        <div className="tableWrapper">
-          {pagos.every((p) => p.puntos === 0) ? (
-            <div className="spinnerWrapper">
-              <img
-                src="../imagenes/spinner.jpg"
-                alt=""
-                className="rotatingImage"
-              />
-              <p>Pagos aún no registrados</p>
-            </div>
-          ) : (
-            <>
-              <table className="table">
-                <thead>
-                  <tr>
-                    <th>Posición</th>
-                    <th>Jugador</th>
-                    <th>Puntos</th>
-                    <th>Pago</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {pagos.map((j, idx) => (
-                    <tr
-                      key={idx}
-                      style={{
-                        backgroundColor: getColorByPago(
-                          j.pago ?? 0,
-                          Math.max(...pagos.map((p) => p.pago))
-                        ),
-                      }}
-                    >
-                      <td
-                        style={{
-                          backgroundColor: getColorByPago(
-                            j.pago ?? 0,
-                            Math.max(...pagos.map((p) => p.pago))
-                          ),
-                        }}
-                      >
-                        {j.posicion}
-                      </td>
-                      <td
-                        style={{
-                          backgroundColor: getColorByPago(
-                            j.pago ?? 0,
-                            Math.max(...pagos.map((p) => p.pago))
-                          ),
-                        }}
-                      >
-                        {j.jugador}
-                      </td>
-                      <td
-                        style={{
-                          backgroundColor: getColorByPago(
-                            j.pago ?? 0,
-                            Math.max(...pagos.map((p) => p.pago))
-                          ),
-                        }}
-                      >
-                        {j.puntos}
-                      </td>
-                      <td
-                        style={{
-                          backgroundColor: getColorByPago(
-                            j.pago ?? 0,
-                            Math.max(...pagos.map((p) => p.pago))
-                          ),
-                        }}
-                      >
-                        {j.pago} €
-                      </td>
-                    </tr>
-                  ))}
-                </tbody>
-              </table>
-
-              {selectedBloque === 0 && (
-                <div className="zarrakatzSection">
-                  <p>* Zarrakatz debe: 14€</p>
-                  <p>* Polfovich debe: 19€</p>
-                </div>
-              )}
-            </>
-          )}
+        {/* Cabecera Manual (Flexbox) */}
+        <div
+          style={{
+            display: "flex",
+            padding: "0 5px 10px 5px",
+            color: "#b2bec3",
+            fontSize: "0.7rem",
+            textTransform: "uppercase",
+            fontWeight: "bold",
+          }}
+        >
+          <div style={{ width: colWidths.pos, textAlign: "center" }}>Pos</div>
+          <div style={{ width: colWidths.jugador }}>Jugador</div>
+          <div style={{ width: colWidths.puntos, textAlign: "center" }}>
+            Pts
+          </div>
+          <div style={{ width: colWidths.pago, textAlign: "right" }}>Pago</div>
         </div>
+
+        {/* Filas Flexbox */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+          {pagos.map((j, idx) => {
+            const rowColor = getColorByPago(j.pago ?? 0, maxPagoActual);
+            return (
+              <div
+                key={idx}
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  backgroundColor: rowColor,
+                  borderRadius: "8px",
+                  padding: "10px 5px",
+                  fontSize: "0.85rem",
+                }}
+              >
+                <div
+                  style={{
+                    width: colWidths.pos,
+                    textAlign: "center",
+                    fontWeight: "bold",
+                  }}
+                >
+                  {getMedal(j.posicion ?? 0) || j.posicion}
+                </div>
+                <div
+                  style={{
+                    width: colWidths.jugador,
+                    fontWeight: "600",
+                    whiteSpace: "nowrap",
+                    overflow: "hidden",
+                    textOverflow: "ellipsis", // Si el nombre es muy largo, pone "..."
+                    paddingRight: "5px",
+                  }}
+                >
+                  {j.jugador}
+                </div>
+                <div style={{ width: colWidths.puntos, textAlign: "center" }}>
+                  {j.puntos}
+                </div>
+                <div
+                  style={{
+                    width: colWidths.pago,
+                    textAlign: "right",
+                    fontWeight: "bold",
+                    color: (j.pago ?? 0) > 0 ? "#d63031" : "#27ae60",
+                  }}
+                >
+                  {j.pago}€
+                </div>
+              </div>
+            );
+          })}
+        </div>
+
+        {/* Notas Extraordinarias ajustadas */}
+        {selectedBloque === 0 && (
+          <div
+            style={{
+              marginTop: "20px",
+              padding: "12px",
+              backgroundColor: "#fff5f5",
+              borderRadius: "10px",
+              fontSize: "0.8rem",
+            }}
+          >
+            <div
+              style={{
+                fontWeight: "bold",
+                color: "#d63031",
+                marginBottom: "5px",
+              }}
+            >
+              ⚠️ Pendientes:
+            </div>
+            <div style={{ display: "flex", justifyContent: "space-between" }}>
+              <span>Zarrakatz: 14€</span>
+              <span>Polfovich: 19€</span>
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );

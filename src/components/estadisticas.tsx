@@ -30,7 +30,12 @@ export const EstadisticasPanel = () => {
     setStats({ max, min, avg, top1, top3, libradas });
   }, []);
 
-  if (!stats) return <p>Cargando estadísticas...</p>;
+  if (!stats)
+    return (
+      <p style={{ textAlign: "center", marginTop: "20px" }}>
+        Cargando estadísticas...
+      </p>
+    );
 
   const jugadores = Object.values(Apodos);
 
@@ -43,64 +48,147 @@ export const EstadisticasPanel = () => {
     { title: "Jornadas libre", data: stats.libradas, order: "desc" },
   ];
 
-  return (
-    <div className="estadisticasPanel">
-      <h2>Estadísticas</h2>
+  // Función auxiliar para obtener estilos y medallas según la posición
+  const getPodiumStyles = (idx: number) => {
+    switch (idx) {
+      case 0: // Oro
+        return {
+          backgroundColor: "#fff9c4", // Amarillo muy suave
+          color: "#b8860b", // Dorado oscuro para el texto
+          medal: "🥇",
+          fontWeight: "bold",
+        };
+      case 1: // Plata
+        return {
+          backgroundColor: "#f5f5f5", // Gris muy suave
+          color: "#708090", // Gris azulado para el texto
+          medal: "🥈",
+          fontWeight: "600",
+        };
+      case 2: // Bronce
+        return {
+          backgroundColor: "#fff3e0", // Naranja/bronce muy suave
+          color: "#8d6e63", // Marrón suave para el texto
+          medal: "🥉",
+          fontWeight: "500",
+        };
+      default:
+        return {
+          backgroundColor: "transparent",
+          color: "inherit",
+          medal: null,
+          fontWeight: "normal",
+        };
+    }
+  };
 
-      <div style={{ display: "flex", flexWrap: "wrap", gap: "20px" }}>
+  return (
+    <div
+      className="estadisticasPanel"
+      style={{ padding: "20px", fontFamily: "sans-serif" }}
+    >
+      <h2 style={{ textAlign: "center", color: "#333", marginBottom: "30px" }}>
+        📊 Panel de Estadísticas
+      </h2>
+
+      <div
+        style={{
+          display: "flex",
+          flexWrap: "wrap",
+          gap: "25px",
+          justifyContent: "center",
+        }}
+      >
         {miniTables.map((stat) => {
           const jugadoresOrdenados = [...jugadores].sort((a, b) =>
             stat.order === "asc"
-              ? stat.data[a] - stat.data[b]
-              : stat.data[b] - stat.data[a]
+              ? (stat.data[a] || 0) - (stat.data[b] || 0)
+              : (stat.data[b] || 0) - (stat.data[a] || 0),
           );
 
           return (
             <div
               key={stat.title}
               style={{
-                background: "#f9f9f9",
-                borderRadius: "8px",
-                boxShadow: "0 2px 6px rgba(0,0,0,0.15)",
-                padding: "12px",
-                minWidth: "180px",
-                flex: "1 1 200px",
+                background: "#ffffff",
+                borderRadius: "12px",
+                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
+                padding: "16px",
+                minWidth: "220px",
+                flex: "1 1 250px",
+                border: "1px solid #eee",
               }}
             >
-              <h3 style={{ textAlign: "center", marginBottom: "8px" }}>
+              <h3
+                style={{
+                  textAlign: "center",
+                  marginBottom: "15px",
+                  fontSize: "1.1rem",
+                  color: "#444",
+                  borderBottom: "2px solid #f0f0f0",
+                  paddingBottom: "8px",
+                }}
+              >
                 {stat.title}
               </h3>
               <table
                 style={{
                   width: "100%",
                   borderCollapse: "collapse",
-                  textAlign: "center",
+                  fontSize: "0.95rem",
                 }}
               >
                 <tbody>
-                  {jugadoresOrdenados.map((j, idx) => (
-                    <tr
-                      key={j}
-                      style={{
-                        borderBottom:
-                          idx < jugadoresOrdenados.length - 1
-                            ? "1px solid #ccc"
-                            : "none",
-                      }}
-                    >
-                      <td style={{ padding: "4px 8px", textAlign: "left" }}>
-                        {j}
-                      </td>
-                      <td style={{ padding: "4px 8px" }}>
-                        {stat.title === "Puntuación media"
-                          ? new Intl.NumberFormat("es-ES", {
-                              minimumFractionDigits: 2,
-                              maximumFractionDigits: 2,
-                            }).format(stat.data[j])
-                          : stat.data[j].toFixed(0)}
-                      </td>
-                    </tr>
-                  ))}
+                  {jugadoresOrdenados.map((j, idx) => {
+                    const podium = getPodiumStyles(idx);
+                    return (
+                      <tr
+                        key={j}
+                        style={{
+                          backgroundColor: podium.backgroundColor,
+                          color: podium.color,
+                          fontWeight: podium.fontWeight as any,
+                          transition: "all 0.2s ease",
+                        }}
+                      >
+                        <td
+                          style={{
+                            padding: "8px 10px",
+                            textAlign: "left",
+                            borderBottom:
+                              idx < jugadoresOrdenados.length - 1
+                                ? "1px solid #f0f0f0"
+                                : "none",
+                            display: "flex",
+                            alignItems: "center",
+                            gap: "5px",
+                          }}
+                        >
+                          <span style={{ minWidth: "20px" }}>
+                            {podium.medal}
+                          </span>
+                          {j}
+                        </td>
+                        <td
+                          style={{
+                            padding: "8px 10px",
+                            textAlign: "right",
+                            borderBottom:
+                              idx < jugadoresOrdenados.length - 1
+                                ? "1px solid #f0f0f0"
+                                : "none",
+                          }}
+                        >
+                          {stat.title === "Puntuación media"
+                            ? new Intl.NumberFormat("es-ES", {
+                                minimumFractionDigits: 2,
+                                maximumFractionDigits: 2,
+                              }).format(stat.data[j] || 0)
+                            : (stat.data[j] || 0).toFixed(0)}
+                        </td>
+                      </tr>
+                    );
+                  })}
                 </tbody>
               </table>
             </div>

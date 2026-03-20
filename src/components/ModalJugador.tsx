@@ -5,13 +5,16 @@ import ListGroup from "react-bootstrap/ListGroup";
 import Badge from "react-bootstrap/Badge";
 import { data } from "../data/data.ts";
 import { Apodos } from "../models/models.ts";
-// Importamos tu función core para reutilizar toda la lógica de negocio
-import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
+import {
+  calcularAcumulado,
+  obtenerMaximos,
+  obtenerMinimos,
+} from "../utils/calcularAcumulado.ts";
 
 interface ModalJugadorProps {
   show: boolean;
   onHide: () => void;
-  jugador: Apodos | null; // Usamos tu Enum
+  jugador: Apodos | null;
 }
 
 const ModalJugador: React.FC<ModalJugadorProps> = ({
@@ -19,25 +22,19 @@ const ModalJugador: React.FC<ModalJugadorProps> = ({
   onHide,
   jugador,
 }) => {
-  // Usamos useMemo para que esto solo se calcule cuando se abra el modal
-  // o cambie el jugador, y no en cada pequeño renderizado.
   const statsJugador = useMemo(() => {
     if (!jugador) return null;
 
-    // 1. Obtenemos la tabla general de toda la temporada
     const tablaGeneral = calcularAcumulado(1, 38, true);
 
-    // NUEVO: Filtramos a los desertores/bajas para el ranking oficial
     const tablaActivos = tablaGeneral.filter(
       (j) => j.jugador !== Apodos.Zarrakatz && j.jugador !== Apodos.Polfovich,
     );
 
-    // 2. Ordenamos solo a los activos por dinero (de menos a más)
     const tablaOrdenadaPorPago = [...tablaActivos].sort(
       (a, b) => a.pago - b.pago,
     );
 
-    // 3. Asignamos las posiciones reales gestionando empates
     let lastPago: number | null = null;
     let lastPos = 0;
     tablaOrdenadaPorPago.forEach((j, idx) => {
@@ -50,20 +47,17 @@ const ModalJugador: React.FC<ModalJugadorProps> = ({
       }
     });
 
-    // 4. Buscamos al jugador en la tabla de activos
     let datosGenerales = tablaOrdenadaPorPago.find(
       (j) => j.jugador === jugador,
     );
     let posicionFinal: number | string = datosGenerales?.posicion ?? "-";
 
-    // Si no está en los activos (porque es Zarrakatz o Polfovich), rescatamos sus datos de la general
     if (!datosGenerales) {
       datosGenerales = tablaGeneral.find((j) => j.jugador === jugador);
     }
 
     if (!datosGenerales) return null;
 
-    // 5. Buscamos la mejor y peor jornada "en crudo" (solo puntos)
     let mejorJ = { jornada: 0, puntos: -1 };
     let peorJ = { jornada: 0, puntos: 9999 };
 
@@ -81,12 +75,38 @@ const ModalJugador: React.FC<ModalJugadorProps> = ({
       }
     });
 
+    let posPuntos: number | string = "-";
+    let posMejor: number | string = "-";
+    let posPeor: number | string = "-";
+
+    if (jugador !== Apodos.Zarrakatz && jugador !== Apodos.Polfovich) {
+      posPuntos =
+        tablaActivos.filter((j) => j.puntos > datosGenerales!.puntos).length +
+        1;
+
+      const maximos = obtenerMaximos();
+      const minimos = obtenerMinimos();
+      const activos = Object.keys(maximos).filter(
+        (k) => k !== Apodos.Zarrakatz && k !== Apodos.Polfovich,
+      );
+
+      const myMax = maximos[jugador as Apodos];
+      posMejor = activos.filter((k) => maximos[k as Apodos] > myMax).length + 1;
+
+      const myMin = minimos[jugador as Apodos];
+      // CAMBIO APLICADO: Ahora el #1 es el que tiene la "peor jornada" más alta (el más consistente)
+      posPeor = activos.filter((k) => minimos[k as Apodos] > myMin).length + 1;
+    }
+
     return {
       totalPagado: datosGenerales.pago,
       totalPuntos: datosGenerales.puntos,
-      posicionGlobal: posicionFinal, // Mostrará su número real, o "-" si están fuera de ranking
+      posicionGlobal: posicionFinal,
+      posPuntos,
       mejorJornada: mejorJ.puntos !== -1 ? mejorJ : null,
+      posMejor,
       peorJornada: peorJ.puntos !== 9999 ? peorJ : null,
+      posPeor,
     };
   }, [jugador]);
 
@@ -98,60 +118,125 @@ const ModalJugador: React.FC<ModalJugadorProps> = ({
         <Modal.Title>Expediente de {jugador}</Modal.Title>
       </Modal.Header>
 
-      <Modal.Body>
+      {/* Quitamos el padding del Body para que las franjas lleguen hasta el borde */}
+      <Modal.Body className="p-0">
         {!statsJugador ? (
-          <p className="text-center text-muted my-3">
+          <p className="text-center text-muted my-4">
             No se han encontrado datos para este jugador.
           </p>
         ) : (
           <ListGroup variant="flush">
-            {/* Posición global en la liga */}
-            <ListGroup.Item className="d-flex justify-content-between align-items-center bg-light">
-              <span className="fw-bold">Posición en la Liga</span>
-              <Badge bg="dark" className="fs-6">
-                #{statsJugador.posicionGlobal}
-              </Badge>
-            </ListGroup.Item>
-
-            {/* Dinero Total */}
-            <ListGroup.Item className="d-flex justify-content-between align-items-start">
-              <div className="ms-2 me-auto">
-                <div className="fw-bold">Total a pagar acumulado</div>
-                Deuda histórica de la temporada
+            {/* Deuda / Ranking Principal */}
+            <ListGroup.Item className="p-0 d-flex align-items-stretch">
+              <div className="p-3 flex-grow-1">
+                <div className="fw-bold text-dark">Total a pagar acumulado</div>
+                <div
+                  className="text-muted mb-2"
+                  style={{ fontSize: "0.85rem" }}
+                >
+                  Deuda histórica de la temporada
+                </div>
+                <Badge bg="danger" pill className="fs-6">
+                  {statsJugador.totalPagado.toFixed(2)} €
+                </Badge>
               </div>
-              <Badge bg="danger" pill className="fs-6">
-                {statsJugador.totalPagado.toFixed(2)} €
-              </Badge>
+              <div
+                className="bg-light d-flex flex-column align-items-center justify-content-center border-start px-3 text-dark"
+                style={{ minWidth: "90px" }}
+              >
+                <span
+                  style={{
+                    fontSize: "0.65rem",
+                    textTransform: "uppercase",
+                    fontWeight: "bold",
+                    letterSpacing: "1px",
+                  }}
+                >
+                  Ranking
+                </span>
+                <span className="fs-3 fw-bold">
+                  #{statsJugador.posicionGlobal}
+                </span>
+              </div>
             </ListGroup.Item>
 
             {/* Puntos Totales */}
-            <ListGroup.Item className="d-flex justify-content-between align-items-start">
-              <div className="ms-2 me-auto">
-                <div className="fw-bold">Puntos Totales</div>
-                Rendimiento general
+            <ListGroup.Item className="p-0 d-flex align-items-stretch">
+              <div className="p-3 flex-grow-1">
+                <div className="fw-bold text-dark">Puntos Totales</div>
+                <div
+                  className="text-muted mb-2"
+                  style={{ fontSize: "0.85rem" }}
+                >
+                  Rendimiento general
+                </div>
+                <Badge bg="primary" pill className="fs-6">
+                  {statsJugador.totalPuntos} pts
+                </Badge>
               </div>
-              <Badge bg="primary" pill className="fs-6">
-                {statsJugador.totalPuntos} pts
-              </Badge>
+              {statsJugador.posPuntos !== "-" && (
+                <div
+                  className="bg-light d-flex align-items-center justify-content-center border-start px-3 text-secondary"
+                  style={{ minWidth: "90px" }}
+                >
+                  <span className="fs-4 fw-bold">
+                    #{statsJugador.posPuntos}
+                  </span>
+                </div>
+              )}
             </ListGroup.Item>
 
             {/* Mejor Jornada */}
             {statsJugador.mejorJornada && (
-              <ListGroup.Item>
-                <div className="fw-bold text-success">
-                  🌟 Mejor Jornada (J{statsJugador.mejorJornada.jornada})
+              <ListGroup.Item className="p-0 d-flex align-items-stretch">
+                <div className="p-3 flex-grow-1">
+                  <div className="fw-bold text-success">
+                    🌟 Mejor Jornada (J{statsJugador.mejorJornada.jornada})
+                  </div>
+                  <div
+                    className="text-muted mt-1"
+                    style={{ fontSize: "0.85rem" }}
+                  >
+                    Consiguió {statsJugador.mejorJornada.puntos} puntos.
+                  </div>
                 </div>
-                Consiguió {statsJugador.mejorJornada.puntos} puntos.
+                {statsJugador.posMejor !== "-" && (
+                  <div
+                    className="bg-light d-flex align-items-center justify-content-center border-start px-3 text-success"
+                    style={{ minWidth: "90px", opacity: 0.85 }}
+                  >
+                    <span className="fs-4 fw-bold">
+                      #{statsJugador.posMejor}
+                    </span>
+                  </div>
+                )}
               </ListGroup.Item>
             )}
 
             {/* Peor Jornada */}
             {statsJugador.peorJornada && (
-              <ListGroup.Item>
-                <div className="fw-bold text-danger">
-                  📉 Peor Jornada (J{statsJugador.peorJornada.jornada})
+              <ListGroup.Item className="p-0 d-flex align-items-stretch">
+                <div className="p-3 flex-grow-1">
+                  <div className="fw-bold text-danger">
+                    📉 Peor Jornada (J{statsJugador.peorJornada.jornada})
+                  </div>
+                  <div
+                    className="text-muted mt-1"
+                    style={{ fontSize: "0.85rem" }}
+                  >
+                    Su mínimo fue de {statsJugador.peorJornada.puntos} puntos.
+                  </div>
                 </div>
-                Un desastre: {statsJugador.peorJornada.puntos} puntos.
+                {statsJugador.posPeor !== "-" && (
+                  <div
+                    className="bg-light d-flex align-items-center justify-content-center border-start px-3 text-danger"
+                    style={{ minWidth: "90px", opacity: 0.85 }}
+                  >
+                    <span className="fs-4 fw-bold">
+                      #{statsJugador.posPeor}
+                    </span>
+                  </div>
+                )}
               </ListGroup.Item>
             )}
           </ListGroup>

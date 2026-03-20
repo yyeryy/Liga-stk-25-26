@@ -9,6 +9,9 @@ import {
   jornadasLibradas,
 } from "../utils/calcularAcumulado.ts";
 
+// NUEVO: Importa tu componente y los datos originales (ajusta las rutas a tu proyecto)
+import ModalJugador from "./ModalJugador.tsx";
+
 export const EstadisticasPanel = () => {
   const [stats, setStats] = useState<{
     max: Record<Apodos, number>;
@@ -18,6 +21,12 @@ export const EstadisticasPanel = () => {
     top3: Record<Apodos, number>;
     libradas: Record<Apodos, number>;
   } | null>(null);
+
+  // NUEVO: Estados para controlar el modal
+  const [modalShow, setModalShow] = useState(false);
+  const [jugadorSeleccionado, setJugadorSeleccionado] = useState<Apodos | null>(
+    null,
+  );
 
   useEffect(() => {
     const max = obtenerMaximos();
@@ -29,6 +38,12 @@ export const EstadisticasPanel = () => {
 
     setStats({ max, min, avg, top1, top3, libradas });
   }, []);
+
+  // NUEVO: Función para abrir el modal
+  const handleAbrirModal = (jugador: Apodos) => {
+    setJugadorSeleccionado(jugador);
+    setModalShow(true);
+  };
 
   if (!stats)
     return (
@@ -48,27 +63,26 @@ export const EstadisticasPanel = () => {
     { title: "Jornadas libre", data: stats.libradas, order: "desc" },
   ];
 
-  // Función auxiliar para obtener estilos y medallas según la posición
   const getPodiumStyles = (idx: number) => {
     switch (idx) {
-      case 0: // Oro
+      case 0:
         return {
-          backgroundColor: "#fff9c4", // Amarillo muy suave
-          color: "#b8860b", // Dorado oscuro para el texto
+          backgroundColor: "#fff9c4",
+          color: "#b8860b",
           medal: "🥇",
           fontWeight: "bold",
         };
-      case 1: // Plata
+      case 1:
         return {
-          backgroundColor: "#f5f5f5", // Gris muy suave
-          color: "#708090", // Gris azulado para el texto
+          backgroundColor: "#f5f5f5",
+          color: "#708090",
           medal: "🥈",
           fontWeight: "600",
         };
-      case 2: // Bronce
+      case 2:
         return {
-          backgroundColor: "#fff3e0", // Naranja/bronce muy suave
-          color: "#8d6e63", // Marrón suave para el texto
+          backgroundColor: "#fff3e0",
+          color: "#8d6e63",
           medal: "🥉",
           fontWeight: "500",
         };
@@ -144,11 +158,15 @@ export const EstadisticasPanel = () => {
                     return (
                       <tr
                         key={j}
+                        // NUEVO: Evento onClick y cursor para indicar que es interactivo
+                        onClick={() => handleAbrirModal(j as Apodos)}
+                        title={`Ver expediente de ${j}`}
                         style={{
                           backgroundColor: podium.backgroundColor,
                           color: podium.color,
                           fontWeight: podium.fontWeight as any,
                           transition: "all 0.2s ease",
+                          cursor: "pointer", // Le da estilo de botón al pasar el ratón
                         }}
                       >
                         <td
@@ -195,6 +213,13 @@ export const EstadisticasPanel = () => {
           );
         })}
       </div>
+
+      {/* NUEVO: El modal esperando a ser abierto */}
+      <ModalJugador
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        jugador={jugadorSeleccionado}
+      />
     </div>
   );
 };

@@ -1,9 +1,19 @@
 import { useState, useEffect, useMemo } from "react";
 import { calcularAcumulado, JugadorPago } from "../utils/calcularAcumulado.ts";
+import { Apodos } from "../models/models.ts"; // NUEVO: Importamos Apodos para el estado del jugador
+
+// NUEVO: Importamos el Modal
+import ModalJugador from "./ModalJugador.tsx";
 
 export const PagosPanel = () => {
   const [selectedBloque, setSelectedBloque] = useState(0);
   const [pagos, setPagos] = useState<JugadorPago[]>([]);
+
+  // NUEVO: Estados para controlar el modal
+  const [modalShow, setModalShow] = useState(false);
+  const [jugadorSeleccionado, setJugadorSeleccionado] = useState<Apodos | null>(
+    null,
+  );
 
   const bloques = useMemo(
     () => [
@@ -58,6 +68,12 @@ export const PagosPanel = () => {
     setPagos(resultadoOrdenado);
   }, [selectedBloque, bloques]);
 
+  // NUEVO: Función para abrir el modal
+  const handleAbrirModal = (jugador: Apodos) => {
+    setJugadorSeleccionado(jugador);
+    setModalShow(true);
+  };
+
   const maxPagoActual = Math.max(...pagos.map((p) => p.pago), 0);
 
   // Definimos anchos fijos en % para asegurar que NO haya scroll
@@ -89,7 +105,25 @@ export const PagosPanel = () => {
         }}
       >
         {/* Selector ajustado al ancho */}
-        <div style={{ marginBottom: "20px", textAlign: "center" }}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "15px",
+            marginBottom: "20px",
+          }}
+        >
+          <h2
+            style={{
+              margin: 0,
+              color: "#2c3e50",
+              fontSize: "1.3rem",
+              textAlign: "center",
+            }}
+          >
+            💸 Pagos
+          </h2>
           <select
             value={selectedBloque}
             onChange={(e) => setSelectedBloque(Number(e.target.value))}
@@ -137,6 +171,8 @@ export const PagosPanel = () => {
             return (
               <div
                 key={idx}
+                // NUEVO: Añadimos onClick y estilo de cursor para hacer la fila clicable
+                onClick={() => handleAbrirModal(j.jugador)}
                 style={{
                   display: "flex",
                   alignItems: "center",
@@ -144,7 +180,11 @@ export const PagosPanel = () => {
                   borderRadius: "8px",
                   padding: "10px 5px",
                   fontSize: "0.85rem",
+                  cursor: "pointer", // Indicador visual de que es clicable
+                  transition: "opacity 0.2s ease", // Transición suave
                 }}
+                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")} // Efecto hover
+                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
               >
                 <div
                   style={{
@@ -212,6 +252,13 @@ export const PagosPanel = () => {
           </div>
         )}
       </div>
+
+      {/* NUEVO: El modal esperando a ser abierto */}
+      <ModalJugador
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        jugador={jugadorSeleccionado}
+      />
     </div>
   );
 };

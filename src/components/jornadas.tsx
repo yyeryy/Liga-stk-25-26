@@ -2,6 +2,9 @@ import { useState, useEffect } from "react";
 import { Apodos } from "../models/models.ts";
 import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
 
+// NUEVO: Importamos el Modal
+import ModalJugador from "./ModalJugador.tsx";
+
 type JornadaJugador = {
   jugador: Apodos;
   puntos: number;
@@ -13,9 +16,21 @@ export const JornadasPanel = () => {
   const [selectedJornada, setSelectedJornada] = useState(1);
   const [jornada, setJornada] = useState<JornadaJugador[]>([]);
 
+  // NUEVO: Estados para controlar el modal
+  const [modalShow, setModalShow] = useState(false);
+  const [jugadorSeleccionado, setJugadorSeleccionado] = useState<Apodos | null>(
+    null,
+  );
+
   useEffect(() => {
     setJornada(calcularAcumulado(selectedJornada, selectedJornada));
   }, [selectedJornada]);
+
+  // NUEVO: Función para abrir el modal
+  const handleAbrirModal = (jugador: Apodos) => {
+    setJugadorSeleccionado(jugador);
+    setModalShow(true);
+  };
 
   const getColorByPago = (pago: number) => {
     const colores: Record<number, string> = {
@@ -163,6 +178,8 @@ export const JornadasPanel = () => {
                   return (
                     <div
                       key={idx}
+                      // NUEVO: Añadimos onClick y estilo para que sea clicable
+                      onClick={() => handleAbrirModal(j.jugador)}
                       style={{
                         display: "flex",
                         alignItems: "center",
@@ -170,7 +187,15 @@ export const JornadasPanel = () => {
                         borderRadius: "10px",
                         padding: "12px 5px",
                         fontSize: "0.85rem",
+                        cursor: "pointer", // Indicador visual
+                        transition: "opacity 0.2s ease",
                       }}
+                      onMouseEnter={(e) =>
+                        (e.currentTarget.style.opacity = "0.8")
+                      } // Efecto hover
+                      onMouseLeave={(e) =>
+                        (e.currentTarget.style.opacity = "1")
+                      }
                     >
                       <div
                         style={{
@@ -220,6 +245,13 @@ export const JornadasPanel = () => {
           )}
         </div>
       </div>
+
+      {/* NUEVO: El modal esperando a ser abierto */}
+      <ModalJugador
+        show={modalShow}
+        onHide={() => setModalShow(false)}
+        jugador={jugadorSeleccionado}
+      />
     </div>
   );
 };

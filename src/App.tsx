@@ -5,6 +5,7 @@ import NavBar from "./components/navbar.tsx";
 import { JornadasPanel } from "./components/jornadas.tsx";
 import { PagosPanel } from "./components/pagos.tsx";
 import { EstadisticasPanel } from "./components/estadisticas.tsx";
+import { RachasPanel } from "./components/RachasPanel.tsx";
 
 const App: React.FC = () => {
   const [vista, setVista] = useState<TiposVista>(TiposVista.Pagos);
@@ -17,6 +18,7 @@ const App: React.FC = () => {
         {vista === TiposVista.Estadisticas && (
           <EstadisticasPanel></EstadisticasPanel>
         )}
+        {vista === TiposVista.Rachas && <RachasPanel />} {/* <-- AÑADIR */}
       </div>
     </div>
   );

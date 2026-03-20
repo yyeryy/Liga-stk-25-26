@@ -2,6 +2,7 @@ export enum TiposVista {
   Jornadas,
   Pagos,
   Estadisticas,
+  Rachas,
 }
 
 export interface Jornada {

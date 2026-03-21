@@ -11,9 +11,6 @@ import {
   obtenerMinimos,
 } from "../utils/calcularAcumulado.ts";
 
-// Importamos el modal de comparativa
-import { ModalHeadToHead } from "./ModalHeadToHead.tsx";
-
 interface ModalJugadorProps {
   show: boolean;
   onHide: () => void;
@@ -25,9 +22,6 @@ const ModalJugador: React.FC<ModalJugadorProps> = ({
   onHide,
   jugador,
 }) => {
-  // Estado para abrir el Cara a Cara
-  const [showHeadToHead, setShowHeadToHead] = useState(false);
-
   const statsJugador = useMemo(() => {
     if (!jugador) return null;
 
@@ -251,25 +245,11 @@ const ModalJugador: React.FC<ModalJugadorProps> = ({
         </Modal.Body>
 
         <Modal.Footer className="d-flex justify-content-between">
-          <Button
-            variant="outline-primary"
-            onClick={() => setShowHeadToHead(true)}
-          >
-            ⚔️ Cara a Cara
-          </Button>
-
           <Button variant="secondary" onClick={onHide}>
             Cerrar
           </Button>
         </Modal.Footer>
       </Modal>
-
-      {/* Modal de comparativa superpuesto */}
-      <ModalHeadToHead
-        show={showHeadToHead}
-        onHide={() => setShowHeadToHead(false)}
-        jugadorA={jugador}
-      />
     </>
   );
 };

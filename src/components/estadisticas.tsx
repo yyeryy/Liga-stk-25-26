@@ -1,5 +1,6 @@
 import { useState, useEffect } from "react";
 import { Apodos } from "../models/models.ts";
+import Badge from "react-bootstrap/Badge";
 import {
   obtenerMaximos,
   obtenerMinimos,
@@ -9,7 +10,6 @@ import {
   jornadasLibradas,
 } from "../utils/calcularAcumulado.ts";
 
-// NUEVO: Importa tu componente y los datos originales (ajusta las rutas a tu proyecto)
 import ModalJugador from "./ModalJugador.tsx";
 
 export const EstadisticasPanel = () => {
@@ -22,7 +22,6 @@ export const EstadisticasPanel = () => {
     libradas: Record<Apodos, number>;
   } | null>(null);
 
-  // NUEVO: Estados para controlar el modal
   const [modalShow, setModalShow] = useState(false);
   const [jugadorSeleccionado, setJugadorSeleccionado] = useState<Apodos | null>(
     null,
@@ -39,7 +38,6 @@ export const EstadisticasPanel = () => {
     setStats({ max, min, avg, top1, top3, libradas });
   }, []);
 
-  // NUEVO: Función para abrir el modal
   const handleAbrirModal = (jugador: Apodos) => {
     setJugadorSeleccionado(jugador);
     setModalShow(true);
@@ -47,174 +45,278 @@ export const EstadisticasPanel = () => {
 
   if (!stats)
     return (
-      <p style={{ textAlign: "center", marginTop: "20px" }}>
+      <p style={{ textAlign: "center", marginTop: "40px", color: "#7f8c8d" }}>
         Cargando estadísticas...
       </p>
     );
 
-  const jugadores = Object.values(Apodos);
+  // Filtramos a los desertores para que no adulteren las estadísticas (medias, mínimos, etc.)
+  const jugadoresActivos = Object.values(Apodos).filter(
+    (j) => j !== Apodos.Zarrakatz && j !== Apodos.Polfovich,
+  );
 
   const miniTables = [
-    { title: "Máxima puntuación", data: stats.max, order: "desc" },
-    { title: "Mínima puntuación", data: stats.min, order: "asc" },
-    { title: "Puntuación media", data: stats.avg, order: "desc" },
-    { title: "Tops 1", data: stats.top1, order: "desc" },
-    { title: "Tops 3", data: stats.top3, order: "desc" },
-    { title: "Jornadas libre", data: stats.libradas, order: "desc" },
+    {
+      title: "🌟 Máxima puntuación",
+      data: stats.max,
+      order: "desc",
+      unit: "pts",
+      color: "success",
+    },
+    {
+      title: "📉 Mínima puntuación",
+      data: stats.min,
+      order: "asc",
+      unit: "pts",
+      color: "danger",
+    },
+    {
+      title: "⚖️ Puntuación media",
+      data: stats.avg,
+      order: "desc",
+      unit: "pts/j",
+      color: "primary",
+    },
+    {
+      title: "🥇 Veces Top 1",
+      data: stats.top1,
+      order: "desc",
+      unit: "veces",
+      color: "warning",
+    },
+    {
+      title: "🔥 Veces en el Podio",
+      data: stats.top3,
+      order: "desc",
+      unit: "veces",
+      color: "info",
+    },
+    {
+      title: "🏖️ Jornadas libradas",
+      data: stats.libradas,
+      order: "desc",
+      unit: "veces",
+      color: "secondary",
+    },
   ];
 
   const getPodiumStyles = (idx: number) => {
     switch (idx) {
       case 0:
         return {
-          backgroundColor: "#fff9c4",
+          bg: "#fffcf0",
+          border: "1px solid #fde08b",
           color: "#b8860b",
           medal: "🥇",
-          fontWeight: "bold",
+          fw: "800",
         };
       case 1:
         return {
-          backgroundColor: "#f5f5f5",
-          color: "#708090",
+          bg: "#f8f9fa",
+          border: "1px solid #dee2e6",
+          color: "#6c757d",
           medal: "🥈",
-          fontWeight: "600",
+          fw: "700",
         };
       case 2:
         return {
-          backgroundColor: "#fff3e0",
-          color: "#8d6e63",
+          bg: "#fff5f0",
+          border: "1px solid #fbdcce",
+          color: "#d35400",
           medal: "🥉",
-          fontWeight: "500",
+          fw: "700",
         };
       default:
         return {
-          backgroundColor: "transparent",
-          color: "inherit",
-          medal: null,
-          fontWeight: "normal",
+          bg: "transparent",
+          border: "1px solid transparent",
+          color: "#2c3e50",
+          medal: (
+            <span
+              style={{
+                color: "#bdc3c7",
+                fontSize: "0.9rem",
+                display: "inline-block",
+                width: "16px",
+                textAlign: "center",
+              }}
+            >
+              {idx + 1}
+            </span>
+          ),
+          fw: "600",
         };
     }
   };
 
   return (
     <div
-      className="estadisticasPanel"
-      style={{ padding: "20px", fontFamily: "sans-serif" }}
+      style={{
+        padding: "10px",
+        width: "100%",
+        maxWidth: "100vw",
+        boxSizing: "border-box",
+        overflowX: "hidden",
+        fontFamily: "system-ui, sans-serif",
+      }}
     >
-      <h2 style={{ textAlign: "center", color: "#333", marginBottom: "30px" }}>
-        📊 Panel de Estadísticas
-      </h2>
-
       <div
         style={{
-          display: "flex",
-          flexWrap: "wrap",
-          gap: "25px",
-          justifyContent: "center",
+          background: "#fff",
+          borderRadius: "15px",
+          boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
+          padding: "20px 15px",
+          border: "1px solid #f0f0f0",
         }}
       >
-        {miniTables.map((stat) => {
-          const jugadoresOrdenados = [...jugadores].sort((a, b) =>
-            stat.order === "asc"
-              ? (stat.data[a] || 0) - (stat.data[b] || 0)
-              : (stat.data[b] || 0) - (stat.data[a] || 0),
-          );
+        <h2
+          style={{
+            textAlign: "center",
+            color: "#2c3e50",
+            marginBottom: "25px",
+            fontSize: "1.5rem",
+          }}
+        >
+          📊 Panel de Estadísticas
+        </h2>
 
-          return (
-            <div
-              key={stat.title}
-              style={{
-                background: "#ffffff",
-                borderRadius: "12px",
-                boxShadow: "0 4px 12px rgba(0,0,0,0.08)",
-                padding: "16px",
-                minWidth: "220px",
-                flex: "1 1 250px",
-                border: "1px solid #eee",
-              }}
-            >
-              <h3
+        <div
+          style={{
+            display: "grid",
+            gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+            gap: "20px",
+          }}
+        >
+          {miniTables.map((stat) => {
+            const jugadoresOrdenados = [...jugadoresActivos].sort((a, b) =>
+              stat.order === "asc"
+                ? (stat.data[a] || 0) - (stat.data[b] || 0)
+                : (stat.data[b] || 0) - (stat.data[a] || 0),
+            );
+
+            return (
+              <div
+                key={stat.title}
                 style={{
-                  textAlign: "center",
-                  marginBottom: "15px",
-                  fontSize: "1.1rem",
-                  color: "#444",
-                  borderBottom: "2px solid #f0f0f0",
-                  paddingBottom: "8px",
+                  background: "#ffffff",
+                  borderRadius: "12px",
+                  boxShadow: "0 2px 10px rgba(0,0,0,0.06)",
+                  border: "1px solid #eee",
+                  overflow: "hidden",
                 }}
               >
-                {stat.title}
-              </h3>
-              <table
-                style={{
-                  width: "100%",
-                  borderCollapse: "collapse",
-                  fontSize: "0.95rem",
-                }}
-              >
-                <tbody>
+                <div
+                  style={{
+                    backgroundColor: "#f8f9fa",
+                    padding: "12px",
+                    borderBottom: "2px solid #eee",
+                  }}
+                >
+                  <h3
+                    style={{
+                      margin: 0,
+                      textAlign: "center",
+                      fontSize: "1rem",
+                      color: "#34495e",
+                      fontWeight: "bold",
+                    }}
+                  >
+                    {stat.title}
+                  </h3>
+                </div>
+
+                <div
+                  style={{
+                    padding: "10px",
+                    display: "flex",
+                    flexDirection: "column",
+                    gap: "6px",
+                  }}
+                >
                   {jugadoresOrdenados.map((j, idx) => {
                     const podium = getPodiumStyles(idx);
+
+                    // Formateo de los valores
+                    let valor = stat.title.includes("media")
+                      ? new Intl.NumberFormat("es-ES", {
+                          minimumFractionDigits: 2,
+                          maximumFractionDigits: 2,
+                        }).format(stat.data[j] || 0)
+                      : (stat.data[j] || 0).toFixed(0);
+
                     return (
-                      <tr
+                      <div
                         key={j}
-                        // NUEVO: Evento onClick y cursor para indicar que es interactivo
                         onClick={() => handleAbrirModal(j as Apodos)}
                         title={`Ver expediente de ${j}`}
                         style={{
-                          backgroundColor: podium.backgroundColor,
-                          color: podium.color,
-                          fontWeight: podium.fontWeight as any,
-                          transition: "all 0.2s ease",
-                          cursor: "pointer", // Le da estilo de botón al pasar el ratón
+                          display: "flex",
+                          alignItems: "center",
+                          justifyContent: "space-between",
+                          backgroundColor: podium.bg,
+                          border: podium.border,
+                          borderRadius: "8px",
+                          padding: "8px 12px",
+                          cursor: "pointer",
+                          transition: "transform 0.1s ease",
                         }}
+                        onMouseEnter={(e) =>
+                          (e.currentTarget.style.transform = "scale(1.02)")
+                        }
+                        onMouseLeave={(e) =>
+                          (e.currentTarget.style.transform = "scale(1)")
+                        }
                       >
-                        <td
+                        <div
                           style={{
-                            padding: "8px 10px",
-                            textAlign: "left",
-                            borderBottom:
-                              idx < jugadoresOrdenados.length - 1
-                                ? "1px solid #f0f0f0"
-                                : "none",
                             display: "flex",
                             alignItems: "center",
-                            gap: "5px",
+                            gap: "10px",
                           }}
                         >
-                          <span style={{ minWidth: "20px" }}>
+                          <span
+                            style={{ minWidth: "20px", textAlign: "center" }}
+                          >
                             {podium.medal}
                           </span>
-                          {j}
-                        </td>
-                        <td
-                          style={{
-                            padding: "8px 10px",
-                            textAlign: "right",
-                            borderBottom:
-                              idx < jugadoresOrdenados.length - 1
-                                ? "1px solid #f0f0f0"
-                                : "none",
-                          }}
+                          <span
+                            style={{
+                              color: podium.color,
+                              fontWeight: podium.fw as any,
+                              fontSize: "0.95rem",
+                            }}
+                          >
+                            {j}
+                          </span>
+                        </div>
+
+                        <Badge
+                          bg={stat.color}
+                          text={stat.color === "warning" ? "dark" : "light"}
+                          pill
+                          style={{ fontSize: "0.85rem", opacity: 0.9 }}
                         >
-                          {stat.title === "Puntuación media"
-                            ? new Intl.NumberFormat("es-ES", {
-                                minimumFractionDigits: 2,
-                                maximumFractionDigits: 2,
-                              }).format(stat.data[j] || 0)
-                            : (stat.data[j] || 0).toFixed(0)}
-                        </td>
-                      </tr>
+                          {valor}{" "}
+                          <span
+                            style={{
+                              fontSize: "0.65rem",
+                              fontWeight: "normal",
+                              opacity: 0.8,
+                            }}
+                          >
+                            {stat.unit}
+                          </span>
+                        </Badge>
+                      </div>
                     );
                   })}
-                </tbody>
-              </table>
-            </div>
-          );
-        })}
+                </div>
+              </div>
+            );
+          })}
+        </div>
       </div>
 
-      {/* NUEVO: El modal esperando a ser abierto */}
       <ModalJugador
         show={modalShow}
         onHide={() => setModalShow(false)}

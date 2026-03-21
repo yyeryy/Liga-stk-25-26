@@ -70,6 +70,20 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             >
               🔥 Rachas
             </Nav.Link>
+            <Nav.Link
+              active={vistaActual === TiposVista.CaraACara}
+              onClick={() => handleSelect(TiposVista.CaraACara)}
+              className="px-3"
+            >
+              ⚔️ Cara a Cara
+            </Nav.Link>
+            <Nav.Link
+              active={vistaActual === TiposVista.Predicciones}
+              onClick={() => handleSelect(TiposVista.Predicciones)}
+              className="px-3"
+            >
+              🔮 Oráculo
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

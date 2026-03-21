@@ -1,5 +1,4 @@
-import React, { useMemo, useState } from "react";
-import { Apodos } from "../models/models.ts";
+import { useMemo, useState } from "react";
 import { data } from "../data/data.ts";
 import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
 

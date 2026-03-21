@@ -1,6 +1,5 @@
 import { useState, useEffect, useMemo } from "react";
 import { calcularAcumulado, JugadorPago } from "../utils/calcularAcumulado.ts";
-import { Apodos } from "../models/models.ts";
 
 export const PagosPanel = () => {
   const [selectedBloque, setSelectedBloque] = useState(0);

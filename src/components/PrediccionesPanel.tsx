@@ -29,7 +29,7 @@ export const PrediccionesPanel = () => {
       (j) => j !== Apodos.Zarrakatz && j !== Apodos.Polfovich,
     );
 
-    // 1. Calculamos la POSICIÓN ACTUAL respetando los empates (igual que en PagosPanel)
+    // 1. Calculamos la POSICIÓN ACTUAL respetando los empates
     const rankingActual = [...tablaGeneral]
       .filter(
         (j) => j.jugador !== Apodos.Zarrakatz && j.jugador !== Apodos.Polfovich,
@@ -41,7 +41,7 @@ export const PrediccionesPanel = () => {
     let lastPosAct = 0;
     rankingActual.forEach((j, idx) => {
       if (j.pago === lastPagoAct) {
-        posActualMap[j.jugador] = lastPosAct; // Comparten posición si empatan a deuda
+        posActualMap[j.jugador] = lastPosAct;
       } else {
         lastPosAct = idx + 1;
         lastPagoAct = j.pago;
@@ -94,12 +94,12 @@ export const PrediccionesPanel = () => {
         jugador,
         puntosActuales: statsActuales.puntos,
         prediccionPuntos,
-        deudaActual: statsActuales.pago, // Aquí va el dato con todos sus decimales reales
+        deudaActual: statsActuales.pago,
         prediccionPago,
         tendencia,
         colorTendencia,
-        posicionActual: posActualMap[jugador], // Posición empatada correcta
-        posicionFinal: 0, // Se calculará en el siguiente paso
+        posicionActual: posActualMap[jugador] || 0,
+        posicionFinal: 0,
       };
     });
 
@@ -113,7 +113,6 @@ export const PrediccionesPanel = () => {
     let lastPagoFin: number | null = null;
     let lastPosFin = 0;
     rankingFinal.forEach((j, idx) => {
-      // Redondeamos a 2 decimales solo para la comparación de empates finales
       const pagoComparar = Math.round(j.prediccionPago * 100) / 100;
       if (pagoComparar === lastPagoFin) {
         j.posicionFinal = lastPosFin;
@@ -155,7 +154,6 @@ export const PrediccionesPanel = () => {
 
   const { jornadasJugadas, jornadasRestantes, ranking } = prediccionData;
 
-  // Utilidad para pintar el número bonito (sin decimales .00, pero manteniendo los reales)
   const formatEuros = (num: number) => {
     return num % 1 === 0 ? num : num.toFixed(2);
   };
@@ -173,18 +171,17 @@ export const PrediccionesPanel = () => {
     >
       <div
         style={{
-          background: "linear-gradient(180deg, #1a1a2e 0%, #16213e 100%)",
+          background: "#fff",
           borderRadius: "15px",
-          boxShadow: "0 8px 30px rgba(0,0,0,0.3)",
+          boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
           padding: "20px 15px",
-          border: "1px solid #0f3460",
-          color: "white",
+          border: "1px solid #f0f0f0",
         }}
       >
         <h2
           style={{
             textAlign: "center",
-            color: "#e94560",
+            color: "#2c3e50",
             marginBottom: "5px",
             fontSize: "1.8rem",
             fontWeight: "900",
@@ -196,7 +193,7 @@ export const PrediccionesPanel = () => {
         <p
           style={{
             textAlign: "center",
-            color: "#a5b1c2",
+            color: "#7f8c8d",
             fontSize: "0.85rem",
             marginBottom: "25px",
           }}
@@ -204,15 +201,16 @@ export const PrediccionesPanel = () => {
           Simulación de la J38 basada en historial y tendencias
         </p>
 
+        {/* Tarjeta de progreso unificada al tema claro */}
         <div
           style={{
             display: "flex",
             justifyContent: "space-between",
-            backgroundColor: "rgba(255,255,255,0.05)",
+            backgroundColor: "#f8f9fa",
             padding: "15px",
             borderRadius: "10px",
             marginBottom: "25px",
-            border: "1px solid rgba(255,255,255,0.1)",
+            border: "1px solid #eee",
           }}
         >
           <div style={{ textAlign: "center", width: "45%" }}>
@@ -220,7 +218,7 @@ export const PrediccionesPanel = () => {
               style={{
                 fontSize: "0.75rem",
                 textTransform: "uppercase",
-                color: "#a5b1c2",
+                color: "#7f8c8d",
                 fontWeight: "bold",
               }}
             >
@@ -230,21 +228,19 @@ export const PrediccionesPanel = () => {
               style={{
                 fontSize: "1.5rem",
                 fontWeight: "black",
-                color: "#4cd137",
+                color: "#27ae60",
               }}
             >
               {jornadasJugadas}
             </div>
           </div>
-          <div
-            style={{ width: "1px", backgroundColor: "rgba(255,255,255,0.2)" }}
-          ></div>
+          <div style={{ width: "1px", backgroundColor: "#dee2e6" }}></div>
           <div style={{ textAlign: "center", width: "45%" }}>
             <div
               style={{
                 fontSize: "0.75rem",
                 textTransform: "uppercase",
-                color: "#a5b1c2",
+                color: "#7f8c8d",
                 fontWeight: "bold",
               }}
             >
@@ -254,7 +250,7 @@ export const PrediccionesPanel = () => {
               style={{
                 fontSize: "1.5rem",
                 fontWeight: "black",
-                color: "#e94560",
+                color: "#e74c3c",
               }}
             >
               {jornadasRestantes}
@@ -262,6 +258,7 @@ export const PrediccionesPanel = () => {
           </div>
         </div>
 
+        {/* Cabecera adaptada */}
         <div
           style={{
             display: "flex",
@@ -270,6 +267,8 @@ export const PrediccionesPanel = () => {
             fontSize: "0.7rem",
             textTransform: "uppercase",
             fontWeight: "bold",
+            borderBottom: "2px solid #f0f0f0",
+            marginBottom: "10px",
           }}
         >
           <div style={{ width: "12%", textAlign: "center" }}>Pos</div>
@@ -278,14 +277,15 @@ export const PrediccionesPanel = () => {
           <div style={{ width: "25%", textAlign: "right" }}>Deuda J38</div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        {/* Lista de jugadores */}
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           {ranking?.map((j, idx) => {
             const difPos = j.posicionActual - j.posicionFinal;
 
             let difIcon = (
               <span
                 style={{
-                  color: "#7f8c8d",
+                  color: "#bdc3c7",
                   fontSize: "0.65rem",
                   fontWeight: "bold",
                 }}
@@ -297,7 +297,7 @@ export const PrediccionesPanel = () => {
               difIcon = (
                 <span
                   style={{
-                    color: "#2ecc71",
+                    color: "#27ae60",
                     fontSize: "0.65rem",
                     fontWeight: "bold",
                   }}
@@ -326,24 +326,18 @@ export const PrediccionesPanel = () => {
                   display: "flex",
                   alignItems: "center",
                   justifyContent: "space-between",
-                  backgroundColor:
-                    idx === 0
-                      ? "rgba(241, 196, 15, 0.15)"
-                      : "rgba(255,255,255,0.03)",
-                  border:
-                    idx === 0
-                      ? "1px solid rgba(241, 196, 15, 0.5)"
-                      : "1px solid rgba(255,255,255,0.05)",
+                  backgroundColor: idx === 0 ? "#fffcf0" : "#f8f9fa",
+                  border: idx === 0 ? "1px solid #fde08b" : "1px solid #eee",
                   borderRadius: "10px",
                   padding: "12px 10px",
                   cursor: "pointer",
-                  transition: "transform 0.1s ease",
+                  transition: "all 0.2s ease",
                 }}
                 onMouseEnter={(e) =>
-                  (e.currentTarget.style.transform = "scale(1.02)")
+                  (e.currentTarget.style.transform = "translateY(-2px)")
                 }
                 onMouseLeave={(e) =>
-                  (e.currentTarget.style.transform = "scale(1)")
+                  (e.currentTarget.style.transform = "translateY(0)")
                 }
               >
                 <div
@@ -358,7 +352,7 @@ export const PrediccionesPanel = () => {
                   <span
                     style={{
                       fontWeight: "bold",
-                      color: idx === 0 ? "#f1c40f" : "#a5b1c2",
+                      color: idx === 0 ? "#b8860b" : "#7f8c8d",
                       fontSize: "1.1rem",
                       lineHeight: "1",
                     }}
@@ -378,8 +372,8 @@ export const PrediccionesPanel = () => {
                 >
                   <span
                     style={{
-                      fontWeight: "bold",
-                      color: idx === 0 ? "#f1c40f" : "#fff",
+                      fontWeight: idx === 0 ? "800" : "600",
+                      color: "#2c3e50",
                       fontSize: "1rem",
                     }}
                   >
@@ -390,6 +384,7 @@ export const PrediccionesPanel = () => {
                       fontSize: "0.7rem",
                       color: j.colorTendencia,
                       marginTop: "2px",
+                      fontWeight: "500",
                     }}
                   >
                     {j.tendencia} Tendencia
@@ -408,12 +403,18 @@ export const PrediccionesPanel = () => {
                     style={{
                       fontSize: "1.1rem",
                       fontWeight: "900",
-                      color: "#4cd137",
+                      color: "#27ae60",
                     }}
                   >
                     {j.prediccionPuntos}
                   </span>
-                  <span style={{ fontSize: "0.65rem", color: "#a5b1c2" }}>
+                  <span
+                    style={{
+                      fontSize: "0.65rem",
+                      color: "#95a5a6",
+                      fontWeight: "600",
+                    }}
+                  >
                     Act: {j.puntosActuales}
                   </span>
                 </div>
@@ -430,12 +431,18 @@ export const PrediccionesPanel = () => {
                     style={{
                       fontSize: "1.1rem",
                       fontWeight: "bold",
-                      color: j.prediccionPago > 0 ? "#ff4757" : "#2ed573",
+                      color: j.prediccionPago > 0 ? "#c0392b" : "#27ae60",
                     }}
                   >
                     {formatEuros(j.prediccionPago)}€
                   </span>
-                  <span style={{ fontSize: "0.65rem", color: "#a5b1c2" }}>
+                  <span
+                    style={{
+                      fontSize: "0.65rem",
+                      color: "#95a5a6",
+                      fontWeight: "600",
+                    }}
+                  >
                     Act: {formatEuros(j.deudaActual)}€
                   </span>
                 </div>

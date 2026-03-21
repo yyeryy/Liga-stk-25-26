@@ -13,19 +13,9 @@ export const JornadasPanel = () => {
   const [selectedJornada, setSelectedJornada] = useState(1);
   const [jornada, setJornada] = useState<JornadaJugador[]>([]);
 
-  const [modalShow, setModalShow] = useState(false);
-  const [jugadorSeleccionado, setJugadorSeleccionado] = useState<Apodos | null>(
-    null,
-  );
-
   useEffect(() => {
     setJornada(calcularAcumulado(selectedJornada, selectedJornada));
   }, [selectedJornada]);
-
-  const handleAbrirModal = (jugador: Apodos) => {
-    setJugadorSeleccionado(jugador);
-    setModalShow(true);
-  };
 
   // Usamos la misma función de gradiente que en el panel de Pagos para mantener consistencia
   const getColorByPago = (pago: number, maxPago: number) => {
@@ -191,7 +181,6 @@ export const JornadasPanel = () => {
                   return (
                     <div
                       key={idx}
-                      onClick={() => handleAbrirModal(j.jugador)}
                       style={{
                         display: "flex",
                         alignItems: "center",

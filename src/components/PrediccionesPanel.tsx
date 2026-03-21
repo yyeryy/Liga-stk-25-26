@@ -4,11 +4,6 @@ import { data } from "../data/data.ts";
 import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
 
 export const PrediccionesPanel = () => {
-  const [modalShow, setModalShow] = useState(false);
-  const [jugadorSeleccionado, setJugadorSeleccionado] = useState<Apodos | null>(
-    null,
-  );
-
   const prediccionData = useMemo(() => {
     const jornadasJugadas = data.jornadas.filter((j) =>
       j.resultados.some((r) => r.puntos > 0),
@@ -129,11 +124,6 @@ export const PrediccionesPanel = () => {
       ranking: rankingFinal,
     };
   }, []);
-
-  const handleAbrirModal = (jugador: Apodos) => {
-    setJugadorSeleccionado(jugador);
-    setModalShow(true);
-  };
 
   if (prediccionData.estado === "sin_datos") {
     return (
@@ -320,7 +310,6 @@ export const PrediccionesPanel = () => {
             return (
               <div
                 key={j.jugador}
-                onClick={() => handleAbrirModal(j.jugador as Apodos)}
                 style={{
                   display: "flex",
                   alignItems: "center",

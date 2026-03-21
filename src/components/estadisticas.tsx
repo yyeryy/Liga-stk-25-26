@@ -20,11 +20,6 @@ export const EstadisticasPanel = () => {
     libradas: Record<Apodos, number>;
   } | null>(null);
 
-  const [modalShow, setModalShow] = useState(false);
-  const [jugadorSeleccionado, setJugadorSeleccionado] = useState<Apodos | null>(
-    null,
-  );
-
   useEffect(() => {
     const max = obtenerMaximos();
     const min = obtenerMinimos();
@@ -35,11 +30,6 @@ export const EstadisticasPanel = () => {
 
     setStats({ max, min, avg, top1, top3, libradas });
   }, []);
-
-  const handleAbrirModal = (jugador: Apodos) => {
-    setJugadorSeleccionado(jugador);
-    setModalShow(true);
-  };
 
   if (!stats)
     return (
@@ -245,7 +235,6 @@ export const EstadisticasPanel = () => {
                     return (
                       <div
                         key={j}
-                        onClick={() => handleAbrirModal(j as Apodos)}
                         title={`Ver expediente de ${j}`}
                         style={{
                           display: "flex",

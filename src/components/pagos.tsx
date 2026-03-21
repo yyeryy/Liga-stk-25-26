@@ -6,11 +6,6 @@ export const PagosPanel = () => {
   const [selectedBloque, setSelectedBloque] = useState(0);
   const [pagos, setPagos] = useState<JugadorPago[]>([]);
 
-  const [modalShow, setModalShow] = useState(false);
-  const [jugadorSeleccionado, setJugadorSeleccionado] = useState<Apodos | null>(
-    null,
-  );
-
   const bloques = useMemo(
     () => [
       { id: 0, nombre: "General (Total)", desde: 1, hasta: 38 },
@@ -64,11 +59,6 @@ export const PagosPanel = () => {
     });
     setPagos(resultadoOrdenado);
   }, [selectedBloque, bloques]);
-
-  const handleAbrirModal = (jugador: Apodos) => {
-    setJugadorSeleccionado(jugador);
-    setModalShow(true);
-  };
 
   const maxPagoActual = Math.max(...pagos.map((p) => p.pago), 0);
 
@@ -180,7 +170,6 @@ export const PagosPanel = () => {
             return (
               <div
                 key={idx}
-                onClick={() => handleAbrirModal(j.jugador)}
                 style={{
                   display: "flex",
                   alignItems: "center",

@@ -21,11 +21,6 @@ export const ManagerDelMesPanel = () => {
   const [mesSeleccionado, setMesSeleccionado] = useState(
     CALENDARIO_MESES[0].id,
   );
-  const [modalShow, setModalShow] = useState(false);
-  const [jugadorSeleccionado, setJugadorSeleccionado] = useState<Apodos | null>(
-    null,
-  );
-
   const mesData = useMemo(() => {
     const mesDef = CALENDARIO_MESES.find((m) => m.id === mesSeleccionado);
     if (!mesDef) return null;
@@ -73,11 +68,6 @@ export const ManagerDelMesPanel = () => {
       jornadasDisputadas: jornadasDelMes.length,
     };
   }, [mesSeleccionado]);
-
-  const handleAbrirModal = (jugador: Apodos) => {
-    setJugadorSeleccionado(jugador);
-    setModalShow(true);
-  };
 
   const mesDef = CALENDARIO_MESES.find((m) => m.id === mesSeleccionado);
 
@@ -218,7 +208,6 @@ export const ManagerDelMesPanel = () => {
             {/* MVP DEL MES (Tarjeta Especial) */}
             {mesData.ranking.length > 0 && (
               <div
-                onClick={() => handleAbrirModal(mesData.ranking[0].jugador)}
                 style={{
                   background:
                     "linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
@@ -288,7 +277,6 @@ export const ManagerDelMesPanel = () => {
               return (
                 <div
                   key={j.jugador}
-                  onClick={() => handleAbrirModal(j.jugador)}
                   style={{
                     display: "flex",
                     alignItems: "center",

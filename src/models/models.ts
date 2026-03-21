@@ -6,6 +6,8 @@ export enum TiposVista {
   CaraACara,
   Predicciones,
   Evolucion,
+  ManagerMes,
+  Jugadores,
 }
 
 export interface Jornada {

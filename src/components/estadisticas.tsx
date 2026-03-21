@@ -10,8 +10,6 @@ import {
   jornadasLibradas,
 } from "../utils/calcularAcumulado.ts";
 
-import ModalJugador from "./ModalJugador.tsx";
-
 export const EstadisticasPanel = () => {
   const [stats, setStats] = useState<{
     max: Record<Apodos, number>;
@@ -316,12 +314,6 @@ export const EstadisticasPanel = () => {
           })}
         </div>
       </div>
-
-      <ModalJugador
-        show={modalShow}
-        onHide={() => setModalShow(false)}
-        jugador={jugadorSeleccionado}
-      />
     </div>
   );
 };

@@ -1,15 +1,11 @@
 import React, { useMemo } from "react";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
-import ListGroup from "react-bootstrap/ListGroup";
-import Badge from "react-bootstrap/Badge";
-import { data } from "../data/data.ts";
+import Row from "react-bootstrap/Row";
+import Col from "react-bootstrap/Col";
 import { Apodos } from "../models/models.ts";
-import {
-  calcularAcumulado,
-  obtenerMaximos,
-  obtenerMinimos,
-} from "../utils/calcularAcumulado.ts";
+import { data } from "../data/data.ts";
+import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
 
 interface ModalJugadorProps {
   show: boolean;
@@ -17,241 +13,491 @@ interface ModalJugadorProps {
   jugador: Apodos | null;
 }
 
-const ModalJugador: React.FC<ModalJugadorProps> = ({
-  show,
-  onHide,
-  jugador,
-}) => {
-  const statsJugador = useMemo(() => {
-    if (!jugador) return null;
+export const ModalJugador: React.FC<ModalJugadorProps> = (props) => {
+  const expediente = useMemo(() => {
+    if (!props.jugador) return null;
 
+    // 1. Datos acumulados generales
     const tablaGeneral = calcularAcumulado(1, 38, true);
-
-    const tablaActivos = tablaGeneral.filter(
+    const activos = tablaGeneral.filter(
       (j) => j.jugador !== Apodos.Zarrakatz && j.jugador !== Apodos.Polfovich,
     );
+    const playerStats = tablaGeneral.find((j) => j.jugador === props.jugador);
+    const rankingPuntos = [...activos].sort((a, b) => b.puntos - a.puntos);
+    const rankingPagos = [...activos].sort((a, b) => a.pago - b.pago);
 
-    const tablaOrdenadaPorPago = [...tablaActivos].sort(
-      (a, b) => a.pago - b.pago,
+    const posPuntos =
+      rankingPuntos.findIndex((j) => j.jugador === props.jugador) + 1;
+    const posPagos =
+      rankingPagos.findIndex((j) => j.jugador === props.jugador) + 1;
+
+    // 2. Cálculo de medias (promedios)
+    const jornadasDelJugador = data.jornadas.filter((j) =>
+      j.resultados.some(
+        (res) => res.jugador === props.jugador && res.puntos > 0,
+      ),
     );
+    const totalPuntosRaw = jornadasDelJugador.reduce((sum, j) => {
+      const res = j.resultados.find((r) => r.jugador === props.jugador);
+      return sum + (res?.puntos || 0);
+    }, 0);
 
-    let lastPago: number | null = null;
-    let lastPos = 0;
-    tablaOrdenadaPorPago.forEach((j, idx) => {
-      if (j.pago === lastPago) {
-        j.posicion = lastPos;
-      } else {
-        lastPos = idx + 1;
-        lastPago = j.pago;
-        j.posicion = lastPos;
-      }
+    const totalJornadasJugadas = jornadasDelJugador.length;
+    const promedioPuntos =
+      totalJornadasJugadas > 0 ? totalPuntosRaw / totalJornadasJugadas : 0;
+    const promedioPago =
+      totalJornadasJugadas > 0
+        ? (playerStats?.pago || 0) / totalJornadasJugadas
+        : 0;
+
+    // 3. CONTEXTO GLOBAL PARA LAS INSIGNIAS (Roast)
+    const maxPagoTotal = Math.max(...activos.map((j) => j.pago), 0);
+
+    // Encontrar al holder del récord de la vergüenza
+    let recordMinHolder = { jugador: "", puntos: Infinity, jornada: 0 };
+    data.jornadas.forEach((jornada) => {
+      if (!jornada.resultados.some((res) => res.puntos > 0)) return; // Ignoramos si no se jugó
+      jornada.resultados.forEach((r) => {
+        if (
+          r.jugador !== Apodos.Zarrakatz &&
+          r.jugador !== Apodos.Polfovich &&
+          r.puntos < recordMinHolder.puntos
+        ) {
+          recordMinHolder = {
+            jugador: r.jugador,
+            puntos: r.puntos,
+            jornada: jornada.numero,
+          };
+        }
+      });
     });
 
-    let datosGenerales = tablaOrdenadaPorPago.find(
-      (j) => j.jugador === jugador,
-    );
-    let posicionFinal: number | string = datosGenerales?.posicion ?? "-";
+    // Form reciente para la racha Titanic
+    const ultimas3Jugadas = jornadasDelJugador
+      .sort((a, b) => b.numero - a.numero)
+      .slice(0, 3)
+      .map((jornada) => {
+        // Necesitamos calcular el pago de esa jornada específica
+        const resAcum = calcularAcumulado(jornada.numero, jornada.numero);
+        const statsJor = resAcum.find((r) => r.jugador === props.jugador);
+        return statsJor?.pago || 0;
+      });
+    const isTitanic =
+      ultimas3Jugadas.length === 3 && ultimas3Jugadas.every((pago) => pago > 0);
 
-    if (!datosGenerales) {
-      datosGenerales = tablaGeneral.find((j) => j.jugador === jugador);
+    // 4. LÓGICA DE INSIGNIAS DINÁMICAS (The Roast Machine)
+    const listInsignias = [];
+
+    // Insignia: Farolillo Rojo 🕯️
+    if (posPuntos === activos.length) {
+      listInsignias.push({
+        icon: "🕯️",
+        title: "👑 Farolillo Rojo",
+        color: "#e74c3c",
+        desc: "Sotanero profesional. No se cansa de buscar petróleo en el fondo de la tabla.",
+      });
     }
 
-    if (!datosGenerales) return null;
+    // Insignia: Cajero Automático 💸
+    if (playerStats && playerStats.pago === maxPagoTotal && maxPagoTotal > 0) {
+      listInsignias.push({
+        icon: "💸",
+        title: "🏦 Cajero Automático",
+        color: "#f1c40f",
+        desc: "Patrocinador oficial de las cenas Biwinger. Gracias por tu contribución financiera.",
+      });
+    }
 
-    let mejorJ = { jornada: 0, puntos: -1 };
-    let peorJ = { jornada: 0, puntos: 9999 };
+    // Insignia: Titanic 📉
+    if (isTitanic) {
+      listInsignias.push({
+        icon: "🚢",
+        title: "🚢 Titanic",
+        color: "#34495e",
+        desc: "En caída libre. Ha pagado multa en sus últimas 3 jornadas disputadas seguidas.",
+      });
+    }
 
-    data.jornadas.forEach((jornada) => {
-      const resultadoJugador = jornada.resultados.find(
-        (r) => r.jugador === jugador,
-      );
-      if (resultadoJugador) {
-        if (resultadoJugador.puntos > mejorJ.puntos) {
-          mejorJ = { jornada: jornada.numero, puntos: resultadoJugador.puntos };
-        }
-        if (resultadoJugador.puntos < peorJ.puntos) {
-          peorJ = { jornada: jornada.numero, puntos: resultadoJugador.puntos };
-        }
-      }
-    });
+    // Insignia: Récord Vergüenza 🗑️
+    if (recordMinHolder.jugador === props.jugador) {
+      listInsignias.push({
+        icon: "🗑️",
+        title: "🤏 Récord Vergüenza",
+        color: "#95a5a6",
+        desc: `Ostenta la PEOR puntuación histórica (${recordMinHolder.puntos} pts, J${recordMinHolder.jornada}) en una sola jornada.`,
+      });
+    }
 
-    let posPuntos: number | string = "-";
-    let posMejor: number | string = "-";
-    let posPeor: number | string = "-";
-
-    if (jugador !== Apodos.Zarrakatz && jugador !== Apodos.Polfovich) {
-      posPuntos =
-        tablaActivos.filter((j) => j.puntos > datosGenerales!.puntos).length +
-        1;
-
-      const maximos = obtenerMaximos();
-      const minimos = obtenerMinimos();
-      const activos = Object.keys(maximos).filter(
-        (k) => k !== Apodos.Zarrakatz && k !== Apodos.Polfovich,
-      );
-
-      const myMax = maximos[jugador as Apodos];
-      posMejor = activos.filter((k) => maximos[k as Apodos] > myMax).length + 1;
-
-      const myMin = minimos[jugador as Apodos];
-      posPeor = activos.filter((k) => minimos[k as Apodos] > myMin).length + 1;
+    // Insignia: Gris Marengo (El mediocre) 📎
+    if (activos.length > 5 && posPuntos > 3 && posPuntos < activos.length - 2) {
+      listInsignias.push({
+        icon: "😐",
+        title: "📎 Gris Marengo",
+        color: "#bdc3c7",
+        desc: "Ni sube ni baja. Ni gana ni pierde. El rey de la mediocridad absoluta.",
+      });
     }
 
     return {
-      totalPagado: datosGenerales.pago,
-      totalPuntos: datosGenerales.puntos,
-      posicionGlobal: posicionFinal,
+      jugador: props.jugador,
+      puntosTotales: playerStats?.puntos || 0,
+      pagoTotal: playerStats?.pago || 0,
       posPuntos,
-      mejorJornada: mejorJ.puntos !== -1 ? mejorJ : null,
-      posMejor,
-      peorJornada: peorJ.puntos !== 9999 ? peorJ : null,
-      posPeor,
+      posPagos,
+      promedioPuntos,
+      promedioPago,
+      totalJornadasJugadas,
+      insignias: listInsignias,
     };
-  }, [jugador]);
+  }, [props.jugador]);
 
-  if (!jugador) return null;
+  if (!expediente) return null;
 
   return (
-    <>
-      <Modal show={show} onHide={onHide} centered>
-        <Modal.Header closeButton className="bg-success text-white">
-          <Modal.Title>Expediente de {jugador}</Modal.Title>
-        </Modal.Header>
-
-        <Modal.Body className="p-0">
-          {!statsJugador ? (
-            <p className="text-center text-muted my-4">
-              No se han encontrado datos para este jugador.
+    <Modal
+      show={props.show}
+      onHide={props.onHide}
+      size="lg"
+      aria-labelledby="contained-modal-title-vcenter"
+      centered
+      className="modal-expediente"
+    >
+      <Modal.Body
+        style={{
+          padding: "25px",
+          fontFamily: "system-ui, sans-serif",
+          background: "#fff",
+          borderRadius: "15px",
+        }}
+      >
+        {/* CABECERA (Foto y Nombre) */}
+        <div
+          style={{
+            display: "flex",
+            alignItems: "center",
+            gap: "20px",
+            marginBottom: "25px",
+            borderBottom: "2px solid #f0f0f0",
+            paddingBottom: "15px",
+          }}
+        >
+          <img
+            src={`../imagenes/${props.jugador}.jpg`}
+            alt={props.jugador || ""}
+            style={{
+              width: "70px",
+              height: "70px",
+              borderRadius: "50%",
+              objectFit: "cover",
+              border: "4px solid #f8f9fa",
+              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
+            }}
+            onError={(e) => (e.currentTarget.src = "../imagenes/spinner.jpg")}
+          />
+          <div>
+            <h1
+              style={{
+                margin: 0,
+                fontWeight: "black",
+                color: "#2c3e50",
+                fontSize: "1.8rem",
+                letterSpacing: "-1px",
+              }}
+            >
+              {props.jugador}
+            </h1>
+            <p
+              style={{
+                margin: 0,
+                color: "#7f8c8d",
+                fontWeight: "600",
+                fontSize: "0.9rem",
+              }}
+            >
+              Expediente Temporada 23/24
             </p>
-          ) : (
-            <ListGroup variant="flush">
-              {/* Deuda / Ranking Principal */}
-              <ListGroup.Item className="p-0 d-flex align-items-stretch">
-                <div className="p-3 flex-grow-1">
-                  <div className="fw-bold text-dark">
-                    Total a pagar acumulado
-                  </div>
-                  <div
-                    className="text-muted mb-2"
-                    style={{ fontSize: "0.85rem" }}
-                  >
-                    Deuda histórica de la temporada
-                  </div>
-                  <Badge bg="danger" pill className="fs-6">
-                    {statsJugador.totalPagado.toFixed(2)} €
-                  </Badge>
-                </div>
+          </div>
+        </div>
+
+        {/* --- NUEVO: SECCIÓN INSIGNIAS --- */}
+        {expediente.insignias.length > 0 && (
+          <div style={{ marginBottom: "25px" }}>
+            <h6
+              style={{
+                textTransform: "uppercase",
+                color: "#b2bec3",
+                fontSize: "0.75rem",
+                fontWeight: "900",
+                letterSpacing: "1px",
+                marginBottom: "12px",
+              }}
+            >
+              Muro de la Vergüenza
+            </h6>
+            <div
+              style={{
+                display: "grid",
+                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
+                gap: "10px",
+              }}
+            >
+              {expediente.insignias.map((ins) => (
                 <div
-                  className="bg-light d-flex flex-column align-items-center justify-content-center border-start px-3 text-dark"
-                  style={{ minWidth: "90px" }}
+                  key={ins.title}
+                  style={{
+                    display: "flex",
+                    gap: "12px",
+                    alignItems: "center",
+                    backgroundColor: `${ins.color}10`, // Color sutil de fondo
+                    border: `1px solid ${ins.color}30`,
+                    padding: "12px",
+                    borderRadius: "10px",
+                  }}
                 >
-                  <span
-                    style={{
-                      fontSize: "0.65rem",
-                      textTransform: "uppercase",
-                      fontWeight: "bold",
-                      letterSpacing: "1px",
-                    }}
-                  >
-                    Ranking
-                  </span>
-                  <span className="fs-3 fw-bold">
-                    #{statsJugador.posicionGlobal}
-                  </span>
+                  <div style={{ fontSize: "1.8rem", lineHeight: 1 }}>
+                    {ins.icon}
+                  </div>
+                  <div>
+                    <div
+                      style={{
+                        fontWeight: "bold",
+                        color: ins.color,
+                        fontSize: "0.95rem",
+                      }}
+                    >
+                      {ins.title}
+                    </div>
+                    <div
+                      style={{
+                        fontSize: "0.75rem",
+                        color: "#7f8c8d",
+                        marginTop: "1px",
+                        lineHeight: "1.2",
+                      }}
+                    >
+                      {ins.desc}
+                    </div>
+                  </div>
                 </div>
-              </ListGroup.Item>
+              ))}
+            </div>
+          </div>
+        )}
 
-              {/* Puntos Totales */}
-              <ListGroup.Item className="p-0 d-flex align-items-stretch">
-                <div className="p-3 flex-grow-1">
-                  <div className="fw-bold text-dark">Puntos Totales</div>
-                  <div
-                    className="text-muted mb-2"
-                    style={{ fontSize: "0.85rem" }}
-                  >
-                    Rendimiento general
-                  </div>
-                  <Badge bg="primary" pill className="fs-6">
-                    {statsJugador.totalPuntos} pts
-                  </Badge>
-                </div>
-                {statsJugador.posPuntos !== "-" && (
-                  <div
-                    className="bg-light d-flex align-items-center justify-content-center border-start px-3 text-secondary"
-                    style={{ minWidth: "90px" }}
-                  >
-                    <span className="fs-4 fw-bold">
-                      #{statsJugador.posPuntos}
-                    </span>
-                  </div>
-                )}
-              </ListGroup.Item>
-
-              {/* Mejor Jornada */}
-              {statsJugador.mejorJornada && (
-                <ListGroup.Item className="p-0 d-flex align-items-stretch">
-                  <div className="p-3 flex-grow-1">
-                    <div className="fw-bold text-success">
-                      🌟 Mejor Jornada (J{statsJugador.mejorJornada.jornada})
-                    </div>
-                    <div
-                      className="text-muted mt-1"
-                      style={{ fontSize: "0.85rem" }}
-                    >
-                      Consiguió {statsJugador.mejorJornada.puntos} puntos.
-                    </div>
-                  </div>
-                  {statsJugador.posMejor !== "-" && (
-                    <div
-                      className="bg-light d-flex align-items-center justify-content-center border-start px-3 text-success"
-                      style={{ minWidth: "90px", opacity: 0.85 }}
-                    >
-                      <span className="fs-4 fw-bold">
-                        #{statsJugador.posMejor}
-                      </span>
-                    </div>
-                  )}
-                </ListGroup.Item>
-              )}
-
-              {/* Peor Jornada */}
-              {statsJugador.peorJornada && (
-                <ListGroup.Item className="p-0 d-flex align-items-stretch">
-                  <div className="p-3 flex-grow-1">
-                    <div className="fw-bold text-danger">
-                      📉 Peor Jornada (J{statsJugador.peorJornada.jornada})
-                    </div>
-                    <div
-                      className="text-muted mt-1"
-                      style={{ fontSize: "0.85rem" }}
-                    >
-                      Su mínimo fue de {statsJugador.peorJornada.puntos} puntos.
-                    </div>
-                  </div>
-                  {statsJugador.posPeor !== "-" && (
-                    <div
-                      className="bg-light d-flex align-items-center justify-content-center border-start px-3 text-danger"
-                      style={{ minWidth: "90px", opacity: 0.85 }}
-                    >
-                      <span className="fs-4 fw-bold">
-                        #{statsJugador.posPeor}
-                      </span>
-                    </div>
-                  )}
-                </ListGroup.Item>
-              )}
-            </ListGroup>
-          )}
-        </Modal.Body>
-
-        <Modal.Footer className="d-flex justify-content-between">
-          <Button variant="secondary" onClick={onHide}>
-            Cerrar
-          </Button>
-        </Modal.Footer>
-      </Modal>
-    </>
+        {/* SECCIÓN ESTADÍSTICAS */}
+        <h6
+          style={{
+            textTransform: "uppercase",
+            color: "#b2bec3",
+            fontSize: "0.75rem",
+            fontWeight: "900",
+            letterSpacing: "1px",
+            marginBottom: "12px",
+          }}
+        >
+          Estadísticas Clave
+        </h6>
+        <Row className="g-3" style={{ marginBottom: "25px" }}>
+          {/* Tarjeta Puntos */}
+          <Col xs={6} md={3}>
+            <div
+              style={{
+                textAlign: "center",
+                background: "#f8f9fa",
+                padding: "15px",
+                borderRadius: "12px",
+                border: "1px solid #eee",
+                height: "100%",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "2rem",
+                  fontWeight: "black",
+                  color: "#2c3e50",
+                  lineHeight: 1,
+                }}
+              >
+                #{expediente.posPuntos}
+              </div>
+              <div
+                style={{
+                  fontSize: "0.7rem",
+                  textTransform: "uppercase",
+                  color: "#3498db",
+                  fontWeight: "bold",
+                  marginTop: "5px",
+                }}
+              >
+                Ranking Pts
+              </div>
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  color: "#7f8c8d",
+                  marginTop: "2px",
+                }}
+              >
+                Total: {expediente.puntosTotales} pts
+              </div>
+            </div>
+          </Col>
+          {/* Tarjeta Pagos */}
+          <Col xs={6} md={3}>
+            <div
+              style={{
+                textAlign: "center",
+                background: "#f8f9fa",
+                padding: "15px",
+                borderRadius: "12px",
+                border: "1px solid #eee",
+                height: "100%",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "2rem",
+                  fontWeight: "black",
+                  color: expediente.pagoTotal > 0 ? "#e74c3c" : "#27ae60",
+                  lineHeight: 1,
+                }}
+              >
+                {expediente.pagoTotal.toFixed(0)}€
+              </div>
+              <div
+                style={{
+                  fontSize: "0.7rem",
+                  textTransform: "uppercase",
+                  color: "#7f8c8d",
+                  fontWeight: "bold",
+                  marginTop: "5px",
+                }}
+              >
+                Deuda Total
+              </div>
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  color: "#7f8c8d",
+                  marginTop: "2px",
+                }}
+              >
+                Multas: #{expediente.posPagos} ranking
+              </div>
+            </div>
+          </Col>
+          {/* Tarjeta Media Puntos */}
+          <Col xs={6} md={3}>
+            <div
+              style={{
+                textAlign: "center",
+                background: "#f8f9fa",
+                padding: "15px",
+                borderRadius: "12px",
+                border: "1px solid #eee",
+                height: "100%",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "1.8rem",
+                  fontWeight: "black",
+                  color: "#2c3e50",
+                  lineHeight: 1,
+                  marginTop: "2px",
+                }}
+              >
+                {expediente.promedioPuntos.toFixed(1)}
+              </div>
+              <div
+                style={{
+                  fontSize: "0.7rem",
+                  textTransform: "uppercase",
+                  color: "#7f8c8d",
+                  fontWeight: "bold",
+                  marginTop: "5px",
+                }}
+              >
+                Media Pts/J
+              </div>
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  color: "#7f8c8d",
+                  marginTop: "2px",
+                }}
+              >
+                en {expediente.totalJornadasJugadas} jornadas
+              </div>
+            </div>
+          </Col>
+          {/* Tarjeta Media Multa */}
+          <Col xs={6} md={3}>
+            <div
+              style={{
+                textAlign: "center",
+                background: "#f8f9fa",
+                padding: "15px",
+                borderRadius: "12px",
+                border: "1px solid #eee",
+                height: "100%",
+              }}
+            >
+              <div
+                style={{
+                  fontSize: "1.8rem",
+                  fontWeight: "black",
+                  color: expediente.promedioPago > 0 ? "#e74c3c" : "#27ae60",
+                  lineHeight: 1,
+                  marginTop: "2px",
+                }}
+              >
+                {expediente.promedioPago.toFixed(1)}€
+              </div>
+              <div
+                style={{
+                  fontSize: "0.7rem",
+                  textTransform: "uppercase",
+                  color: "#7f8c8d",
+                  fontWeight: "bold",
+                  marginTop: "5px",
+                }}
+              >
+                Media €/J
+              </div>
+              <div
+                style={{
+                  fontSize: "0.8rem",
+                  color: "#7f8c8d",
+                  marginTop: "2px",
+                }}
+              >
+                promedio multa
+              </div>
+            </div>
+          </Col>
+        </Row>
+      </Modal.Body>
+      <Modal.Footer
+        style={{
+          border: "none",
+          padding: "0 25px 25px 25px",
+          background: "#fff",
+        }}
+      >
+        <Button
+          variant="secondary"
+          onClick={props.onHide}
+          style={{
+            width: "100%",
+            borderRadius: "10px",
+            fontWeight: "bold",
+            padding: "10px",
+          }}
+        >
+          Cerrar Expediente
+        </Button>
+      </Modal.Footer>
+    </Modal>
   );
 };
-
-export default ModalJugador;

@@ -1,15 +1,11 @@
 import { useState, useEffect, useMemo } from "react";
 import { calcularAcumulado, JugadorPago } from "../utils/calcularAcumulado.ts";
-import { Apodos } from "../models/models.ts"; // NUEVO: Importamos Apodos para el estado del jugador
-
-// NUEVO: Importamos el Modal
-import ModalJugador from "./ModalJugador.tsx";
+import { Apodos } from "../models/models.ts";
 
 export const PagosPanel = () => {
   const [selectedBloque, setSelectedBloque] = useState(0);
   const [pagos, setPagos] = useState<JugadorPago[]>([]);
 
-  // NUEVO: Estados para controlar el modal
   const [modalShow, setModalShow] = useState(false);
   const [jugadorSeleccionado, setJugadorSeleccionado] = useState<Apodos | null>(
     null,
@@ -30,6 +26,7 @@ export const PagosPanel = () => {
     [],
   );
 
+  // RECUPERAMOS TU FUNCIÓN DE GRADIENTE
   const getColorByPago = (pago: number, maxPago: number) => {
     if (maxPago === 0 || pago === 0) return "#e8f5e9";
     const ratio = Math.min(1, pago / maxPago);
@@ -45,7 +42,7 @@ export const PagosPanel = () => {
     if (pos === 1) return "🥇";
     if (pos === 2) return "🥈";
     if (pos === 3) return "🥉";
-    return null;
+    return <span style={{ color: "#7f8c8d", fontSize: "0.9rem" }}>{pos}º</span>;
   };
 
   useEffect(() => {
@@ -68,7 +65,6 @@ export const PagosPanel = () => {
     setPagos(resultadoOrdenado);
   }, [selectedBloque, bloques]);
 
-  // NUEVO: Función para abrir el modal
   const handleAbrirModal = (jugador: Apodos) => {
     setJugadorSeleccionado(jugador);
     setModalShow(true);
@@ -76,12 +72,15 @@ export const PagosPanel = () => {
 
   const maxPagoActual = Math.max(...pagos.map((p) => p.pago), 0);
 
-  // Definimos anchos fijos en % para asegurar que NO haya scroll
   const colWidths = {
     pos: "15%",
-    jugador: "45%",
+    jugador: "40%",
     puntos: "20%",
-    pago: "20%",
+    pago: "25%",
+  };
+
+  const formatEuros = (num: number) => {
+    return num % 1 === 0 ? num : num.toFixed(2);
   };
 
   return (
@@ -91,7 +90,7 @@ export const PagosPanel = () => {
         width: "100%",
         maxWidth: "100vw",
         boxSizing: "border-box",
-        overflowX: "hidden", // Prohibido el scroll horizontal en el contenedor
+        overflowX: "hidden",
         fontFamily: "system-ui, sans-serif",
       }}
     >
@@ -100,41 +99,48 @@ export const PagosPanel = () => {
           background: "#fff",
           borderRadius: "15px",
           boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
-          padding: "15px",
+          padding: "20px 15px",
           border: "1px solid #f0f0f0",
         }}
       >
-        {/* Selector ajustado al ancho */}
-        <div
+        <h2
           style={{
-            display: "flex",
-            flexDirection: "column",
-            alignItems: "center",
-            gap: "15px",
+            textAlign: "center",
+            color: "#2c3e50",
+            marginBottom: "5px",
+            fontSize: "1.5rem",
+          }}
+        >
+          💸 Panel de Pagos
+        </h2>
+        <p
+          style={{
+            textAlign: "center",
+            color: "#7f8c8d",
+            fontSize: "0.85rem",
             marginBottom: "20px",
           }}
         >
-          <h2
-            style={{
-              margin: 0,
-              color: "#2c3e50",
-              fontSize: "1.3rem",
-              textAlign: "center",
-            }}
-          >
-            💸 Pagos
-          </h2>
+          Consulta las deudas por tramos de liga
+        </p>
+
+        <div style={{ marginBottom: "25px" }}>
           <select
             value={selectedBloque}
             onChange={(e) => setSelectedBloque(Number(e.target.value))}
             style={{
-              padding: "10px",
+              padding: "12px 15px",
               borderRadius: "10px",
-              border: "2px solid #6c5ce7",
-              width: "100%", // Ocupa todo el ancho disponible
-              fontSize: "0.9rem",
-              fontWeight: "600",
-              color: "#6c5ce7",
+              border: "2px solid #3498db",
+              width: "100%",
+              fontSize: "0.95rem",
+              fontWeight: "bold",
+              color: "#2980b9",
+              backgroundColor: "#f0f8ff",
+              outline: "none",
+              cursor: "pointer",
+              textAlign: "center",
+              appearance: "none",
             }}
           >
             {bloques.map((b) => (
@@ -145,15 +151,16 @@ export const PagosPanel = () => {
           </select>
         </div>
 
-        {/* Cabecera Manual (Flexbox) */}
         <div
           style={{
             display: "flex",
             padding: "0 5px 10px 5px",
-            color: "#b2bec3",
+            color: "#a5b1c2",
             fontSize: "0.7rem",
             textTransform: "uppercase",
             fontWeight: "bold",
+            borderBottom: "2px solid #f0f0f0",
+            marginBottom: "10px",
           }}
         >
           <div style={{ width: colWidths.pos, textAlign: "center" }}>Pos</div>
@@ -161,30 +168,35 @@ export const PagosPanel = () => {
           <div style={{ width: colWidths.puntos, textAlign: "center" }}>
             Pts
           </div>
-          <div style={{ width: colWidths.pago, textAlign: "right" }}>Pago</div>
+          <div style={{ width: colWidths.pago, textAlign: "right" }}>Deuda</div>
         </div>
 
-        {/* Filas Flexbox */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
           {pagos.map((j, idx) => {
+            const isFree = (j.pago ?? 0) === 0;
+            // APLICAMOS TU GRADIENTE AQUÍ
             const rowColor = getColorByPago(j.pago ?? 0, maxPagoActual);
+
             return (
               <div
                 key={idx}
-                // NUEVO: Añadimos onClick y estilo de cursor para hacer la fila clicable
                 onClick={() => handleAbrirModal(j.jugador)}
                 style={{
                   display: "flex",
                   alignItems: "center",
                   backgroundColor: rowColor,
-                  borderRadius: "8px",
-                  padding: "10px 5px",
-                  fontSize: "0.85rem",
-                  cursor: "pointer", // Indicador visual de que es clicable
-                  transition: "opacity 0.2s ease", // Transición suave
+                  border: "1px solid rgba(0,0,0,0.05)", // Borde muy sutil para que mande el gradiente
+                  borderRadius: "10px",
+                  padding: "12px 10px",
+                  cursor: "pointer",
+                  transition: "all 0.2s ease",
                 }}
-                onMouseEnter={(e) => (e.currentTarget.style.opacity = "0.8")} // Efecto hover
-                onMouseLeave={(e) => (e.currentTarget.style.opacity = "1")}
+                onMouseEnter={(e) =>
+                  (e.currentTarget.style.transform = "translateY(-2px)")
+                }
+                onMouseLeave={(e) =>
+                  (e.currentTarget.style.transform = "translateY(0)")
+                }
               >
                 <div
                   style={{
@@ -193,72 +205,111 @@ export const PagosPanel = () => {
                     fontWeight: "bold",
                   }}
                 >
-                  {getMedal(j.posicion ?? 0) || j.posicion}
+                  {getMedal(j.posicion ?? 0)}
                 </div>
+
                 <div
                   style={{
                     width: colWidths.jugador,
                     fontWeight: "600",
+                    color: "#2c3e50",
                     whiteSpace: "nowrap",
                     overflow: "hidden",
-                    textOverflow: "ellipsis", // Si el nombre es muy largo, pone "..."
-                    paddingRight: "5px",
+                    textOverflow: "ellipsis",
                   }}
                 >
                   {j.jugador}
                 </div>
-                <div style={{ width: colWidths.puntos, textAlign: "center" }}>
+
+                <div
+                  style={{
+                    width: colWidths.puntos,
+                    textAlign: "center",
+                    fontWeight: "bold",
+                    color: "#7f8c8d",
+                    fontSize: "0.9rem",
+                  }}
+                >
                   {j.puntos}
                 </div>
+
                 <div
                   style={{
                     width: colWidths.pago,
                     textAlign: "right",
-                    fontWeight: "bold",
-                    color: (j.pago ?? 0) > 0 ? "#d63031" : "#27ae60",
+                    display: "flex",
+                    flexDirection: "column",
+                    alignItems: "flex-end",
                   }}
                 >
-                  {j.pago}€
+                  <span
+                    style={{
+                      fontWeight: "900",
+                      fontSize: "1.1rem",
+                      color: isFree ? "#27ae60" : "#c0392b", // Rojo un poco más oscuro para que lea bien sobre el fondo rojizo
+                    }}
+                  >
+                    {formatEuros(j.pago ?? 0)}€
+                  </span>
                 </div>
               </div>
             );
           })}
         </div>
 
-        {/* Notas Extraordinarias ajustadas */}
         {selectedBloque === 0 && (
           <div
             style={{
-              marginTop: "20px",
-              padding: "12px",
+              marginTop: "25px",
+              padding: "15px",
               backgroundColor: "#fff5f5",
-              borderRadius: "10px",
-              fontSize: "0.8rem",
+              borderRadius: "12px",
+              border: "1px dashed #ffcccc",
             }}
           >
             <div
               style={{
-                fontWeight: "bold",
-                color: "#d63031",
-                marginBottom: "5px",
+                fontWeight: "900",
+                color: "#c0392b",
+                marginBottom: "8px",
+                fontSize: "0.85rem",
+                textTransform: "uppercase",
+                letterSpacing: "1px",
+                display: "flex",
+                alignItems: "center",
+                gap: "5px",
               }}
             >
-              ⚠️ Pendientes:
+              <span>⚠️</span> Desertores Pendientes
             </div>
-            <div style={{ display: "flex", justifyContent: "space-between" }}>
-              <span>Zarrakatz: 14€</span>
-              <span>Polfovich: 19€</span>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#e74c3c",
+                fontWeight: "bold",
+                fontSize: "0.9rem",
+              }}
+            >
+              <span>Zarrakatz</span>
+              <span>14.00€</span>
+            </div>
+            <div
+              style={{
+                display: "flex",
+                justifyContent: "space-between",
+                color: "#e74c3c",
+                fontWeight: "bold",
+                fontSize: "0.9rem",
+                marginTop: "4px",
+              }}
+            >
+              <span>Polfovich</span>
+              <span>19.00€</span>
             </div>
           </div>
         )}
       </div>
-
-      {/* NUEVO: El modal esperando a ser abierto */}
-      <ModalJugador
-        show={modalShow}
-        onHide={() => setModalShow(false)}
-        jugador={jugadorSeleccionado}
-      />
     </div>
   );
 };

@@ -2,7 +2,6 @@ import React, { useMemo, useState } from "react";
 import { Apodos } from "../models/models.ts";
 import { data } from "../data/data.ts";
 import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
-import ModalJugador from "./ModalJugador.tsx";
 
 export const PrediccionesPanel = () => {
   const [modalShow, setModalShow] = useState(false);
@@ -451,12 +450,6 @@ export const PrediccionesPanel = () => {
           })}
         </div>
       </div>
-
-      <ModalJugador
-        show={modalShow}
-        onHide={() => setModalShow(false)}
-        jugador={jugadorSeleccionado}
-      />
     </div>
   );
 };

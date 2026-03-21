@@ -64,6 +64,13 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
               📊 Estadísticas
             </Nav.Link>
             <Nav.Link
+              active={vistaActual === TiposVista.Jugadores}
+              onClick={() => handleSelect(TiposVista.Jugadores)}
+              className="px-3"
+            >
+              👥 Jugadores
+            </Nav.Link>
+            <Nav.Link
               active={vistaActual === TiposVista.Rachas}
               onClick={() => handleSelect(TiposVista.Rachas)}
               className="px-3"
@@ -83,6 +90,13 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
               className="px-3"
             >
               🔮 Oráculo
+            </Nav.Link>{" "}
+            <Nav.Link
+              active={vistaActual === TiposVista.ManagerMes}
+              onClick={() => handleSelect(TiposVista.ManagerMes)}
+              className="px-3"
+            >
+              🗓️ Mánager del Mes
             </Nav.Link>
             <Nav.Link
               active={vistaActual === TiposVista.Evolucion}

@@ -8,6 +8,7 @@ import { EstadisticasPanel } from "./components/estadisticas.tsx";
 import { RachasPanel } from "./components/RachasPanel.tsx";
 import { CaraACaraPanel } from "./components/CaraACara.tsx";
 import { PrediccionesPanel } from "./components/PrediccionesPanel.tsx";
+import { EvolucionPanel } from "./components/EvolucionPanel.tsx";
 
 const App: React.FC = () => {
   const [vista, setVista] = useState<TiposVista>(TiposVista.Pagos);
@@ -23,6 +24,7 @@ const App: React.FC = () => {
         {vista === TiposVista.Rachas && <RachasPanel />}
         {vista === TiposVista.CaraACara && <CaraACaraPanel />}
         {vista === TiposVista.Predicciones && <PrediccionesPanel />}
+        {vista === TiposVista.Evolucion && <EvolucionPanel />}
       </div>
     </div>
   );

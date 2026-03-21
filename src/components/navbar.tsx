@@ -84,6 +84,13 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             >
               🔮 Oráculo
             </Nav.Link>
+            <Nav.Link
+              active={vistaActual === TiposVista.Evolucion}
+              onClick={() => handleSelect(TiposVista.Evolucion)}
+              className="px-3"
+            >
+              📈 Evolución
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

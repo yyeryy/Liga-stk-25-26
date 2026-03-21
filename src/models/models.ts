@@ -5,6 +5,7 @@ export enum TiposVista {
   Rachas,
   CaraACara,
   Predicciones,
+  Evolucion,
 }
 
 export interface Jornada {

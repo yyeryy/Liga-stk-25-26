@@ -8,6 +8,7 @@ export enum TiposVista {
   Evolucion,
   ManagerMes,
   Jugadores,
+  Historico,
 }
 
 export interface Jornada {

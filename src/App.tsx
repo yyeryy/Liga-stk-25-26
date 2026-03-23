@@ -11,6 +11,7 @@ import { PrediccionesPanel } from "./components/PrediccionesPanel.tsx";
 import { EvolucionPanel } from "./components/EvolucionPanel.tsx";
 import { ManagerDelMesPanel } from "./components/ManagerDelMesPanel.tsx";
 import { JugadoresPanel } from "./components/JugadoresPanel.tsx";
+import { HistoricoPanel } from "./components/HistoricoPanel.tsx";
 
 const App: React.FC = () => {
   const [vista, setVista] = useState<TiposVista>(TiposVista.Pagos);
@@ -29,6 +30,7 @@ const App: React.FC = () => {
         {vista === TiposVista.Predicciones && <PrediccionesPanel />}
         {vista === TiposVista.ManagerMes && <ManagerDelMesPanel />}
         {vista === TiposVista.Evolucion && <EvolucionPanel />}
+        {vista === TiposVista.Historico && <HistoricoPanel />}
       </div>
     </div>
   );

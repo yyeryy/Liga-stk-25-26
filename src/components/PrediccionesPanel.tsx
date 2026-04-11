@@ -2,6 +2,7 @@ import { useMemo } from "react";
 import { Apodos } from "../models/models.ts";
 import { data } from "../data/data.ts";
 import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
+import "./PrediccionesPanel.css";
 
 export const PrediccionesPanel = () => {
   const prediccionData = useMemo(() => {
@@ -75,13 +76,13 @@ export const PrediccionesPanel = () => {
       );
 
       let tendencia = "➖";
-      let colorTendencia = "#95a5a6";
+      let colorTendencia = "var(--muted-2)";
       if (mediaRecPuntos > mediaHistPuntos * 1.05) {
         tendencia = "🚀";
-        colorTendencia = "#27ae60";
+        colorTendencia = "var(--success)";
       } else if (mediaRecPuntos < mediaHistPuntos * 0.95) {
         tendencia = "📉";
-        colorTendencia = "#e74c3c";
+        colorTendencia = "var(--danger)";
       }
 
       return {
@@ -148,289 +149,89 @@ export const PrediccionesPanel = () => {
   };
 
   return (
-    <div
-      style={{
-        padding: "10px",
-        width: "100%",
-        maxWidth: "100vw",
-        boxSizing: "border-box",
-        overflowX: "hidden",
-        fontFamily: "system-ui, sans-serif",
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: "15px",
-          boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
-          padding: "20px 15px",
-          border: "1px solid #f0f0f0",
-        }}
-      >
-        <h2
-          style={{
-            textAlign: "center",
-            color: "#2c3e50",
-            marginBottom: "5px",
-            fontSize: "1.8rem",
-            fontWeight: "900",
-            letterSpacing: "1px",
-          }}
-        >
-          🔮 El Oráculo
-        </h2>
-        <p
-          style={{
-            textAlign: "center",
-            color: "#7f8c8d",
-            fontSize: "0.85rem",
-            marginBottom: "25px",
-          }}
-        >
+    <div className="pred-panel">
+      <div className="panel panel-screen">
+        <h2 className="h2">🔮 El Oráculo</h2>
+        <p className="subtitle">
           Simulación de la J38 basada en historial y tendencias
         </p>
 
-        {/* Tarjeta de progreso unificada al tema claro */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            backgroundColor: "#f8f9fa",
-            padding: "15px",
-            borderRadius: "10px",
-            marginBottom: "25px",
-            border: "1px solid #eee",
-          }}
-        >
-          <div style={{ textAlign: "center", width: "45%" }}>
-            <div
-              style={{
-                fontSize: "0.75rem",
-                textTransform: "uppercase",
-                color: "#7f8c8d",
-                fontWeight: "bold",
-              }}
-            >
-              Jugadas
-            </div>
-            <div
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: "black",
-                color: "#27ae60",
-              }}
-            >
+        <div className="pred-stats">
+          <div className="pred-stat">
+            <div className="pred-stat-label">Jugadas</div>
+            <div className="pred-stat-value pred-stat-value--green">
               {jornadasJugadas}
             </div>
           </div>
-          <div style={{ width: "1px", backgroundColor: "#dee2e6" }}></div>
-          <div style={{ textAlign: "center", width: "45%" }}>
-            <div
-              style={{
-                fontSize: "0.75rem",
-                textTransform: "uppercase",
-                color: "#7f8c8d",
-                fontWeight: "bold",
-              }}
-            >
-              Restantes
-            </div>
-            <div
-              style={{
-                fontSize: "1.5rem",
-                fontWeight: "black",
-                color: "#e74c3c",
-              }}
-            >
+          <div className="pred-stat-divider" />
+          <div className="pred-stat">
+            <div className="pred-stat-label">Restantes</div>
+            <div className="pred-stat-value pred-stat-value--red">
               {jornadasRestantes}
             </div>
           </div>
         </div>
 
-        {/* Cabecera adaptada */}
-        <div
-          style={{
-            display: "flex",
-            padding: "0 10px 10px 10px",
-            color: "#a5b1c2",
-            fontSize: "0.7rem",
-            textTransform: "uppercase",
-            fontWeight: "bold",
-            borderBottom: "2px solid #f0f0f0",
-            marginBottom: "10px",
-          }}
-        >
-          <div style={{ width: "12%", textAlign: "center" }}>Pos</div>
-          <div style={{ width: "38%" }}>Jugador</div>
-          <div style={{ width: "25%", textAlign: "center" }}>Puntos J38</div>
-          <div style={{ width: "25%", textAlign: "right" }}>Deuda J38</div>
+        <div className="pred-header">
+          <div className="col-pos">Pos</div>
+          <div className="col-jugador">Jugador</div>
+          <div className="col-pts">Puntos J38</div>
+          <div className="col-pago">Deuda J38</div>
         </div>
 
-        {/* Lista de jugadores */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <div className="pred-list">
           {ranking?.map((j, idx) => {
             const difPos = j.posicionActual - j.posicionFinal;
 
-            let difIcon = (
-              <span
-                style={{
-                  color: "#bdc3c7",
-                  fontSize: "0.65rem",
-                  fontWeight: "bold",
-                }}
-              >
-                =
-              </span>
-            );
-            if (difPos > 0)
-              difIcon = (
-                <span
-                  style={{
-                    color: "#27ae60",
-                    fontSize: "0.65rem",
-                    fontWeight: "bold",
-                  }}
-                >
-                  +{difPos} ▲
-                </span>
-              );
-            if (difPos < 0)
-              difIcon = (
-                <span
-                  style={{
-                    color: "#e74c3c",
-                    fontSize: "0.65rem",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {difPos} ▼
-                </span>
-              );
+            const difClass =
+              difPos > 0
+                ? "diff diff--up"
+                : difPos < 0
+                  ? "diff diff--down"
+                  : "diff diff--neutral";
+            const difText =
+              difPos > 0 ? `+${difPos} ▲` : difPos < 0 ? `${difPos} ▼` : `=`;
 
             return (
               <div
                 key={j.jugador}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  backgroundColor: idx === 0 ? "#fffcf0" : "#f8f9fa",
-                  border: idx === 0 ? "1px solid #fde08b" : "1px solid #eee",
-                  borderRadius: "10px",
-                  padding: "12px 10px",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
-                }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.transform = "translateY(-2px)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.transform = "translateY(0)")
-                }
+                className={`pred-row ${idx === 0 ? "pred-row--top" : ""}`}
+                style={{ ["--row-bg" as any]: undefined }}
               >
-                <div
-                  style={{
-                    width: "12%",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "center",
-                    justifyContent: "center",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontWeight: "bold",
-                      color: idx === 0 ? "#b8860b" : "#7f8c8d",
-                      fontSize: "1.1rem",
-                      lineHeight: "1",
-                    }}
-                  >
-                    {j.posicionFinal}
-                  </span>
-                  <div style={{ marginTop: "2px" }}>{difIcon}</div>
+                <div className="pred-pos">
+                  <span className="pred-pos-number">{j.posicionFinal}</span>
+                  <div className="pred-diff">
+                    <span className={difClass}>{difText}</span>
+                  </div>
                 </div>
 
-                <div
-                  style={{
-                    width: "38%",
-                    display: "flex",
-                    flexDirection: "column",
-                    paddingLeft: "5px",
-                  }}
-                >
+                <div className="pred-player">
+                  <span className="pred-name">{j.jugador}</span>
                   <span
-                    style={{
-                      fontWeight: idx === 0 ? "800" : "600",
-                      color: "#2c3e50",
-                      fontSize: "1rem",
-                    }}
-                  >
-                    {j.jugador}
-                  </span>
-                  <span
-                    style={{
-                      fontSize: "0.7rem",
-                      color: j.colorTendencia,
-                      marginTop: "2px",
-                      fontWeight: "500",
-                    }}
+                    className="pred-trend"
+                    style={{ color: j.colorTendencia }}
                   >
                     {j.tendencia} Tendencia
                   </span>
                 </div>
 
-                <div
-                  style={{
-                    width: "25%",
-                    textAlign: "center",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontSize: "1.1rem",
-                      fontWeight: "900",
-                      color: "#27ae60",
-                    }}
-                  >
+                <div className="pred-pts">
+                  <span className="amount" style={{ color: "var(--success)" }}>
                     {j.prediccionPuntos}
                   </span>
-                  <span
-                    style={{
-                      fontSize: "0.65rem",
-                      color: "#95a5a6",
-                      fontWeight: "600",
-                    }}
-                  >
-                    Act: {j.puntosActuales}
-                  </span>
+                  <span className="muted-small">Act: {j.puntosActuales}</span>
                 </div>
 
-                <div
-                  style={{
-                    width: "25%",
-                    textAlign: "right",
-                    display: "flex",
-                    flexDirection: "column",
-                  }}
-                >
+                <div className="pred-amount">
                   <span
+                    className={`amount ${j.prediccionPago > 0 ? "amount--owed" : "amount--free"}`}
                     style={{
-                      fontSize: "1.1rem",
-                      fontWeight: "bold",
-                      color: j.prediccionPago > 0 ? "#c0392b" : "#27ae60",
+                      color: j.prediccionPago > 0 ? undefined : undefined,
                     }}
                   >
                     {formatEuros(j.prediccionPago)}€
                   </span>
-                  <span
-                    style={{
-                      fontSize: "0.65rem",
-                      color: "#95a5a6",
-                      fontWeight: "600",
-                    }}
-                  >
+                  <span className="muted-small">
                     Act: {formatEuros(j.deudaActual)}€
                   </span>
                 </div>

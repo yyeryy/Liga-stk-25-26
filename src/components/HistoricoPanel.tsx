@@ -2,6 +2,7 @@ import React, { useMemo, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { historico24_25 } from "../data/historico24_25.ts";
+import "./HistoricoPanel.css";
 
 export const HistoricoPanel = () => {
   const [temporadaSeleccionada] = useState("24/25");
@@ -30,7 +31,7 @@ export const HistoricoPanel = () => {
   }, []);
 
   const getColorByPago = (pago: number, maxPago: number) => {
-    if (maxPago === 0 || pago === 0) return "#f1fcf5";
+    if (maxPago === 0 || pago === 0) return "var(--success-100)";
     const ratio = Math.min(1, pago / maxPago);
     const start = { r: 255, g: 245, b: 245 };
     const end = { r: 255, g: 205, b: 210 };
@@ -47,43 +48,10 @@ export const HistoricoPanel = () => {
   const { ranking, campeon, mecenas, maxPago, totalBote } = estadisticas;
 
   return (
-    <div
-      style={{
-        padding: "10px",
-        width: "100%",
-        maxWidth: "100vw",
-        boxSizing: "border-box",
-        overflowX: "hidden",
-        fontFamily: "system-ui, sans-serif",
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: "15px",
-          boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
-          padding: "20px 15px",
-          border: "1px solid #f0f0f0",
-        }}
-      >
-        <h2
-          style={{
-            textAlign: "center",
-            color: "#2c3e50",
-            marginBottom: "5px",
-            fontSize: "1.5rem",
-          }}
-        >
-          🏛️ Salón de la Fama
-        </h2>
-        <p
-          style={{
-            textAlign: "center",
-            color: "#7f8c8d",
-            fontSize: "0.85rem",
-            marginBottom: "25px",
-          }}
-        >
+    <div className="historico-panel">
+      <div className="panel historico-content panel-screen">
+        <h2 className="h2">🏛️ Salón de la Fama</h2>
+        <p className="text-muted historico-subtitle">
           Clasificación general y récords de la Temporada{" "}
           {temporadaSeleccionada}
         </p>
@@ -91,93 +59,24 @@ export const HistoricoPanel = () => {
         {/* --- Cuadro de Honor --- */}
         <Row className="g-3 mb-4">
           <Col xs={6}>
-            <div
-              style={{
-                background: "linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
-                borderRadius: "15px",
-                padding: "15px",
-                color: "white",
-                boxShadow: "0 8px 20px rgba(253, 160, 133, 0.3)",
-                textAlign: "center",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <div style={{ fontSize: "2rem", lineHeight: 1 }}>🛡️</div>
-              <div
-                style={{
-                  fontSize: "0.75rem",
-                  textTransform: "uppercase",
-                  fontWeight: "900",
-                  letterSpacing: "1px",
-                  marginTop: "5px",
-                  opacity: 0.9,
-                }}
-              >
-                Rey del Ahorro
-              </div>
-              <div
-                style={{
-                  fontSize: "1.3rem",
-                  fontWeight: "black",
-                  textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-                  marginTop: "2px",
-                }}
-              >
-                {campeon?.jugador}
-              </div>
-              <div
-                style={{ fontSize: "0.9rem", fontWeight: "bold", opacity: 0.9 }}
-              >
+            <div className="honor-card honor-card--campeon">
+              <div className="honor-icon">🛡️</div>
+              <div className="honor-label">Rey del Ahorro</div>
+              <div className="honor-name">{campeon?.jugador}</div>
+              <div className="honor-sub">
                 {formatEuros(campeon?.pago || 0)}€ ({campeon?.puntos} pts)
               </div>
             </div>
           </Col>
 
           <Col xs={6}>
-            <div
-              style={{
-                background: "linear-gradient(135deg, #2c3e50 0%, #34495e 100%)",
-                borderRadius: "15px",
-                padding: "15px",
-                color: "white",
-                boxShadow: "0 8px 20px rgba(44, 62, 80, 0.3)",
-                textAlign: "center",
-                height: "100%",
-                display: "flex",
-                flexDirection: "column",
-                justifyContent: "center",
-              }}
-            >
-              <div style={{ fontSize: "2rem", lineHeight: 1 }}>💸</div>
-              <div
-                style={{
-                  fontSize: "0.75rem",
-                  textTransform: "uppercase",
-                  fontWeight: "900",
-                  letterSpacing: "1px",
-                  marginTop: "5px",
-                  opacity: 0.9,
-                }}
-              >
-                El Mecenas
-              </div>
-              <div
-                style={{
-                  fontSize: "1.3rem",
-                  fontWeight: "black",
-                  textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-                  marginTop: "2px",
-                  color: "#f1c40f",
-                }}
-              >
+            <div className="honor-card honor-card--mecenas">
+              <div className="honor-icon">💸</div>
+              <div className="honor-label">El Mecenas</div>
+              <div className="honor-name" style={{ color: "var(--gold)" }}>
                 {mecenas?.jugador}
               </div>
-              <div
-                style={{ fontSize: "0.9rem", fontWeight: "bold", opacity: 0.9 }}
-              >
+              <div className="honor-sub">
                 Donó {formatEuros(mecenas?.pago || 0)}€
               </div>
             </div>
@@ -185,114 +84,46 @@ export const HistoricoPanel = () => {
         </Row>
 
         {/* Resumen de la temporada */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "space-between",
-            backgroundColor: "#f8f9fa",
-            padding: "12px 20px",
-            borderRadius: "10px",
-            marginBottom: "20px",
-            border: "1px solid #eee",
-          }}
-        >
-          <div style={{ textAlign: "center", width: "45%" }}>
-            <div
-              style={{
-                fontSize: "0.7rem",
-                textTransform: "uppercase",
-                color: "#7f8c8d",
-                fontWeight: "bold",
-              }}
-            >
-              Bote Total
-            </div>
-            <div
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: "black",
-                color: "#27ae60",
-              }}
-            >
+        <div className="historico-summary">
+          <div className="summary-item">
+            <div className="small">Bote Total</div>
+            <div className="large" style={{ color: "var(--success)" }}>
               {formatEuros(totalBote)}€
             </div>
           </div>
-          <div style={{ width: "1px", backgroundColor: "#dee2e6" }}></div>
-          <div style={{ textAlign: "center", width: "45%" }}>
-            <div
-              style={{
-                fontSize: "0.7rem",
-                textTransform: "uppercase",
-                color: "#7f8c8d",
-                fontWeight: "bold",
-              }}
-            >
-              Participantes
-            </div>
-            <div
-              style={{
-                fontSize: "1.2rem",
-                fontWeight: "black",
-                color: "#3498db",
-              }}
-            >
+          <div className="summary-divider" />
+          <div className="summary-item">
+            <div className="small">Participantes</div>
+            <div className="large" style={{ color: "var(--accent)" }}>
               {ranking.length}
             </div>
           </div>
         </div>
 
         {/* Cabecera de la Tabla */}
-        <div
-          style={{
-            display: "flex",
-            padding: "0 5px 10px 5px",
-            color: "#a5b1c2",
-            fontSize: "0.7rem",
-            textTransform: "uppercase",
-            fontWeight: "bold",
-            borderBottom: "2px solid #f0f0f0",
-            marginBottom: "10px",
-          }}
-        >
-          <div style={{ width: "15%", textAlign: "center" }}>Pos</div>
-          <div style={{ width: "40%" }}>Jugador</div>
-          <div style={{ width: "20%", textAlign: "center" }}>Pts</div>
-          <div style={{ width: "25%", textAlign: "right" }}>Total €</div>
+        <div className="historico-table-header">
+          <div className="col-pos">Pos</div>
+          <div className="col-player">Jugador</div>
+          <div className="col-pts">Pts</div>
+          <div className="col-total">Total €</div>
         </div>
 
         {/* Lista Histórica */}
-        <div style={{ display: "flex", flexDirection: "column", gap: "6px" }}>
+        <div className="historico-list">
           {ranking.map((j: any) => {
             const isDeserter = j.jugador === "Manchester Piti";
             const isFree = j.pago === 0 && !isDeserter;
             const rowColor = isDeserter
-              ? "#f8f9fa"
+              ? "var(--surface-variant)"
               : getColorByPago(j.pago, maxPago);
 
             return (
               <div
                 key={j.jugador}
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  backgroundColor: rowColor,
-                  border: isFree
-                    ? "1px solid #c3e6cb"
-                    : "1px solid rgba(0,0,0,0.05)",
-                  borderRadius: "10px",
-                  padding: "12px 10px",
-                  opacity: isDeserter ? 0.5 : 1, // Opacidad baja para el desertor
-                  filter: isDeserter ? "grayscale(100%)" : "none", // En blanco y negro
-                }}
+                className={`historico-row ${isDeserter ? "historico-row--deserter" : ""} ${isFree ? "historico-row--free" : ""}`}
+                style={{ ["--row-bg" as any]: rowColor }}
               >
-                <div
-                  style={{
-                    width: "15%",
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    fontSize: "1.1rem",
-                  }}
-                >
+                <div className="historico-pos">
                   {isDeserter ? (
                     "🏳️"
                   ) : j.posicion === 1 ? (
@@ -302,29 +133,17 @@ export const HistoricoPanel = () => {
                   ) : j.posicion === 3 ? (
                     "🥉"
                   ) : (
-                    <span style={{ color: "#7f8c8d", fontSize: "0.9rem" }}>
-                      {j.posicion}º
-                    </span>
+                    <span className="medal-text">{j.posicion}º</span>
                   )}
                 </div>
 
                 <div
+                  className={`historico-player ${isDeserter ? "player--deserter" : ""}`}
                   style={{
-                    width: "40%",
-                    fontWeight: j.posicion <= 3 && !isDeserter ? "800" : "600",
-                    color: "#2c3e50",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
+                    fontWeight: j.posicion <= 3 && !isDeserter ? 800 : 600,
                   }}
                 >
-                  <span
-                    style={{
-                      textDecoration: isDeserter ? "line-through" : "none",
-                    }}
-                  >
-                    {j.jugador}
-                  </span>
+                  <span>{j.jugador}</span>
                   {isDeserter && (
                     <span style={{ fontSize: "0.8rem", marginLeft: "4px" }}>
                       🏃💨
@@ -333,37 +152,14 @@ export const HistoricoPanel = () => {
                 </div>
 
                 <div
-                  style={{
-                    width: "20%",
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    color:
-                      j.posicion === 1 && !isDeserter ? "#d35400" : "#7f8c8d",
-                    fontSize: "1rem",
-                  }}
+                  className={`historico-pts ${j.posicion === 1 && !isDeserter ? "pts-top" : "pts-default"}`}
                 >
                   {j.puntos}
                 </div>
 
-                <div
-                  style={{
-                    width: "25%",
-                    textAlign: "right",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-end",
-                  }}
-                >
+                <div className="historico-amount">
                   <span
-                    style={{
-                      fontWeight: "900",
-                      fontSize: "1.1rem",
-                      color: isFree
-                        ? "#27ae60"
-                        : isDeserter
-                          ? "#7f8c8d"
-                          : "#c0392b",
-                    }}
+                    className={`amount ${isFree ? "amount--free" : isDeserter ? "amount--deserter" : "amount--owed"}`}
                   >
                     {formatEuros(j.pago)}€
                   </span>
@@ -380,11 +176,11 @@ export const HistoricoPanel = () => {
             padding: "10px",
             textAlign: "center",
             fontSize: "0.75rem",
-            color: "#95a5a6",
+            color: "var(--muted-2)",
             borderTop: "1px dashed #eee",
           }}
         >
-          <span style={{ fontWeight: "bold", color: "#e74c3c" }}>
+          <span style={{ fontWeight: "bold", color: "var(--danger)" }}>
             * Nota histórica:
           </span>{" "}
           Manchester Piti abandonó la competición a mitad de temporada.

@@ -4,6 +4,7 @@ import { data } from "../data/data.ts";
 import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
+import "./JugadoresPanel.css";
 
 // --- FUNCIÓN HELPER: Genera el expediente del jugador ---
 const generarExpedienteUltra = (jugador: Apodos) => {
@@ -98,7 +99,7 @@ const generarExpedienteUltra = (jugador: Apodos) => {
     listInsignias.push({
       icon: "🔥",
       title: "On Fire!",
-      color: "#e67e22",
+      color: "var(--orange)",
       desc: "Viene de quedar Top 1 en la última jornada.",
     });
   }
@@ -106,7 +107,7 @@ const generarExpedienteUltra = (jugador: Apodos) => {
     listInsignias.push({
       icon: "🛡️",
       title: "Rey del Ahorro",
-      color: "#2ecc71",
+      color: "var(--color-success)",
       desc: "Cartera blindada. No debe ni un solo euro a la liga.",
     });
   }
@@ -116,7 +117,7 @@ const generarExpedienteUltra = (jugador: Apodos) => {
     listInsignias.push({
       icon: "🕯️",
       title: "Farolillo Rojo",
-      color: "#e74c3c",
+      color: "var(--color-danger)",
       desc: "Sotanero profesional. Cierra la clasificación.",
     });
   }
@@ -124,7 +125,7 @@ const generarExpedienteUltra = (jugador: Apodos) => {
     listInsignias.push({
       icon: "💸",
       title: "Cajero Automático",
-      color: "#f1c40f",
+      color: "var(--color-warning)",
       desc: "Patrocinador oficial de las multas. Gracias por tanto.",
     });
   }
@@ -132,7 +133,7 @@ const generarExpedienteUltra = (jugador: Apodos) => {
     listInsignias.push({
       icon: "🚢",
       title: "Titanic",
-      color: "#34495e",
+      color: "var(--color-text)",
       desc: "Caída libre. Ha pagado multa en sus 3 últimas jornadas.",
     });
   }
@@ -140,7 +141,7 @@ const generarExpedienteUltra = (jugador: Apodos) => {
     listInsignias.push({
       icon: "🗑️",
       title: "Récord Vergüenza",
-      color: "#95a5a6",
+      color: "var(--color-muted)",
       desc: `Peor puntuación histórica absoluta (${recordMinHolder.puntos} pts).`,
     });
   }
@@ -159,7 +160,7 @@ const generarExpedienteUltra = (jugador: Apodos) => {
       listInsignias.push({
         icon: "😐",
         title: "Gris Marengo",
-        color: "#bdc3c7",
+        color: "var(--color-muted)",
         desc: "La mediocridad perfecta. Ni gana ni pierde, puntúa average, paga promedio. Un fantasma.",
       });
     }
@@ -196,118 +197,35 @@ export const JugadoresPanel = () => {
   };
 
   return (
-    <div
-      style={{
-        padding: "10px",
-        width: "100%",
-        maxWidth: "100vw",
-        boxSizing: "border-box",
-        overflowX: "hidden",
-        fontFamily: "system-ui, sans-serif",
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: "15px",
-          boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
-          padding: "20px 15px",
-          border: "1px solid #f0f0f0",
-        }}
-      >
-        <h2
-          style={{
-            textAlign: "center",
-            color: "#2c3e50",
-            marginBottom: "5px",
-            fontSize: "1.5rem",
-          }}
-        >
-          👥 Directorio
-        </h2>
-        <p
-          style={{
-            textAlign: "center",
-            color: "#7f8c8d",
-            fontSize: "0.85rem",
-            marginBottom: "25px",
-          }}
-        >
+    <div className="jugadores-panel">
+      <div className="panel jugadores-content panel-screen">
+        <h2 className="h2">👥 Directorio</h2>
+        <p className="text-muted jugadores-subtitle">
           Toca en un jugador para desplegar su expediente
         </p>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "10px" }}>
+        <div className="jugadores-list">
           {listaJugadores.map((jugador) => {
             const isExpanded = expandedPlayer === jugador;
             const expediente = isExpanded
               ? generarExpedienteUltra(jugador)
               : null;
-
             return (
               <div
                 key={jugador}
-                style={{
-                  border: `1px solid ${isExpanded ? "#3498db" : "#eee"}`,
-                  borderRadius: "12px",
-                  overflow: "hidden",
-                  transition: "all 0.3s ease",
-                  backgroundColor: isExpanded ? "#fbfdff" : "#fff",
-                  boxShadow: isExpanded
-                    ? "0 5px 15px rgba(52, 152, 219, 0.1)"
-                    : "none",
-                }}
+                className={`jugador-row ${isExpanded ? "jugador-row--expanded" : ""}`}
               >
                 {/* CABECERA DE LA FILA */}
                 <div
                   onClick={() => handleToggle(jugador)}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "15px",
-                    cursor: "pointer",
-                  }}
+                  className="jugador-header"
                 >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "15px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "45px",
-                        height: "45px",
-                        borderRadius: "50%",
-                        backgroundColor: "#f8f9fa",
-                        color: "#a5b1c2",
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "center",
-                        fontSize: "1.5rem",
-                        border: "1px solid #eee",
-                      }}
-                    >
-                      👤
-                    </div>
-                    <div
-                      style={{
-                        fontWeight: "bold",
-                        color: "#2c3e50",
-                        fontSize: "1.1rem",
-                      }}
-                    >
-                      {jugador}
-                    </div>
+                  <div className="jugador-left">
+                    <div className="jugador-avatar">👤</div>
+                    <div className="jugador-name">{jugador}</div>
                   </div>
                   <div
-                    style={{
-                      fontSize: "1.2rem",
-                      color: isExpanded ? "#3498db" : "#bdc3c7",
-                      transition: "transform 0.3s ease",
-                      transform: isExpanded ? "rotate(180deg)" : "rotate(0deg)",
-                    }}
+                    className={`jugador-toggle ${isExpanded ? "jugador-toggle--expanded" : ""}`}
                   >
                     ▼
                   </div>
@@ -315,74 +233,40 @@ export const JugadoresPanel = () => {
 
                 {/* CONTENIDO DESPLEGABLE */}
                 <div
-                  style={{
-                    maxHeight: isExpanded ? "1000px" : "0px",
-                    overflow: "hidden",
-                    transition: "max-height 0.3s ease-in-out",
-                    borderTop: isExpanded ? "1px solid #eee" : "none",
-                  }}
+                  className={`jugador-collapse ${isExpanded ? "jugador-collapse--open" : ""}`}
                 >
                   {expediente && (
-                    <div style={{ padding: "20px" }}>
+                    <div className="jugador-collapse-inner">
                       {/* --- SECCIÓN INSIGNIAS --- */}
                       {expediente.insignias.length > 0 && (
-                        <div style={{ marginBottom: "25px" }}>
-                          <h6
-                            style={{
-                              textTransform: "uppercase",
-                              color: "#b2bec3",
-                              fontSize: "0.75rem",
-                              fontWeight: "900",
-                              letterSpacing: "1px",
-                              marginBottom: "12px",
-                            }}
-                          >
+                        <div
+                          className="insignias-section"
+                          style={{ marginBottom: "25px" }}
+                        >
+                          <h6 className="section-title">
                             Vitrina de Insignias
                           </h6>
-                          <div
-                            style={{
-                              display: "grid",
-                              gridTemplateColumns:
-                                "repeat(auto-fit, minmax(260px, 1fr))",
-                              gap: "10px",
-                            }}
-                          >
+                          <div className="insignias-grid">
                             {expediente.insignias.map((ins) => (
                               <div
                                 key={ins.title}
-                                style={{
-                                  display: "flex",
-                                  gap: "12px",
-                                  alignItems: "center",
-                                  backgroundColor: `${ins.color}10`,
-                                  border: `1px solid ${ins.color}30`,
-                                  padding: "12px",
-                                  borderRadius: "10px",
-                                }}
+                                className="insignia-card"
+                                style={{ borderColor: ins.color }}
                               >
                                 <div
-                                  style={{ fontSize: "1.8rem", lineHeight: 1 }}
+                                  className="insignia-icon"
+                                  style={{ color: ins.color }}
                                 >
                                   {ins.icon}
                                 </div>
                                 <div>
                                   <div
-                                    style={{
-                                      fontWeight: "bold",
-                                      color: ins.color,
-                                      fontSize: "0.95rem",
-                                    }}
+                                    className="insignia-title"
+                                    style={{ color: ins.color }}
                                   >
                                     {ins.title}
                                   </div>
-                                  <div
-                                    style={{
-                                      fontSize: "0.75rem",
-                                      color: "#7f8c8d",
-                                      marginTop: "1px",
-                                      lineHeight: "1.2",
-                                    }}
-                                  >
+                                  <div className="insignia-desc">
                                     {ins.desc}
                                   </div>
                                 </div>
@@ -393,197 +277,57 @@ export const JugadoresPanel = () => {
                       )}
 
                       {/* SECCIÓN ESTADÍSTICAS (Las 4 tarjetas bonitas originales) */}
-                      <h6
-                        style={{
-                          textTransform: "uppercase",
-                          color: "#b2bec3",
-                          fontSize: "0.75rem",
-                          fontWeight: "900",
-                          letterSpacing: "1px",
-                          marginBottom: "12px",
-                        }}
-                      >
-                        Estadísticas Clave
-                      </h6>
-                      <Row className="g-3">
+                      <h6 className="section-title">Estadísticas Clave</h6>
+                      <Row className="g-3 stats-grid">
                         <Col xs={6} md={3}>
-                          <div
-                            style={{
-                              textAlign: "center",
-                              background: "#f8f9fa",
-                              padding: "15px",
-                              borderRadius: "12px",
-                              border: "1px solid #eee",
-                              height: "100%",
-                            }}
-                          >
-                            <div
-                              style={{
-                                fontSize: "2rem",
-                                fontWeight: "black",
-                                color: "#2c3e50",
-                                lineHeight: 1,
-                              }}
-                            >
+                          <div className="stat-card">
+                            <div className="stat-value">
                               #{expediente.posPuntos}
                             </div>
                             <div
-                              style={{
-                                fontSize: "0.7rem",
-                                textTransform: "uppercase",
-                                color: "#3498db",
-                                fontWeight: "bold",
-                                marginTop: "5px",
-                              }}
+                              className="stat-label"
+                              style={{ color: "var(--accent)" }}
                             >
                               Ranking Pts
                             </div>
-                            <div
-                              style={{
-                                fontSize: "0.8rem",
-                                color: "#7f8c8d",
-                                marginTop: "2px",
-                              }}
-                            >
+                            <div className="stat-sub">
                               {expediente.puntosTotales} pts
                             </div>
                           </div>
                         </Col>
                         <Col xs={6} md={3}>
-                          <div
-                            style={{
-                              textAlign: "center",
-                              background: "#f8f9fa",
-                              padding: "15px",
-                              borderRadius: "12px",
-                              border: "1px solid #eee",
-                              height: "100%",
-                            }}
-                          >
+                          <div className="stat-card">
                             <div
-                              style={{
-                                fontSize: "2rem",
-                                fontWeight: "black",
-                                color:
-                                  expediente.pagoTotal > 0
-                                    ? "#e74c3c"
-                                    : "#27ae60",
-                                lineHeight: 1,
-                              }}
+                              className={`stat-value ${expediente.pagoTotal > 0 ? "stat-value--debt" : "stat-value--ok"}`}
                             >
                               {formatEuros(expediente.pagoTotal)}€
                             </div>
-                            <div
-                              style={{
-                                fontSize: "0.7rem",
-                                textTransform: "uppercase",
-                                color: "#7f8c8d",
-                                fontWeight: "bold",
-                                marginTop: "5px",
-                              }}
-                            >
-                              Deuda Total
-                            </div>
-                            <div
-                              style={{
-                                fontSize: "0.8rem",
-                                color: "#7f8c8d",
-                                marginTop: "2px",
-                              }}
-                            >
+                            <div className="stat-label">Deuda Total</div>
+                            <div className="stat-sub">
                               #{expediente.posPagos} en multas
                             </div>
                           </div>
                         </Col>
                         <Col xs={6} md={3}>
-                          <div
-                            style={{
-                              textAlign: "center",
-                              background: "#f8f9fa",
-                              padding: "15px",
-                              borderRadius: "12px",
-                              border: "1px solid #eee",
-                              height: "100%",
-                            }}
-                          >
-                            <div
-                              style={{
-                                fontSize: "1.8rem",
-                                fontWeight: "black",
-                                color: "#2c3e50",
-                                lineHeight: 1,
-                                marginTop: "2px",
-                              }}
-                            >
+                          <div className="stat-card">
+                            <div className="stat-value">
                               {expediente.promedioPuntos.toFixed(1)}
                             </div>
-                            <div
-                              style={{
-                                fontSize: "0.7rem",
-                                textTransform: "uppercase",
-                                color: "#7f8c8d",
-                                fontWeight: "bold",
-                                marginTop: "5px",
-                              }}
-                            >
-                              Media Pts/J
-                            </div>
-                            <div
-                              style={{
-                                fontSize: "0.8rem",
-                                color: "#7f8c8d",
-                                marginTop: "2px",
-                              }}
-                            >
+                            <div className="stat-label">Media Pts/J</div>
+                            <div className="stat-sub">
                               {expediente.totalJornadasJugadas} jornadas
                             </div>
                           </div>
                         </Col>
                         <Col xs={6} md={3}>
-                          <div
-                            style={{
-                              textAlign: "center",
-                              background: "#f8f9fa",
-                              padding: "15px",
-                              borderRadius: "12px",
-                              border: "1px solid #eee",
-                              height: "100%",
-                            }}
-                          >
+                          <div className="stat-card">
                             <div
-                              style={{
-                                fontSize: "1.8rem",
-                                fontWeight: "black",
-                                color:
-                                  expediente.promedioPago > 0
-                                    ? "#e74c3c"
-                                    : "#27ae60",
-                                lineHeight: 1,
-                                marginTop: "2px",
-                              }}
+                              className={`stat-value ${expediente.promedioPago > 0 ? "stat-value--debt" : "stat-value--ok"}`}
                             >
                               {expediente.promedioPago.toFixed(1)}€
                             </div>
-                            <div
-                              style={{
-                                fontSize: "0.7rem",
-                                textTransform: "uppercase",
-                                color: "#7f8c8d",
-                                fontWeight: "bold",
-                                marginTop: "5px",
-                              }}
-                            >
-                              Media €/J
-                            </div>
-                            <div
-                              style={{
-                                fontSize: "0.8rem",
-                                color: "#7f8c8d",
-                                marginTop: "2px",
-                              }}
-                            >
-                              de multa
-                            </div>
+                            <div className="stat-label">Media €/J</div>
+                            <div className="stat-sub">de multa</div>
                           </div>
                         </Col>
                       </Row>

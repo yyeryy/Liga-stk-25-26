@@ -1,72 +1,89 @@
-.panelContainer {
+.jornadas-panel {
+  padding: var(--space-3);
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  font-family: var(--font-sans);
+}
+
+.jornadas-panel .panel:not(.panel-screen) {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+  border: 1px solid rgba(2, 6, 23, 0.04);
+  max-width: 900px;
+  margin: 0 auto;
+}
+
+.jornadas-panel .panelContainer {
   display: flex;
-  justify-content: center; /* centro en pantalla */
-  padding: 20px;
+  justify-content: center;
+  padding: 10px 0;
 }
 
-.card {
-  background-color: #f0fff0;
-  border-radius: 16px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+.jornadas-panel .panelCard {
+  background-color: var(--surface);
+  border-radius: 12px;
+  box-shadow: var(--shadow-sm);
   padding: 20px;
-  width: 600px; /* ancho fijo para centrado */
+  width: 100%;
 }
 
-.title {
+.jornadas-panel .title {
   text-align: center;
-  font-size: 1.5rem;
-  font-weight: bold;
-  margin-bottom: 16px;
+  font-size: 1.25rem;
+  font-weight: 700;
+  margin-bottom: 12px;
+  color: #2c3e50;
 }
 
-.selectWrapper {
+.jornadas-panel .selectWrapper {
   display: flex;
   justify-content: center;
   margin-bottom: 16px;
 }
 
-.tableWrapper {
+.jornadas-panel .tableWrapper {
   overflow-x: auto;
 }
 
-.table {
+.jornadas-panel .table {
   width: 100%;
   border-collapse: collapse;
 }
 
-.table th,
-.table td {
-  border: 1px solid #ccc;
+.jornadas-panel .table th,
+.jornadas-panel .table td {
+  border: 1px solid rgba(0, 0, 0, 0.06);
   padding: 8px;
   text-align: center;
 }
 
-.table th {
-  background-color: #d0f0c0;
+.jornadas-panel .table th {
+  background-color: rgba(52, 152, 219, 0.08);
 }
 
-.table tr:hover {
-  background-color: #e6ffe6;
-}
-.table tr {
-  background-color: inherit; /* deja que el inline style funcione */
+.jornadas-panel .table tr:hover {
+  background-color: rgba(52, 152, 219, 0.03);
 }
 
-.input {
+.jornadas-panel .input {
   width: 60px;
   text-align: center;
-  border: 1px solid #ccc;
-  border-radius: 4px;
+  border: 1px solid rgba(0, 0, 0, 0.08);
+  border-radius: 6px;
 }
 
-.btnWrapper {
+.jornadas-panel .btnWrapper {
   display: flex;
   justify-content: center;
   margin-top: 16px;
 }
 
-.btn {
-  background-color: #4caf50;
+.jornadas-panel .btn {
+  background-color: var(--accent);
   color: white;
   padding: 8px 16px;
   border-radius: 8px;
@@ -74,25 +91,23 @@
   cursor: pointer;
 }
 
-.btn:hover {
-  background-color: #45a049;
+.jornadas-panel .btn:hover {
+  filter: brightness(0.95);
 }
 
-.loading {
+.jornadas-panel .loading {
   text-align: center;
-  color: gray;
+  color: var(--text-muted);
 }
 
-/* Contenedor del botón a la derecha */
-.btnWrapperRight {
+.jornadas-panel .btnWrapperRight {
   display: flex;
-  justify-content: flex-end; /* mueve a la derecha */
+  justify-content: flex-end;
   margin-top: 16px;
 }
 
-/* Botón verde sólido */
-.btnGreen {
-  background-color: #4caf50; /* verde */
+.jornadas-panel .btnGreen {
+  background-color: var(--success);
   color: white;
   padding: 8px 16px;
   border-radius: 8px;
@@ -100,7 +115,7 @@
   cursor: pointer;
 }
 
-.spinnerWrapper {
+.jornadas-panel .spinnerWrapper {
   display: flex;
   flex-direction: column;
   align-items: center;
@@ -108,8 +123,8 @@
   padding: 40px;
 }
 
-.rotatingImage {
-  width: 80px; /* ajusta tamaño */
+.jornadas-panel .rotatingImage {
+  width: 80px;
   height: 80px;
   animation: spin 1.5s linear infinite;
   margin-bottom: 10px;
@@ -124,7 +139,109 @@
   }
 }
 
-.spinnerWrapper p {
+.jornadas-panel .spinnerWrapper p {
   font-size: 1rem;
-  color: #555;
+  color: var(--text-muted);
+}
+
+/* Additional styles for jornada listing and placeholders */
+.jornada-empty {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: #f8f9fa;
+  border-radius: 12px;
+  border: 1px dashed #dee2e6;
+}
+.jornada-empty__emoji {
+  font-size: 2.5rem;
+  display: block;
+}
+
+.jornada-header {
+  display: flex;
+  padding: 0 5px 10px 5px;
+  color: #a5b1c2;
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-bottom: 2px solid #f0f0f0;
+  margin-bottom: 10px;
+}
+.col-pos {
+  width: 15%;
+  text-align: center;
+}
+.col-jugador {
+  width: 40%;
+}
+.col-puntos {
+  width: 20%;
+  text-align: center;
+}
+.col-pago {
+  width: 25%;
+  text-align: right;
+}
+
+.jornada-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.jornada-row {
+  display: flex;
+  align-items: center;
+  background: var(--row-bg, transparent);
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  padding: 12px 10px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+.jornada-row:hover {
+  transform: translateY(-2px);
+}
+.jornada-pos {
+  width: 15%;
+  text-align: center;
+  font-weight: bold;
+}
+.jornada-player {
+  width: 40%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: #2c3e50;
+}
+.jornada-player--podio {
+  font-weight: 800;
+}
+.jornada-pts {
+  width: 20%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1rem;
+}
+.jornada-pts--podio {
+  color: #3498db;
+}
+.jornada-pts--default {
+  color: #7f8c8d;
+}
+.jornada-amount {
+  width: 25%;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.jornada-amount .amount {
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+.amount--free {
+  color: var(--success);
+}
+.amount--owed {
+  color: #c0392b;
 }

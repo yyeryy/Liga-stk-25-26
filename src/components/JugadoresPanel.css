@@ -1,0 +1,165 @@
+/* Styles for JugadoresPanel (migrated from inline styles) */
+.jugadores-panel {
+  padding: var(--space-3);
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  font-family: var(--font-sans);
+}
+
+.jugadores-content {
+  padding: var(--space-4);
+}
+
+.jugadores-subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.85rem;
+  margin-bottom: var(--space-5);
+}
+
+.jugadores-list {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+}
+
+.jugador-row {
+  border: 1px solid #eee;
+  border-radius: 12px;
+  overflow: hidden;
+  transition: all 0.3s ease;
+  background-color: #fff;
+}
+.jugador-row--expanded {
+  border-color: var(--accent);
+  background-color: #fbfdff;
+  box-shadow: 0 5px 15px rgba(52, 152, 219, 0.1);
+}
+
+.jugador-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 15px;
+  cursor: pointer;
+}
+.jugador-left {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+}
+.jugador-avatar {
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  background-color: #f8f9fa;
+  color: #a5b1c2;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+  border: 1px solid #eee;
+}
+.jugador-name {
+  font-weight: 700;
+  color: #2c3e50;
+  font-size: 1.1rem;
+}
+
+.jugador-toggle {
+  font-size: 1.2rem;
+  color: #bdc3c7;
+  transition: transform 0.3s ease;
+  transform: rotate(0deg);
+}
+.jugador-toggle--expanded {
+  color: var(--accent);
+  transform: rotate(180deg);
+}
+
+.jugador-collapse {
+  max-height: 0;
+  overflow: hidden;
+  transition: max-height 0.3s ease-in-out;
+  border-top: none;
+}
+.jugador-collapse--open {
+  max-height: 1000px;
+  border-top: 1px solid #eee;
+}
+.jugador-collapse-inner {
+  padding: 20px;
+}
+
+.section-title {
+  text-transform: uppercase;
+  color: #b2bec3;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+
+.insignias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+  gap: 10px;
+}
+.insignia-card {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 10px;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  background: #fff;
+}
+.insignia-icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+.insignia-title {
+  font-weight: 700;
+  font-size: 0.95rem;
+}
+.insignia-desc {
+  font-size: 0.75rem;
+  color: #7f8c8d;
+  margin-top: 1px;
+  line-height: 1.2;
+}
+
+.stats-grid .stat-card {
+  text-align: center;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  height: 100%;
+}
+.stat-value {
+  font-size: 2rem;
+  font-weight: 900;
+  color: #2c3e50;
+  line-height: 1;
+}
+.stat-value--debt {
+  color: var(--danger);
+}
+.stat-value--ok {
+  color: var(--success);
+}
+.stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #7f8c8d;
+  font-weight: 700;
+  margin-top: 5px;
+}
+.stat-sub {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  margin-top: 2px;
+}

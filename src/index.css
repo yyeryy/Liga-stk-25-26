@@ -1,6 +1,3 @@
-body {
-  margin: 0;
-  padding: 0;
-  background-color: #f3f4f6;
-  color: #111827;
-}
+@import "./styles/theme.css";
+
+/* index.css ahora reexporta el tema global. Evita reglas locales aquí. */

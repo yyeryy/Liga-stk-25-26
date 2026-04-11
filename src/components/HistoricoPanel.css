@@ -1,0 +1,201 @@
+/* Styles for HistoricoPanel */
+.historico-panel {
+  padding: var(--space-3);
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+}
+.historico-content {
+  padding: var(--space-4);
+}
+
+.honor-card {
+  border-radius: var(--radius-md);
+  padding: 15px;
+  color: white;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+}
+.honor-card--campeon {
+  background: linear-gradient(
+    135deg,
+    var(--gradient-warm-start) 0%,
+    var(--gradient-warm-end) 100%
+  );
+  box-shadow: var(--shadow-sm);
+}
+.honor-card--mecenas {
+  background: linear-gradient(
+    135deg,
+    var(--gradient-dark-start) 0%,
+    var(--gradient-dark-end) 100%
+  );
+  box-shadow: var(--shadow-sm);
+}
+.honor-icon {
+  font-size: 2rem;
+  line-height: 1;
+}
+.honor-label {
+  font-size: 0.75rem;
+  text-transform: uppercase;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin-top: 5px;
+  opacity: 0.9;
+}
+.honor-name {
+  font-size: 1.3rem;
+  font-weight: 900;
+  text-shadow: 1px 1px 2px rgba(0, 0, 0, 0.1);
+  margin-top: 8px;
+}
+
+.historico-summary {
+  display: flex;
+  justify-content: space-between;
+  background-color: var(--surface-variant);
+  padding: 12px 20px;
+  border-radius: 10px;
+  margin-bottom: 20px;
+  border: 1px solid var(--surface-border);
+}
+.summary-item {
+  text-align: center;
+  width: 45%;
+}
+.summary-item .small {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: bold;
+}
+.summary-item .large {
+  font-size: 1.2rem;
+  font-weight: 900;
+}
+.summary-divider {
+  width: 1px;
+  background-color: var(--surface-border);
+}
+
+.historico-table-header {
+  display: flex;
+  padding: 0 5px 10px 5px;
+  color: var(--muted-2);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: bold;
+  border-bottom: 2px solid var(--neutral-200);
+  margin-bottom: 10px;
+}
+.historico-table-header > div {
+  padding: 4px;
+}
+.col-pos {
+  width: 15%;
+  text-align: center;
+}
+.col-player {
+  width: 40%;
+}
+.col-pts {
+  width: 20%;
+  text-align: center;
+}
+.col-total {
+  width: 25%;
+  text-align: right;
+}
+
+.historico-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+.historico-row {
+  display: flex;
+  align-items: center;
+  background: var(--row-bg, transparent);
+  border: 1px solid rgba(15, 23, 42, 0.05);
+  border-radius: 10px;
+  padding: 12px 10px;
+}
+.historico-row--deserter {
+  opacity: 0.5;
+  filter: grayscale(100%);
+}
+.historico-row--free {
+  border: 1px solid var(--success-100);
+}
+
+.historico-pos {
+  width: 15%;
+  text-align: center;
+  font-weight: bold;
+  font-size: 1.1rem;
+}
+.medal-text {
+  color: var(--muted-2);
+  font-size: 0.9rem;
+}
+.historico-player {
+  width: 40%;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  color: var(--neutral-800);
+}
+.player--deserter {
+  text-decoration: line-through;
+}
+.historico-pts {
+  width: 20%;
+  text-align: center;
+  font-weight: 700;
+  font-size: 1rem;
+}
+.pts-top {
+  color: var(--orange-dark);
+}
+.pts-default {
+  color: var(--muted-2);
+}
+
+.historico-amount {
+  width: 25%;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+.amount {
+  font-weight: 900;
+  font-size: 1.1rem;
+}
+.amount--free {
+  color: var(--success);
+}
+.amount--deserter {
+  color: var(--muted-2);
+}
+.amount--owed {
+  color: var(--danger);
+}
+
+.historico-note {
+  margin-top: 20px;
+  padding: 10px;
+  text-align: center;
+  font-size: 0.75rem;
+  color: var(--muted-2);
+  border-top: 1px dashed var(--surface-border);
+}
+.historico-note .highlight {
+  font-weight: 700;
+  color: var(--danger);
+}

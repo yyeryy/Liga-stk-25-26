@@ -1,0 +1,154 @@
+.cara-panel {
+  padding: var(--space-3);
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  overflow-x: hidden;
+  font-family: var(--font-sans);
+}
+.cara-panel .panel {
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+
+.selectors {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  margin-bottom: 25px;
+}
+.vs-label {
+  text-align: center;
+  font-weight: 700;
+  color: var(--muted-2);
+  font-size: 1.2rem;
+  margin: -5px 0;
+}
+
+.empty-compare {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: var(--surface-variant);
+  border-radius: 12px;
+  border: 1px dashed var(--surface-border);
+}
+.empty-compare .icon {
+  font-size: 2rem;
+}
+
+.diff-card {
+  text-align: center;
+  margin-bottom: 20px;
+  padding: 15px;
+  background-color: var(--surface-variant);
+  border-radius: 10px;
+  border: 1px solid var(--surface-border);
+}
+.diff-card .label {
+  font-size: 0.85rem;
+  color: var(--accent);
+  font-weight: 600;
+  text-transform: uppercase;
+}
+.diff-card .value {
+  font-size: 2rem;
+  font-weight: bold;
+  color: var(--text);
+  line-height: 1.2;
+}
+.leader {
+  color: var(--accent);
+}
+
+.compare-table {
+  display: flex;
+  flex-direction: column;
+  border: 1px solid rgba(0, 0, 0, 0.04);
+  border-radius: 12px;
+  overflow: hidden;
+  background: var(--surface);
+}
+.compare-header {
+  display: flex;
+  background-color: var(--surface-variant);
+  padding: 12px 0;
+  border-bottom: 2px solid var(--surface-border);
+}
+.col {
+  text-align: center;
+}
+.col-40 {
+  width: 40%;
+}
+.col-20 {
+  width: 20%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+.col-player-left {
+  font-weight: 900;
+  color: var(--accent);
+  font-size: 1.1rem;
+}
+.col-player-right {
+  font-weight: 900;
+  color: var(--danger);
+  font-size: 1.1rem;
+}
+
+.row {
+  display: flex;
+  padding: 15px 0;
+  border-bottom: 1px solid var(--surface-border);
+  align-items: center;
+}
+.row .value {
+  width: 40%;
+  text-align: center;
+  font-size: 1.4rem;
+  font-weight: 900;
+}
+.row .label {
+  width: 20%;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+}
+.small-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: var(--text-muted);
+  font-weight: bold;
+}
+.small-meta {
+  font-size: 0.6rem;
+  color: var(--muted-2);
+  margin-top: 2px;
+}
+.highlight {
+  color: var(--orange);
+}
+.rank-positive {
+  color: var(--success);
+}
+.points-positive {
+  color: var(--success);
+}
+.debt-negative {
+  color: var(--danger);
+}
+.debt-positive {
+  color: var(--success);
+}
+
+.select-danger {
+  border-color: var(--danger) !important;
+  color: var(--danger) !important;
+}
+
+.desc {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+}

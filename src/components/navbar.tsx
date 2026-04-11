@@ -1,4 +1,5 @@
 import React, { useState } from "react";
+import "./navbar.css";
 import Container from "react-bootstrap/Container";
 import Nav from "react-bootstrap/Nav";
 import Navbar from "react-bootstrap/Navbar";
@@ -22,11 +23,9 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
   return (
     <Navbar
       expanded={expanded}
-      bg="success" // Si quieres un verde más oscuro prueba con style={{ backgroundColor: '#198754' }}
-      variant="dark"
-      fixed="top"
-      expand="md" // Hace que el menú colapse en pantallas pequeñas
-      className="shadow-sm py-2" // Sombra sutil y un pelín más de altura
+      sticky="top"
+      expand="md"
+      className="app-navbar shadow-sm py-2"
     >
       <Container>
         <Navbar.Brand className="fw-bold fs-4">⚽ Liga STK</Navbar.Brand>

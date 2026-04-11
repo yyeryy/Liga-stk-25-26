@@ -1,4 +1,5 @@
 import React, { useMemo } from "react";
+import "./ModalJugador.css";
 import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import Row from "react-bootstrap/Row";
@@ -93,7 +94,7 @@ export const ModalJugador: React.FC<ModalJugadorProps> = (props) => {
       listInsignias.push({
         icon: "🕯️",
         title: "👑 Farolillo Rojo",
-        color: "#e74c3c",
+        color: "var(--danger)",
         desc: "Sotanero profesional. No se cansa de buscar petróleo en el fondo de la tabla.",
       });
     }
@@ -103,7 +104,7 @@ export const ModalJugador: React.FC<ModalJugadorProps> = (props) => {
       listInsignias.push({
         icon: "💸",
         title: "🏦 Cajero Automático",
-        color: "#f1c40f",
+        color: "var(--gold)",
         desc: "Patrocinador oficial de las cenas Biwinger. Gracias por tu contribución financiera.",
       });
     }
@@ -113,7 +114,7 @@ export const ModalJugador: React.FC<ModalJugadorProps> = (props) => {
       listInsignias.push({
         icon: "🚢",
         title: "🚢 Titanic",
-        color: "#34495e",
+        color: "var(--text)",
         desc: "En caída libre. Ha pagado multa en sus últimas 3 jornadas disputadas seguidas.",
       });
     }
@@ -123,7 +124,7 @@ export const ModalJugador: React.FC<ModalJugadorProps> = (props) => {
       listInsignias.push({
         icon: "🗑️",
         title: "🤏 Récord Vergüenza",
-        color: "#95a5a6",
+        color: "var(--muted-2)",
         desc: `Ostenta la PEOR puntuación histórica (${recordMinHolder.puntos} pts, J${recordMinHolder.jornada}) en una sola jornada.`,
       });
     }
@@ -133,7 +134,7 @@ export const ModalJugador: React.FC<ModalJugadorProps> = (props) => {
       listInsignias.push({
         icon: "😐",
         title: "📎 Gris Marengo",
-        color: "#bdc3c7",
+        color: "var(--muted-2)",
         desc: "Ni sube ni baja. Ni gana ni pierde. El rey de la mediocridad absoluta.",
       });
     }
@@ -162,121 +163,44 @@ export const ModalJugador: React.FC<ModalJugadorProps> = (props) => {
       centered
       className="modal-expediente"
     >
-      <Modal.Body
-        style={{
-          padding: "25px",
-          fontFamily: "system-ui, sans-serif",
-          background: "#fff",
-          borderRadius: "15px",
-        }}
-      >
+      <Modal.Body className="modal-body-panel">
         {/* CABECERA (Foto y Nombre) */}
-        <div
-          style={{
-            display: "flex",
-            alignItems: "center",
-            gap: "20px",
-            marginBottom: "25px",
-            borderBottom: "2px solid #f0f0f0",
-            paddingBottom: "15px",
-          }}
-        >
+        <div className="modal-header-info">
           <img
             src={`../imagenes/${props.jugador}.jpg`}
             alt={props.jugador || ""}
-            style={{
-              width: "70px",
-              height: "70px",
-              borderRadius: "50%",
-              objectFit: "cover",
-              border: "4px solid #f8f9fa",
-              boxShadow: "0 4px 10px rgba(0,0,0,0.1)",
-            }}
+            className="profile-img"
             onError={(e) => (e.currentTarget.src = "../imagenes/spinner.jpg")}
           />
           <div>
-            <h1
-              style={{
-                margin: 0,
-                fontWeight: "black",
-                color: "#2c3e50",
-                fontSize: "1.8rem",
-                letterSpacing: "-1px",
-              }}
-            >
-              {props.jugador}
-            </h1>
-            <p
-              style={{
-                margin: 0,
-                color: "#7f8c8d",
-                fontWeight: "600",
-                fontSize: "0.9rem",
-              }}
-            >
-              Expediente Temporada 23/24
-            </p>
+            <h1 className="player-name">{props.jugador}</h1>
+            <p className="player-subtitle">Expediente Temporada 23/24</p>
           </div>
         </div>
 
         {/* --- NUEVO: SECCIÓN INSIGNIAS --- */}
         {expediente.insignias.length > 0 && (
-          <div style={{ marginBottom: "25px" }}>
-            <h6
-              style={{
-                textTransform: "uppercase",
-                color: "#b2bec3",
-                fontSize: "0.75rem",
-                fontWeight: "900",
-                letterSpacing: "1px",
-                marginBottom: "12px",
-              }}
-            >
-              Muro de la Vergüenza
-            </h6>
-            <div
-              style={{
-                display: "grid",
-                gridTemplateColumns: "repeat(auto-fit, minmax(280px, 1fr))",
-                gap: "10px",
-              }}
-            >
+          <div className="mb-3">
+            <h6 className="section-title">Muro de la Vergüenza</h6>
+            <div className="insignias-grid">
               {expediente.insignias.map((ins) => (
                 <div
                   key={ins.title}
+                  className="insignia"
                   style={{
-                    display: "flex",
-                    gap: "12px",
-                    alignItems: "center",
-                    backgroundColor: `${ins.color}10`, // Color sutil de fondo
+                    backgroundColor: `${ins.color}10`,
                     border: `1px solid ${ins.color}30`,
-                    padding: "12px",
-                    borderRadius: "10px",
                   }}
                 >
-                  <div style={{ fontSize: "1.8rem", lineHeight: 1 }}>
-                    {ins.icon}
-                  </div>
+                  <div className="icon">{ins.icon}</div>
                   <div>
                     <div
-                      style={{
-                        fontWeight: "bold",
-                        color: ins.color,
-                        fontSize: "0.95rem",
-                      }}
+                      className="insignia-title"
+                      style={{ color: ins.color }}
                     >
                       {ins.title}
                     </div>
-                    <div
-                      style={{
-                        fontSize: "0.75rem",
-                        color: "#7f8c8d",
-                        marginTop: "1px",
-                        lineHeight: "1.2",
-                      }}
-                    >
-                      {ins.desc}
-                    </div>
+                    <div className="insignia-desc">{ins.desc}</div>
                   </div>
                 </div>
               ))}
@@ -285,216 +209,60 @@ export const ModalJugador: React.FC<ModalJugadorProps> = (props) => {
         )}
 
         {/* SECCIÓN ESTADÍSTICAS */}
-        <h6
-          style={{
-            textTransform: "uppercase",
-            color: "#b2bec3",
-            fontSize: "0.75rem",
-            fontWeight: "900",
-            letterSpacing: "1px",
-            marginBottom: "12px",
-          }}
-        >
-          Estadísticas Clave
-        </h6>
-        <Row className="g-3" style={{ marginBottom: "25px" }}>
+        <h6 className="section-title">Estadísticas Clave</h6>
+        <Row className="g-3 mb-3">
           {/* Tarjeta Puntos */}
           <Col xs={6} md={3}>
-            <div
-              style={{
-                textAlign: "center",
-                background: "#f8f9fa",
-                padding: "15px",
-                borderRadius: "12px",
-                border: "1px solid #eee",
-                height: "100%",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "2rem",
-                  fontWeight: "black",
-                  color: "#2c3e50",
-                  lineHeight: 1,
-                }}
-              >
-                #{expediente.posPuntos}
-              </div>
-              <div
-                style={{
-                  fontSize: "0.7rem",
-                  textTransform: "uppercase",
-                  color: "#3498db",
-                  fontWeight: "bold",
-                  marginTop: "5px",
-                }}
-              >
-                Ranking Pts
-              </div>
-              <div
-                style={{
-                  fontSize: "0.8rem",
-                  color: "#7f8c8d",
-                  marginTop: "2px",
-                }}
-              >
+            <div className="stat-card">
+              <div className="stat-number">#{expediente.posPuntos}</div>
+              <div className="stat-label">Ranking Pts</div>
+              <div className="stat-sub">
                 Total: {expediente.puntosTotales} pts
               </div>
             </div>
           </Col>
           {/* Tarjeta Pagos */}
           <Col xs={6} md={3}>
-            <div
-              style={{
-                textAlign: "center",
-                background: "#f8f9fa",
-                padding: "15px",
-                borderRadius: "12px",
-                border: "1px solid #eee",
-                height: "100%",
-              }}
-            >
+            <div className="stat-card">
               <div
-                style={{
-                  fontSize: "2rem",
-                  fontWeight: "black",
-                  color: expediente.pagoTotal > 0 ? "#e74c3c" : "#27ae60",
-                  lineHeight: 1,
-                }}
+                className={`stat-number ${expediente.pagoTotal > 0 ? "debt-negative" : "debt-positive"}`}
               >
                 {expediente.pagoTotal.toFixed(0)}€
               </div>
-              <div
-                style={{
-                  fontSize: "0.7rem",
-                  textTransform: "uppercase",
-                  color: "#7f8c8d",
-                  fontWeight: "bold",
-                  marginTop: "5px",
-                }}
-              >
-                Deuda Total
-              </div>
-              <div
-                style={{
-                  fontSize: "0.8rem",
-                  color: "#7f8c8d",
-                  marginTop: "2px",
-                }}
-              >
+              <div className="stat-label">Deuda Total</div>
+              <div className="stat-sub">
                 Multas: #{expediente.posPagos} ranking
               </div>
             </div>
           </Col>
           {/* Tarjeta Media Puntos */}
           <Col xs={6} md={3}>
-            <div
-              style={{
-                textAlign: "center",
-                background: "#f8f9fa",
-                padding: "15px",
-                borderRadius: "12px",
-                border: "1px solid #eee",
-                height: "100%",
-              }}
-            >
-              <div
-                style={{
-                  fontSize: "1.8rem",
-                  fontWeight: "black",
-                  color: "#2c3e50",
-                  lineHeight: 1,
-                  marginTop: "2px",
-                }}
-              >
+            <div className="stat-card">
+              <div className="stat-number">
                 {expediente.promedioPuntos.toFixed(1)}
               </div>
-              <div
-                style={{
-                  fontSize: "0.7rem",
-                  textTransform: "uppercase",
-                  color: "#7f8c8d",
-                  fontWeight: "bold",
-                  marginTop: "5px",
-                }}
-              >
-                Media Pts/J
-              </div>
-              <div
-                style={{
-                  fontSize: "0.8rem",
-                  color: "#7f8c8d",
-                  marginTop: "2px",
-                }}
-              >
+              <div className="stat-label">Media Pts/J</div>
+              <div className="stat-sub">
                 en {expediente.totalJornadasJugadas} jornadas
               </div>
             </div>
           </Col>
           {/* Tarjeta Media Multa */}
           <Col xs={6} md={3}>
-            <div
-              style={{
-                textAlign: "center",
-                background: "#f8f9fa",
-                padding: "15px",
-                borderRadius: "12px",
-                border: "1px solid #eee",
-                height: "100%",
-              }}
-            >
+            <div className="stat-card">
               <div
-                style={{
-                  fontSize: "1.8rem",
-                  fontWeight: "black",
-                  color: expediente.promedioPago > 0 ? "#e74c3c" : "#27ae60",
-                  lineHeight: 1,
-                  marginTop: "2px",
-                }}
+                className={`stat-number ${expediente.promedioPago > 0 ? "debt-negative" : "debt-positive"}`}
               >
                 {expediente.promedioPago.toFixed(1)}€
               </div>
-              <div
-                style={{
-                  fontSize: "0.7rem",
-                  textTransform: "uppercase",
-                  color: "#7f8c8d",
-                  fontWeight: "bold",
-                  marginTop: "5px",
-                }}
-              >
-                Media €/J
-              </div>
-              <div
-                style={{
-                  fontSize: "0.8rem",
-                  color: "#7f8c8d",
-                  marginTop: "2px",
-                }}
-              >
-                promedio multa
-              </div>
+              <div className="stat-label">Media €/J</div>
+              <div className="stat-sub">promedio multa</div>
             </div>
           </Col>
         </Row>
       </Modal.Body>
-      <Modal.Footer
-        style={{
-          border: "none",
-          padding: "0 25px 25px 25px",
-          background: "#fff",
-        }}
-      >
-        <Button
-          variant="secondary"
-          onClick={props.onHide}
-          style={{
-            width: "100%",
-            borderRadius: "10px",
-            fontWeight: "bold",
-            padding: "10px",
-          }}
-        >
+      <Modal.Footer className="modal-footer-custom">
+        <Button variant="secondary" onClick={props.onHide} className="btn-full">
           Cerrar Expediente
         </Button>
       </Modal.Footer>

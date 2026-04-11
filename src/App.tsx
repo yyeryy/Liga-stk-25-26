@@ -17,8 +17,8 @@ const App: React.FC = () => {
   const [vista, setVista] = useState<TiposVista>(TiposVista.Pagos);
   return (
     <div>
-      <NavBar onSelect={setVista} />
-      <div style={{ paddingTop: "56px" }}>
+      <NavBar onSelect={setVista} vistaActual={vista} />
+      <div className="app-main">
         {vista === TiposVista.Jornadas && <JornadasPanel></JornadasPanel>}
         {vista === TiposVista.Pagos && <PagosPanel></PagosPanel>}
         {vista === TiposVista.Estadisticas && (

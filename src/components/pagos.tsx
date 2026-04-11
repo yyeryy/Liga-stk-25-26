@@ -1,5 +1,6 @@
 import { useState, useEffect, useMemo } from "react";
 import { calcularAcumulado, JugadorPago } from "../utils/calcularAcumulado.ts";
+import "./pagos.css";
 
 export const PagosPanel = () => {
   const [selectedBloque, setSelectedBloque] = useState(0);
@@ -22,7 +23,7 @@ export const PagosPanel = () => {
 
   // RECUPERAMOS TU FUNCIÓN DE GRADIENTE
   const getColorByPago = (pago: number, maxPago: number) => {
-    if (maxPago === 0 || pago === 0) return "#e8f5e9";
+    if (maxPago === 0 || pago === 0) return "var(--success-100)";
     const ratio = Math.min(1, pago / maxPago);
     const start = { r: 232, g: 245, b: 233 };
     const end = { r: 255, g: 205, b: 210 };
@@ -36,7 +37,7 @@ export const PagosPanel = () => {
     if (pos === 1) return "🥇";
     if (pos === 2) return "🥈";
     if (pos === 3) return "🥉";
-    return <span style={{ color: "#7f8c8d", fontSize: "0.9rem" }}>{pos}º</span>;
+    return <span className="medal-text">{pos}º</span>;
   };
 
   useEffect(() => {
@@ -61,76 +62,21 @@ export const PagosPanel = () => {
 
   const maxPagoActual = Math.max(...pagos.map((p) => p.pago), 0);
 
-  const colWidths = {
-    pos: "15%",
-    jugador: "40%",
-    puntos: "20%",
-    pago: "25%",
-  };
-
   const formatEuros = (num: number) => {
     return num % 1 === 0 ? num : num.toFixed(2);
   };
 
   return (
-    <div
-      style={{
-        padding: "10px",
-        width: "100%",
-        maxWidth: "100vw",
-        boxSizing: "border-box",
-        overflowX: "hidden",
-        fontFamily: "system-ui, sans-serif",
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: "15px",
-          boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
-          padding: "20px 15px",
-          border: "1px solid #f0f0f0",
-        }}
-      >
-        <h2
-          style={{
-            textAlign: "center",
-            color: "#2c3e50",
-            marginBottom: "5px",
-            fontSize: "1.5rem",
-          }}
-        >
-          💸 Panel de Pagos
-        </h2>
-        <p
-          style={{
-            textAlign: "center",
-            color: "#7f8c8d",
-            fontSize: "0.85rem",
-            marginBottom: "20px",
-          }}
-        >
-          Consulta las deudas por tramos de liga
-        </p>
+    <div className="pagos-panel">
+      <div className="panel panel-screen">
+        <h2 className="h2">💸 Panel de Pagos</h2>
+        <p className="subtitle">Consulta las deudas por tramos de liga</p>
 
-        <div style={{ marginBottom: "25px" }}>
+        <div className="selectWrapper">
           <select
             value={selectedBloque}
             onChange={(e) => setSelectedBloque(Number(e.target.value))}
-            style={{
-              padding: "12px 15px",
-              borderRadius: "10px",
-              border: "2px solid #3498db",
-              width: "100%",
-              fontSize: "0.95rem",
-              fontWeight: "bold",
-              color: "#2980b9",
-              backgroundColor: "#f0f8ff",
-              outline: "none",
-              cursor: "pointer",
-              textAlign: "center",
-              appearance: "none",
-            }}
+            className="select-primary"
           >
             {bloques.map((b) => (
               <option key={b.id} value={b.id}>
@@ -140,105 +86,37 @@ export const PagosPanel = () => {
           </select>
         </div>
 
-        <div
-          style={{
-            display: "flex",
-            padding: "0 5px 10px 5px",
-            color: "#a5b1c2",
-            fontSize: "0.7rem",
-            textTransform: "uppercase",
-            fontWeight: "bold",
-            borderBottom: "2px solid #f0f0f0",
-            marginBottom: "10px",
-          }}
-        >
-          <div style={{ width: colWidths.pos, textAlign: "center" }}>Pos</div>
-          <div style={{ width: colWidths.jugador }}>Jugador</div>
-          <div style={{ width: colWidths.puntos, textAlign: "center" }}>
-            Pts
-          </div>
-          <div style={{ width: colWidths.pago, textAlign: "right" }}>Deuda</div>
+        <div className="pagos-header">
+          <div className="pagos-col-pos">Pos</div>
+          <div className="pagos-col-player">Jugador</div>
+          <div className="pagos-col-puntos">Pts</div>
+          <div className="pagos-col-pago">Deuda</div>
         </div>
 
-        <div style={{ display: "flex", flexDirection: "column", gap: "8px" }}>
+        <div className="pagos-list">
           {pagos.map((j, idx) => {
             const isFree = (j.pago ?? 0) === 0;
-            // APLICAMOS TU GRADIENTE AQUÍ
             const rowColor = getColorByPago(j.pago ?? 0, maxPagoActual);
 
             return (
               <div
                 key={idx}
+                className="pagos-row"
                 style={{
-                  display: "flex",
-                  alignItems: "center",
-                  backgroundColor: rowColor,
-                  border: "1px solid rgba(0,0,0,0.05)", // Borde muy sutil para que mande el gradiente
-                  borderRadius: "10px",
-                  padding: "12px 10px",
-                  cursor: "pointer",
-                  transition: "all 0.2s ease",
+                  ["--row-bg" as any]: rowColor,
+                  ["--row-amount" as any]: isFree
+                    ? "var(--success)"
+                    : "var(--danger)",
                 }}
-                onMouseEnter={(e) =>
-                  (e.currentTarget.style.transform = "translateY(-2px)")
-                }
-                onMouseLeave={(e) =>
-                  (e.currentTarget.style.transform = "translateY(0)")
-                }
               >
-                <div
-                  style={{
-                    width: colWidths.pos,
-                    textAlign: "center",
-                    fontWeight: "bold",
-                  }}
-                >
-                  {getMedal(j.posicion ?? 0)}
-                </div>
+                <div className="pagos-col-pos">{getMedal(j.posicion ?? 0)}</div>
 
-                <div
-                  style={{
-                    width: colWidths.jugador,
-                    fontWeight: "600",
-                    color: "#2c3e50",
-                    whiteSpace: "nowrap",
-                    overflow: "hidden",
-                    textOverflow: "ellipsis",
-                  }}
-                >
-                  {j.jugador}
-                </div>
+                <div className="pagos-col-player">{j.jugador}</div>
 
-                <div
-                  style={{
-                    width: colWidths.puntos,
-                    textAlign: "center",
-                    fontWeight: "bold",
-                    color: "#7f8c8d",
-                    fontSize: "0.9rem",
-                  }}
-                >
-                  {j.puntos}
-                </div>
+                <div className="pagos-col-puntos">{j.puntos}</div>
 
-                <div
-                  style={{
-                    width: colWidths.pago,
-                    textAlign: "right",
-                    display: "flex",
-                    flexDirection: "column",
-                    alignItems: "flex-end",
-                  }}
-                >
-                  <span
-                    style={{
-                      fontWeight: "900",
-                      fontSize: "1.1rem",
-                      color: isFree ? "#27ae60" : "#c0392b", // Rojo un poco más oscuro para que lea bien sobre el fondo rojizo
-                    }}
-                  >
-                    {formatEuros(j.pago ?? 0)}€
-                  </span>
+                <div className="pagos-col-pago">
+                  <span className="amount">{formatEuros(j.pago ?? 0)}€</span>
                 </div>
               </div>
             );
@@ -246,52 +124,16 @@ export const PagosPanel = () => {
         </div>
 
         {selectedBloque === 0 && (
-          <div
-            style={{
-              marginTop: "25px",
-              padding: "15px",
-              backgroundColor: "#fff5f5",
-              borderRadius: "12px",
-              border: "1px dashed #ffcccc",
-            }}
-          >
-            <div
-              style={{
-                fontWeight: "900",
-                color: "#c0392b",
-                marginBottom: "8px",
-                fontSize: "0.85rem",
-                textTransform: "uppercase",
-                letterSpacing: "1px",
-                display: "flex",
-                alignItems: "center",
-                gap: "5px",
-              }}
-            >
+          <div className="alert-card">
+            <div className="alert-title">
+              {" "}
               <span>⚠️</span> Desertores Pendientes
             </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                color: "#e74c3c",
-                fontWeight: "bold",
-                fontSize: "0.9rem",
-              }}
-            >
+            <div className="alert-row">
               <span>Zarrakatz</span>
               <span>14.00€</span>
             </div>
-            <div
-              style={{
-                display: "flex",
-                justifyContent: "space-between",
-                color: "#e74c3c",
-                fontWeight: "bold",
-                fontSize: "0.9rem",
-                marginTop: "4px",
-              }}
-            >
+            <div className="alert-row alert-row--mt">
               <span>Polfovich</span>
               <span>19.00€</span>
             </div>

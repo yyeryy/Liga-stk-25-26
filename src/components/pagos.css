@@ -1,0 +1,116 @@
+.pagos-panel {
+  padding: var(--space-3);
+  width: 100%;
+  max-width: 100vw;
+  box-sizing: border-box;
+  font-family: var(--font-sans);
+}
+.pagos-panel .panel {
+  max-width: var(--container-max);
+  margin: 0 auto;
+}
+.pagos-panel .subtitle {
+  text-align: center;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin-bottom: 20px;
+}
+.selectWrapper {
+  margin-bottom: 25px;
+}
+.pagos-header {
+  display: flex;
+  padding: 0 5px 10px 5px;
+  color: var(--text-muted);
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  font-weight: 700;
+  border-bottom: 2px solid rgba(0, 0, 0, 0.04);
+  margin-bottom: 10px;
+}
+.pagos-col-pos {
+  width: 15%;
+  text-align: center;
+  font-weight: bold;
+}
+.pagos-col-player {
+  width: 40%;
+  font-weight: 600;
+  color: var(--text);
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+.pagos-col-puntos {
+  width: 20%;
+  text-align: center;
+  font-weight: bold;
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.pagos-col-pago {
+  width: 25%;
+  text-align: right;
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+}
+
+.pagos-row {
+  display: flex;
+  align-items: center;
+  border: 1px solid rgba(0, 0, 0, 0.05);
+  border-radius: 10px;
+  padding: 12px 10px;
+  cursor: pointer;
+  transition: all 0.18s ease;
+  background: var(--row-bg, transparent);
+}
+.pagos-row:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 6px 18px rgba(2, 6, 23, 0.06);
+}
+.pagos-row .amount {
+  font-weight: 900;
+  font-size: 1.1rem;
+  color: var(--row-amount, var(--danger));
+}
+
+.pagos-list {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.medal-text {
+  color: #7f8c8d;
+  font-size: 0.9rem;
+}
+
+.alert-card {
+  margin-top: 25px;
+  padding: 15px;
+  background-color: #fff5f5;
+  border-radius: 12px;
+  border: 1px dashed rgba(239, 68, 68, 0.3);
+}
+.alert-card .alert-title {
+  font-weight: 900;
+  color: var(--danger);
+  margin-bottom: 8px;
+  font-size: 0.85rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+}
+.alert-card .alert-row {
+  display: flex;
+  justify-content: space-between;
+  color: var(--danger);
+  font-weight: bold;
+  font-size: 0.9rem;
+}
+.alert-row--mt {
+  margin-top: 4px;
+}

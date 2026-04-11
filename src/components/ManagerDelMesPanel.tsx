@@ -1,6 +1,7 @@
 import { useMemo, useState } from "react";
 import { data } from "../data/data.ts";
 import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
+import "./ManagerDelMesPanel.css";
 
 // Mapeo oficial aproximado de las jornadas de LaLiga por meses
 const CALENDARIO_MESES = [
@@ -75,78 +76,21 @@ export const ManagerDelMesPanel = () => {
   };
 
   return (
-    <div
-      style={{
-        padding: "10px",
-        width: "100%",
-        maxWidth: "100vw",
-        boxSizing: "border-box",
-        overflowX: "hidden",
-        fontFamily: "system-ui, sans-serif",
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: "15px",
-          boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
-          padding: "20px 15px",
-          border: "1px solid #f0f0f0",
-        }}
-      >
-        <h2
-          style={{
-            textAlign: "center",
-            color: "#2c3e50",
-            marginBottom: "5px",
-            fontSize: "1.5rem",
-          }}
-        >
-          🗓️ Mánager del Mes
-        </h2>
-        <p
-          style={{
-            textAlign: "center",
-            color: "#7f8c8d",
-            fontSize: "0.85rem",
-            marginBottom: "20px",
-          }}
-        >
+    <div className="manager-panel">
+      <div className="panel manager-content panel-screen">
+        <h2 className="h2">🗓️ Mánager del Mes</h2>
+        <p className="text-muted manager-subtitle">
           ¿Quién ha protegido mejor su cartera este mes?
         </p>
 
-        {/* SELECTOR DE MESES (Scroll horizontal suave en móvil) */}
-        <div
-          style={{
-            display: "flex",
-            overflowX: "auto",
-            gap: "10px",
-            paddingBottom: "15px",
-            marginBottom: "15px",
-            scrollbarWidth: "none",
-            msOverflowStyle: "none",
-          }}
-        >
+        <div className="manager-months">
           {CALENDARIO_MESES.map((mes) => {
             const isSelected = mesSeleccionado === mes.id;
             return (
               <div
                 key={mes.id}
                 onClick={() => setMesSeleccionado(mes.id)}
-                style={{
-                  padding: "8px 16px",
-                  borderRadius: "20px",
-                  backgroundColor: isSelected ? "#3498db" : "#f8f9fa",
-                  color: isSelected ? "white" : "#7f8c8d",
-                  fontWeight: isSelected ? "bold" : "600",
-                  border: `1px solid ${isSelected ? "#2980b9" : "#eee"}`,
-                  cursor: "pointer",
-                  whiteSpace: "nowrap",
-                  transition: "all 0.2s ease",
-                  boxShadow: isSelected
-                    ? "0 4px 10px rgba(52, 152, 219, 0.2)"
-                    : "none",
-                }}
+                className={`manager-month-chip ${isSelected ? "manager-month-chip--active" : ""}`}
               >
                 {mes.icono} {mes.nombre}
               </div>
@@ -154,206 +98,72 @@ export const ManagerDelMesPanel = () => {
           })}
         </div>
 
-        {/* CABECERA DEL MES SELECCIONADO */}
-        <div
-          style={{
-            textAlign: "center",
-            marginBottom: "20px",
-            padding: "10px",
-            backgroundColor: "#f8f9fa",
-            borderRadius: "10px",
-            border: "1px dashed #dee2e6",
-          }}
-        >
-          <h5 style={{ margin: 0, color: "#2c3e50", fontWeight: "bold" }}>
+        <div className="manager-header">
+          <h5>
             Jornadas {mesDef?.desde} a {mesDef?.hasta}
           </h5>
           {mesData?.jugado && (
-            <span
-              style={{
-                fontSize: "0.8rem",
-                color: "#27ae60",
-                fontWeight: "600",
-              }}
-            >
+            <div className="meta">
               {mesData.jornadasDisputadas} jornadas disputadas
-            </span>
+            </div>
           )}
         </div>
 
-        {/* CONTENIDO DEL RANKING */}
         {!mesData?.jugado ? (
-          <div
-            style={{
-              textAlign: "center",
-              padding: "40px 20px",
-              backgroundColor: "#fffcf0",
-              borderRadius: "12px",
-              border: "1px dashed #fde08b",
-            }}
-          >
-            <span style={{ fontSize: "2.5rem" }}>⏳</span>
-            <h5 className="mt-2 text-muted" style={{ color: "#b8860b" }}>
-              Aún no se ha jugado
-            </h5>
-            <p className="text-muted" style={{ fontSize: "0.85rem" }}>
+          <div className="manager-empty">
+            <span className="manager-empty__emoji">⏳</span>
+            <h5 className="mt-2 text-muted">Aún no se ha jugado</h5>
+            <p className="text-muted">
               Vuelve cuando arranquen las jornadas de este mes.
             </p>
           </div>
         ) : (
-          <div
-            style={{ display: "flex", flexDirection: "column", gap: "10px" }}
-          >
-            {/* MVP DEL MES (Tarjeta Especial) */}
+          <div className="manager-list">
             {mesData.ranking.length > 0 && (
-              <div
-                style={{
-                  background:
-                    "linear-gradient(135deg, #f6d365 0%, #fda085 100%)",
-                  borderRadius: "15px",
-                  padding: "20px",
-                  color: "white",
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "space-between",
-                  boxShadow: "0 8px 20px rgba(253, 160, 133, 0.4)",
-                  cursor: "pointer",
-                  marginBottom: "10px",
-                  transform: "scale(1.02)",
-                }}
-              >
+              <div className="manager-mvp">
                 <div>
-                  <div
-                    style={{
-                      fontSize: "0.8rem",
-                      textTransform: "uppercase",
-                      fontWeight: "900",
-                      letterSpacing: "1px",
-                      opacity: 0.9,
-                    }}
-                  >
+                  <div className="manager-mvp__label">
                     👑 MVP de {mesDef?.nombre}
                   </div>
-                  <div
-                    style={{
-                      fontSize: "1.8rem",
-                      fontWeight: "black",
-                      textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-                    }}
-                  >
+                  <div className="manager-mvp__name">
                     {mesData.ranking[0].jugador}
                   </div>
                 </div>
-                <div style={{ textAlign: "right" }}>
+                <div className="manager-mvp__actions">
                   <div
-                    style={{
-                      fontSize: "2.5rem",
-                      fontWeight: "black",
-                      lineHeight: 1,
-                      textShadow: "1px 1px 2px rgba(0,0,0,0.1)",
-                      color: mesData.ranking[0].pago === 0 ? "#fff" : "#ffeaa7",
-                    }}
+                    className={`manager-mvp__price ${mesData.ranking[0].pago > 0 ? "manager-mvp__price--warn" : ""}`}
                   >
                     {formatEuros(mesData.ranking[0].pago)}€
                   </div>
-                  <div
-                    style={{
-                      fontSize: "0.85rem",
-                      fontWeight: "bold",
-                      opacity: 0.9,
-                      marginTop: "2px",
-                    }}
-                  >
+                  <div className="manager-mvp__meta">
                     {mesData.ranking[0].puntos} pts
                   </div>
                 </div>
               </div>
             )}
 
-            {/* RESTO DE JUGADORES */}
             {mesData.ranking.slice(1).map((j, idx) => {
               const posReales = j.posicion ?? idx + 2;
               return (
-                <div
-                  key={j.jugador}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    backgroundColor: "#f8f9fa",
-                    border: "1px solid #eee",
-                    borderRadius: "10px",
-                    padding: "12px 15px",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                  }}
-                  onMouseEnter={(e) =>
-                    (e.currentTarget.style.transform = "translateX(5px)")
-                  }
-                  onMouseLeave={(e) =>
-                    (e.currentTarget.style.transform = "translateX(0)")
-                  }
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      gap: "15px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        width: "25px",
-                        textAlign: "center",
-                        fontWeight: "bold",
-                        color: "#7f8c8d",
-                      }}
-                    >
+                <div key={j.jugador} className="manager-item">
+                  <div className="manager-item__left">
+                    <div className="manager-rank">
                       {posReales === 2
                         ? "🥈"
                         : posReales === 3
                           ? "🥉"
                           : `${posReales}º`}
                     </div>
-                    <div
-                      style={{
-                        fontWeight: "600",
-                        color: "#2c3e50",
-                        fontSize: "1.05rem",
-                      }}
-                    >
-                      {j.jugador}
-                    </div>
+                    <div className="manager-player">{j.jugador}</div>
                   </div>
 
-                  {/* Deuda destacada a la derecha */}
-                  <div
-                    style={{
-                      display: "flex",
-                      flexDirection: "column",
-                      alignItems: "flex-end",
-                    }}
-                  >
+                  <div className="manager-item__right">
                     <div
-                      style={{
-                        fontWeight: "900",
-                        color: j.pago > 0 ? "#e74c3c" : "#27ae60",
-                        fontSize: "1.2rem",
-                        lineHeight: "1",
-                      }}
+                      className={`manager-payment ${j.pago > 0 ? "manager-payment--owed" : "manager-payment--ok"}`}
                     >
                       {formatEuros(j.pago)}€
                     </div>
-                    <div
-                      style={{
-                        fontSize: "0.75rem",
-                        color: "#95a5a6",
-                        fontWeight: "600",
-                        marginTop: "2px",
-                      }}
-                    >
-                      {j.puntos} pts
-                    </div>
+                    <div className="manager-points">{j.puntos} pts</div>
                   </div>
                 </div>
               );

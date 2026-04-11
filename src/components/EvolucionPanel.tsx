@@ -1,4 +1,6 @@
 import { useMemo, useState } from "react";
+import "./EvolucionPanel.css";
+import type { CSSProperties } from "react";
 import { data } from "../data/data.ts";
 import { Apodos } from "../models/models.ts";
 import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
@@ -13,17 +15,17 @@ import {
 } from "recharts";
 
 const PALETA_COLORES = [
-  "#3498db",
-  "#e74c3c",
-  "#2ecc71",
-  "#f1c40f",
-  "#9b59b6",
-  "#34495e",
-  "#1abc9c",
-  "#e67e22",
-  "#d35400",
-  "#c0392b",
-  "#8e44ad",
+  "#2563eb", // accent
+  "#ef4444", // danger
+  "#16a34a", // success
+  "#f59e0b", // warning
+  "#9b59b6", // purple
+  "#0f1724", // text
+  "#1abc9c", // teal
+  "#e67e22", // orange
+  "#d35400", // orange-dark
+  "#ef4444", // danger
+  "#8e44ad", // purple-dark
 ];
 const jugadoresDisponibles = Object.values(Apodos);
 
@@ -94,79 +96,22 @@ export const EvolucionPanel = () => {
   }
 
   return (
-    <div
-      style={{
-        padding: "10px",
-        width: "100%",
-        maxWidth: "100vw",
-        boxSizing: "border-box",
-        fontFamily: "system-ui, sans-serif",
-      }}
-    >
-      <div
-        style={{
-          background: "#fff",
-          borderRadius: "15px",
-          boxShadow: "0 4px 15px rgba(0,0,0,0.05)",
-          padding: "20px 15px",
-          border: "1px solid #f0f0f0",
-        }}
-      >
-        <h2
-          style={{
-            textAlign: "center",
-            color: "#2c3e50",
-            marginBottom: "15px",
-            fontSize: "1.5rem",
-          }}
-        >
-          📈 Evolución de la Liga
-        </h2>
+    <div className="evolucion-panel">
+      <div className="panel panel-screen">
+        <h2 className="h2">📈 Evolución de la Liga</h2>
 
         {/* CONTROLES: Modo de Gráfica */}
-        <div
-          style={{
-            display: "flex",
-            justifyContent: "center",
-            marginBottom: "20px",
-          }}
-        >
-          <div
-            style={{
-              display: "flex",
-              backgroundColor: "#f8f9fa",
-              borderRadius: "10px",
-              border: "1px solid #eee",
-              padding: "4px",
-            }}
-          >
+        <div className="toggle-controls">
+          <div className="toggle-group">
             <button
               onClick={() => setModo("puntos")}
-              style={{
-                flex: 1,
-                padding: "8px 20px",
-                borderRadius: "8px",
-                border: "none",
-                fontWeight: "bold",
-                transition: "all 0.2s",
-                backgroundColor: modo === "puntos" ? "#3498db" : "transparent",
-                color: modo === "puntos" ? "white" : "#7f8c8d",
-              }}
+              className={`toggle-button ${modo === "puntos" ? "active-mode-puntos" : ""}`}
             >
               🏅 Puntos
             </button>
             <button
               onClick={() => setModo("pagos")}
-              style={{
-                flex: 1,
-                padding: "8px 20px",
-                borderRadius: "8px",
-                border: "none",
-                fontWeight: "bold",
-                transition: "all 0.2s",
-                backgroundColor: modo === "pagos" ? "#e74c3c" : "transparent",
-                color: modo === "pagos" ? "white" : "#7f8c8d",
-              }}
+              className={`toggle-button ${modo === "pagos" ? "active-mode-pagos" : ""}`}
             >
               💸 Deudas
             </button>
@@ -174,15 +119,8 @@ export const EvolucionPanel = () => {
         </div>
 
         {/* CONTROLES: Selectores tipo "Chip" (Perfectos para móvil) */}
-        <div style={{ marginBottom: "20px" }}>
-          <div
-            style={{
-              display: "flex",
-              flexWrap: "wrap",
-              gap: "8px",
-              justifyContent: "center",
-            }}
-          >
+        <div className="chips">
+          <div className="chip-container">
             {jugadoresDisponibles.map((player) => {
               const isSelected = selectedPlayers.includes(player);
               const color = getPlayerColor(player);
@@ -190,29 +128,26 @@ export const EvolucionPanel = () => {
                 <div
                   key={player}
                   onClick={() => handleTogglePlayer(player)}
-                  style={{
-                    padding: "6px 12px",
-                    borderRadius: "20px",
-                    border: `1px solid ${isSelected ? color : "#dee2e6"}`,
-                    backgroundColor: isSelected ? `${color}15` : "#fff",
-                    color: isSelected ? color : "#6c757d",
-                    fontWeight: isSelected ? "bold" : "normal",
-                    fontSize: "0.85rem",
-                    cursor: "pointer",
-                    transition: "all 0.2s ease",
-                    display: "flex",
-                    alignItems: "center",
-                    gap: "6px",
-                  }}
+                  className="chip"
+                  style={
+                    {
+                      ["--chip-border" as any]: isSelected
+                        ? color
+                        : "var(--surface-border)",
+                      ["--chip-bg" as any]: isSelected
+                        ? `${color}15`
+                        : "var(--surface)",
+                      ["--chip-color" as any]: isSelected
+                        ? color
+                        : "var(--neutral-600)",
+                      ["--chip-fw" as any]: isSelected ? "700" : "400",
+                      ["--chip-dot" as any]: isSelected
+                        ? color
+                        : "var(--surface-border)",
+                    } as CSSProperties
+                  }
                 >
-                  <div
-                    style={{
-                      width: "10px",
-                      height: "10px",
-                      borderRadius: "50%",
-                      backgroundColor: isSelected ? color : "#dee2e6",
-                    }}
-                  ></div>
+                  <div className="dot" />
                   {player}
                 </div>
               );
@@ -222,56 +157,53 @@ export const EvolucionPanel = () => {
 
         {/* ÁREA DE LA GRÁFICA */}
         {selectedPlayers.length === 0 ? (
-          <div
-            className="d-flex align-items-center justify-content-center bg-light rounded text-muted p-5 border"
-            style={{ minHeight: "300px", textAlign: "center" }}
-          >
+          <div className="d-flex align-items-center justify-content-center bg-light rounded text-muted p-5 border empty-chart">
             <p className="mb-0">
               ⚠️ Toca algún jugador arriba para comenzar la comparativa.
             </p>
           </div>
         ) : (
           /* Contenedor que permite Scroll Horizontal en móvil */
-          <div
-            style={{
-              width: "100%",
-              overflowX: "auto",
-              overflowY: "hidden",
-              paddingBottom: "10px",
-            }}
-          >
-            <div style={{ minWidth: "700px", height: "400px" }}>
+          <div className="chart-scroll">
+            <div className="chart-inner">
               <ResponsiveContainer width="100%" height="100%">
                 <LineChart
                   data={chartData}
                   margin={{ top: 20, right: 30, left: -20, bottom: 5 }}
                 >
-                  <CartesianGrid strokeDasharray="3 3" stroke="#f0f0f0" />
+                  <CartesianGrid
+                    strokeDasharray="3 3"
+                    stroke="var(--surface-border)"
+                  />
                   <XAxis
                     dataKey="name"
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: "#adb5bd", fontSize: 12, fontWeight: "bold" }}
+                    tick={{
+                      fill: "var(--muted-2)",
+                      fontSize: 12,
+                      fontWeight: "bold",
+                    }}
                   />
                   <YAxis
                     axisLine={false}
                     tickLine={false}
-                    tick={{ fill: "#adb5bd", fontSize: 12 }}
+                    tick={{ fill: "var(--muted-2)", fontSize: 12 }}
                     domain={["auto", "auto"]} // Ajusta la escala automáticamente
                   />
                   <Tooltip
                     contentStyle={{
-                      background: "rgba(255,255,255,0.95)",
-                      border: "1px solid #eee",
+                      background: "var(--surface)",
+                      border: "1px solid var(--surface-border)",
                       borderRadius: "10px",
-                      boxShadow: "0 4px 15px rgba(0,0,0,0.1)",
+                      boxShadow: "0 4px 15px rgba(0,0,0,0.06)",
                       padding: "12px",
                     }}
                     labelStyle={{
                       fontWeight: "900",
-                      color: "#2c3e50",
+                      color: "var(--text)",
                       marginBottom: "8px",
-                      borderBottom: "1px solid #eee",
+                      borderBottom: "1px solid var(--surface-border)",
                       paddingBottom: "4px",
                     }}
                     formatter={(value: any) => [
@@ -292,7 +224,7 @@ export const EvolucionPanel = () => {
                       dot={
                         chartData.length > 15
                           ? false
-                          : { strokeWidth: 2, r: 4, fill: "#fff" }
+                          : { strokeWidth: 2, r: 4, fill: "var(--surface)" }
                       } // Oculta los puntos si hay muchas jornadas
                       activeDot={{ r: 7, strokeWidth: 0 }}
                       animationDuration={400}

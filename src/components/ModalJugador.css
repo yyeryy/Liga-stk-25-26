@@ -1,0 +1,114 @@
+.modal-expediente .modal-body-panel {
+  padding: 25px;
+  font-family: var(--font-sans);
+  background: var(--surface);
+  border-radius: 15px;
+}
+.modal-header-info {
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  margin-bottom: 25px;
+  border-bottom: 2px solid #f0f0f0;
+  padding-bottom: 15px;
+}
+.profile-img {
+  width: 70px;
+  height: 70px;
+  border-radius: 50%;
+  object-fit: cover;
+  border: 4px solid #f8f9fa;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+}
+.player-name {
+  margin: 0;
+  font-weight: 900;
+  color: #2c3e50;
+  font-size: 1.8rem;
+  letter-spacing: -1px;
+}
+.player-subtitle {
+  margin: 0;
+  color: #7f8c8d;
+  font-weight: 600;
+  font-size: 0.9rem;
+}
+.section-title {
+  text-transform: uppercase;
+  color: #b2bec3;
+  font-size: 0.75rem;
+  font-weight: 900;
+  letter-spacing: 1px;
+  margin-bottom: 12px;
+}
+.insignias-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+  gap: 10px;
+  margin-bottom: 25px;
+}
+.insignia {
+  display: flex;
+  gap: 12px;
+  align-items: center;
+  padding: 12px;
+  border-radius: 10px;
+}
+.insignia .icon {
+  font-size: 1.8rem;
+  line-height: 1;
+}
+.insignia-title {
+  font-weight: bold;
+  color: var(--ins-color, #000);
+  font-size: 0.95rem;
+}
+.insignia-desc {
+  font-size: 0.75rem;
+  color: #7f8c8d;
+  margin-top: 1px;
+  line-height: 1.2;
+}
+.stat-card {
+  text-align: center;
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 12px;
+  border: 1px solid #eee;
+  height: 100%;
+}
+.stat-number {
+  font-size: 2rem;
+  font-weight: 900;
+  color: var(--stat-number-color, #2c3e50);
+  line-height: 1;
+}
+.stat-label {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  color: #7f8c8d;
+  font-weight: 700;
+  margin-top: 5px;
+}
+.stat-sub {
+  font-size: 0.8rem;
+  color: #7f8c8d;
+  margin-top: 2px;
+}
+.modal-footer-custom {
+  border: none;
+  padding: 0 25px 25px 25px;
+  background: var(--surface);
+}
+.btn-full {
+  width: 100%;
+  border-radius: 10px;
+  font-weight: 700;
+  padding: 10px;
+}
+.debt-negative {
+  color: #e74c3c;
+}
+.debt-positive {
+  color: #27ae60;
+}

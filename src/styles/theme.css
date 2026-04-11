@@ -1,0 +1,340 @@
+/* Design tokens y estilos base - theme.css */
+/* Design tokens and base styles */
+:root {
+  /* App background + surfaces */
+  --bg: #f6f8fb;
+  --surface: #ffffff;
+  --surface-variant: #f8fafc;
+  --surface-border: #e6eef6;
+
+  /* Text */
+  --text: #0f1724;
+  --text-strong: #0b1220;
+  --text-muted: #6b7280;
+  --muted-2: #adb5bd;
+
+  /* Brand / Accent */
+  --accent: #2563eb;
+  --accent-600: #1d4ed8;
+  --accent-rgb: 37, 99, 235;
+
+  /* Semantic */
+  --success: #16a34a;
+  --success-100: #ecfdf5;
+  --danger: #ef4444;
+  --warning: #f59e0b;
+  --warning-300: #fde08b;
+  --gold: #b8860b;
+
+  /* Neutral scale */
+  --neutral-100: #f8fafc;
+  --neutral-200: #f1f5f9;
+  --neutral-300: #e2e8f0;
+  --neutral-400: #cbd5e1;
+  --neutral-500: #94a3b8;
+  --neutral-600: #64748b;
+  --neutral-700: #475569;
+  --neutral-800: #334155;
+
+  /* Supporting colors */
+  --purple: #9b59b6;
+  --purple-dark: #8e44ad;
+  --teal: #1abc9c;
+  --orange: #e67e22;
+  --orange-dark: #d35400;
+
+  /* Gradients */
+  --gradient-warm-start: #f6d365;
+  --gradient-warm-end: #fda085;
+  --gradient-dark-start: #2c3e50;
+  --gradient-dark-end: #34495e;
+
+  /* Layout tokens */
+  --radius-sm: 8px;
+  --radius-md: 12px;
+  --radius-lg: 16px;
+  --shadow-sm: 0 6px 18px rgba(15, 23, 42, 0.06);
+  --shadow-md: 0 12px 36px rgba(15, 23, 42, 0.12);
+  --space-1: 6px;
+  --space-2: 10px;
+  --space-3: 14px;
+  --space-4: 18px;
+  --space-5: 24px;
+  --container-max: 1200px;
+
+  /* Focus */
+  --focus-ring-color: rgba(var(--accent-rgb), 0.12);
+
+  /* Typography scale */
+  --font-family-sans:
+    Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto,
+    "Helvetica Neue", Arial;
+  --font-size-base: 16px;
+  --font-size-sm: 14px;
+  --font-size-lg: 18px;
+  --h1-size: 2rem;
+  --h2-size: 1.6rem;
+  --h3-size: 1.25rem;
+  --line-height-base: 1.4;
+  --fw-regular: 400;
+  --fw-medium: 600;
+  --fw-bold: 800;
+}
+
+/* Reset y base */
+*,
+*::before,
+*::after {
+  box-sizing: border-box;
+}
+html,
+body,
+#root {
+  height: 100%;
+}
+body {
+  margin: 0;
+  padding: 0;
+  font-family: var(--font-family-sans);
+  background-color: var(--bg);
+  color: var(--text);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  line-height: var(--line-height-base);
+  font-size: var(--font-size-base);
+}
+
+a {
+  color: var(--accent);
+  text-decoration: none;
+}
+a:hover {
+  text-decoration: underline;
+}
+
+.container-centered {
+  max-width: var(--container-max);
+  margin: 0 auto;
+  padding: 0 var(--space-4);
+}
+
+/* Card & panel */
+.app-card {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  box-shadow: var(--shadow-sm);
+  padding: var(--space-4);
+  border: 1px solid rgba(15, 23, 42, 0.04);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+.app-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+.panel-screen {
+  background: transparent;
+  border: none;
+  box-shadow: none;
+  border-radius: 0;
+  padding: var(--space-4);
+}
+
+/* Buttons */
+.btn-ghost {
+  background: transparent;
+  border: 1px solid rgba(15, 23, 42, 0.06);
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn-primary {
+  background: var(--accent);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+.btn-success {
+  background: var(--success);
+  color: white;
+  border: none;
+  padding: 8px 12px;
+  border-radius: 8px;
+  cursor: pointer;
+}
+
+/* Select */
+.select-primary {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(var(--accent-rgb), 0.14);
+  width: 100%;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+  background-color: var(--surface);
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Focus-visible */
+button:focus-visible,
+.select-primary:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible,
+.chip:focus-visible,
+.toggle-button:focus-visible,
+.manager-month-chip:focus-visible,
+.panel :focus-visible,
+.sidebar button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 5px var(--focus-ring-color);
+  border-color: var(--accent);
+}
+select:focus {
+  outline: none;
+}
+
+/* Typography utilities */
+.h1 {
+  font-size: var(--h1-size);
+  font-weight: var(--fw-bold);
+  color: var(--text);
+  margin: 0 0 8px;
+}
+.h2 {
+  font-size: var(--h2-size);
+  color: var(--text);
+  margin-bottom: 6px;
+  text-align: center;
+}
+.h3 {
+  font-size: var(--h3-size);
+  color: var(--text);
+  margin-bottom: 6px;
+}
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  text-align: center;
+}
+.text-muted {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.amount {
+  font-weight: 900;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+.flex {
+  display: flex;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* Small helpers for emphasis */
+.muted-small {
+  font-size: 0.75rem;
+  color: var(--text-muted);
+}
+.badge-soft {
+  background: var(--surface-variant);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-weight: 700;
+  cursor: pointer;
+  display: inline-block;
+}
+
+/* Select estilizado */
+.select-primary {
+  padding: 10px 14px;
+  border-radius: 10px;
+  border: 1px solid rgba(37, 99, 235, 0.14);
+  width: 100%;
+  font-size: 0.95rem;
+  font-weight: 700;
+  color: var(--accent);
+  background-color: #ffffff;
+  outline: none;
+  -webkit-appearance: none;
+  appearance: none;
+}
+
+/* Refined focus styles (use :focus-visible for keyboard accessibility) */
+button:focus-visible,
+.select-primary:focus-visible,
+input:focus-visible,
+textarea:focus-visible,
+a:focus-visible,
+.chip:focus-visible,
+.toggle-button:focus-visible,
+.manager-month-chip:focus-visible,
+.panel :focus-visible,
+.sidebar button:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 5px var(--focus-ring-color);
+  border-color: var(--accent);
+}
+
+/* Remove default blue outline on native selects in WebKit, keep refined ring via :focus-visible */
+select:focus {
+  outline: none;
+}
+
+/* Tipografías y utilidades */
+.h2 {
+  font-size: 1.6rem;
+  color: var(--text);
+  margin-bottom: 6px;
+  text-align: center;
+}
+.subtitle {
+  font-size: 0.95rem;
+  color: var(--text-muted);
+  margin-bottom: 12px;
+  text-align: center;
+}
+.amount {
+  font-weight: 900;
+}
+.text-muted {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+}
+.mt-2 {
+  margin-top: 0.5rem;
+}
+.mb-2 {
+  margin-bottom: 0.5rem;
+}
+.flex {
+  display: flex;
+}
+.flex-column {
+  display: flex;
+  flex-direction: column;
+}
+.center {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}

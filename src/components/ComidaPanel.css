@@ -1,0 +1,43 @@
+.comida-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  margin-top: 1rem;
+}
+.comida-card {
+  text-align: center;
+  padding: 1rem;
+}
+.comida-card.small {
+  padding: 0.65rem;
+}
+.card-title {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 8px;
+}
+.card-value {
+  font-size: 1.6rem;
+  font-weight: 800;
+  color: var(--accent);
+}
+.card-sub {
+  font-size: 0.85rem;
+  color: var(--text-muted);
+  margin-top: 6px;
+}
+.more-info {
+  display: flex;
+  gap: 1rem;
+  margin-top: 1rem;
+  flex-wrap: wrap;
+}
+.more-info .app-card {
+  flex: 1 1 220px;
+  text-align: center;
+}
+
+.comida-panel .subtitle {
+  max-width: 720px;
+  margin: 0 auto;
+}

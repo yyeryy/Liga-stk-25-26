@@ -9,6 +9,7 @@ export enum TiposVista {
   ManagerMes,
   Jugadores,
   Historico,
+  Comida,
 }
 
 export interface Jornada {

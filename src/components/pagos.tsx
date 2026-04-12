@@ -1,6 +1,7 @@
 import { useState, useEffect, useMemo } from "react";
 import { calcularAcumulado, JugadorPago } from "../utils/calcularAcumulado.ts";
 import "./pagos.css";
+import CustomSelect from "./CustomSelect.tsx";
 
 export const PagosPanel = () => {
   const [selectedBloque, setSelectedBloque] = useState(0);
@@ -73,17 +74,17 @@ export const PagosPanel = () => {
         <p className="subtitle">Consulta las deudas por tramos de liga</p>
 
         <div className="selectWrapper">
-          <select
-            value={selectedBloque}
-            onChange={(e) => setSelectedBloque(Number(e.target.value))}
+          <CustomSelect
+            id="pagos-bloque"
+            value={String(selectedBloque)}
+            onChange={(v) => setSelectedBloque(Number(v))}
+            options={bloques.map((b) => ({
+              value: String(b.id),
+              label: b.nombre,
+            }))}
             className="select-primary"
-          >
-            {bloques.map((b) => (
-              <option key={b.id} value={b.id}>
-                {b.nombre}
-              </option>
-            ))}
-          </select>
+            placeholder="Selecciona tramo"
+          />
         </div>
 
         <div className="pagos-header">

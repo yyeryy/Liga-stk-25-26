@@ -19,7 +19,7 @@ const App: React.FC = () => {
   return (
     <div>
       <NavBar onSelect={setVista} vistaActual={vista} />
-      <div className="app-main">
+      <main className="container-centered app-main">
         {vista === TiposVista.Jornadas && <JornadasPanel></JornadasPanel>}
         {vista === TiposVista.Pagos && <PagosPanel></PagosPanel>}
         {vista === TiposVista.Comida && <ComidaPanel />}
@@ -33,7 +33,7 @@ const App: React.FC = () => {
         {vista === TiposVista.ManagerMes && <ManagerDelMesPanel />}
         {vista === TiposVista.Evolucion && <EvolucionPanel />}
         {vista === TiposVista.Historico && <HistoricoPanel />}
-      </div>
+      </main>
     </div>
   );
 };

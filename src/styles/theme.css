@@ -22,6 +22,8 @@
   --success: #16a34a;
   --success-100: #ecfdf5;
   --danger: #ef4444;
+  --danger-100: #fff5f5;
+  --danger-rgb: 239, 68, 68;
   --warning: #f59e0b;
   --warning-300: #fde08b;
   --gold: #b8860b;
@@ -248,6 +250,13 @@ select:focus {
   display: flex;
   justify-content: center;
   align-items: center;
+}
+
+/* Main app layout */
+.app-main {
+  padding: calc(var(--space-5) + 8px) 0 40px;
+  min-height: calc(100vh - 76px);
+  width: 100%;
 }
 
 /* Small helpers for emphasis */

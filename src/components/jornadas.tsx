@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import { calcularAcumulado, JugadorPago } from "../utils/calcularAcumulado.ts";
 import "./jornadas.css";
+import CustomSelect from "./CustomSelect.tsx";
 
 export const JornadasPanel = () => {
   const [selectedJornada, setSelectedJornada] = useState<number>(1);
@@ -43,17 +44,17 @@ export const JornadasPanel = () => {
         <p className="subtitle">Consulta los puntos y pagos por jornada</p>
 
         <div className="selectWrapper">
-          <select
-            value={selectedJornada}
-            onChange={(e) => setSelectedJornada(Number(e.target.value))}
+          <CustomSelect
+            id="jornada-select"
+            value={String(selectedJornada)}
+            onChange={(v) => setSelectedJornada(Number(v))}
+            options={Array.from({ length: 38 }, (_, i) => i + 1).map((j) => ({
+              value: String(j),
+              label: `Jornada ${j}`,
+            }))}
             className="select-primary"
-          >
-            {Array.from({ length: 38 }, (_, i) => i + 1).map((j) => (
-              <option key={j} value={j}>
-                Jornada {j}
-              </option>
-            ))}
-          </select>
+            placeholder="Selecciona jornada"
+          />
         </div>
 
         <div className="tableWrapper">

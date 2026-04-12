@@ -128,6 +128,15 @@ export const EvolucionPanel = () => {
                 <div
                   key={player}
                   onClick={() => handleTogglePlayer(player)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleTogglePlayer(player);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-pressed={isSelected}
                   className="chip"
                   style={
                     {

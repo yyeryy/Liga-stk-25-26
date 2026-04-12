@@ -90,6 +90,15 @@ export const ManagerDelMesPanel = () => {
               <div
                 key={mes.id}
                 onClick={() => setMesSeleccionado(mes.id)}
+                onKeyDown={(e) => {
+                  if (e.key === "Enter" || e.key === " ") {
+                    e.preventDefault();
+                    setMesSeleccionado(mes.id);
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+                aria-pressed={isSelected}
                 className={`manager-month-chip ${isSelected ? "manager-month-chip--active" : ""}`}
               >
                 {mes.icono} {mes.nombre}

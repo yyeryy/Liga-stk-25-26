@@ -12,26 +12,9 @@ export const ComidaPanel: React.FC = () => {
 
   const total = pagos.reduce((s, p) => s + (p.pago ?? 0), 0);
   const playersCount = pagos.length;
-  const payers = pagos.filter((p) => (p.pago ?? 0) > 0);
-  const payersCount = payers.length;
   const avgPerPerson = playersCount > 0 ? total / playersCount : 0;
+
   const externalPrice = avgPerPerson;
-  const externalWithTip = externalPrice * 1.1;
-
-  const sorted = [...pagos].map((p) => p.pago ?? 0).sort((a, b) => a - b);
-  const median = (() => {
-    if (sorted.length === 0) return 0;
-    const mid = Math.floor(sorted.length / 2);
-    return sorted.length % 2 === 1
-      ? sorted[mid]
-      : (sorted[mid - 1] + sorted[mid]) / 2;
-  })();
-
-  const maxPaid = sorted.length ? Math.max(...sorted) : 0;
-  const minPaidNonZeroArr = sorted.filter((v) => v > 0);
-  const minPaidNonZero = minPaidNonZeroArr.length
-    ? Math.min(...minPaidNonZeroArr)
-    : 0;
 
   const fmt = (n: number) => (n % 1 === 0 ? n.toString() : n.toFixed(2));
 

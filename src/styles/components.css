@@ -1,0 +1,254 @@
+/* Shared component utilities and sensible defaults for a modern UI */
+:root {
+  /* Alias for legacy component styles that reference --font-sans */
+  --font-sans: var(--font-family-sans);
+}
+
+/* Accessibility helpers */
+.sr-only,
+.visually-hidden {
+  position: absolute !important;
+  width: 1px !important;
+  height: 1px !important;
+  padding: 0 !important;
+  margin: -1px !important;
+  overflow: hidden !important;
+  clip: rect(0, 0, 0, 0) !important;
+  white-space: nowrap !important;
+  border: 0 !important;
+}
+
+/* Make elements with role="button" keyboard-focus friendly */
+[role="button"]:focus-visible {
+  outline: none;
+  box-shadow: 0 0 0 5px var(--focus-ring-color);
+  border-color: var(--accent);
+}
+
+/* Panels & sections */
+.panel {
+  padding: var(--space-4);
+  background: transparent;
+}
+.section {
+  margin: var(--space-5) 0;
+}
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: var(--space-4);
+  margin-bottom: var(--space-3);
+}
+.section-title {
+  margin: 0;
+  font-size: var(--h2-size);
+  font-weight: var(--fw-medium);
+  color: var(--text-strong);
+}
+.section-subtitle {
+  margin: 0;
+  font-size: var(--font-size-sm);
+  color: var(--text-muted);
+}
+
+/* Card grid */
+.panel-grid,
+.grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1.25rem;
+}
+
+/* Cards */
+.app-card {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  box-shadow: var(--shadow-sm);
+  border: 1px solid var(--surface-border);
+  transition:
+    transform 0.12s ease,
+    box-shadow 0.12s ease;
+}
+.app-card:hover {
+  transform: translateY(-4px);
+  box-shadow: var(--shadow-md);
+}
+
+/* Card internals */
+.card-title {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-bottom: 6px;
+  font-weight: 600;
+}
+.card-value {
+  font-size: clamp(1.2rem, 2.6vw, 1.8rem);
+  font-weight: 800;
+  color: var(--accent-600);
+}
+.card-sub {
+  font-size: 0.9rem;
+  color: var(--text-muted);
+  margin-top: 8px;
+}
+
+/* Tables */
+.data-table {
+  width: 100%;
+  border-collapse: collapse;
+  background: var(--surface);
+  border-radius: var(--radius-sm);
+  overflow: hidden;
+  box-shadow: var(--shadow-sm);
+}
+.data-table th,
+.data-table td {
+  padding: 10px 12px;
+  border-bottom: 1px solid var(--neutral-200);
+  color: var(--text-strong);
+}
+.data-table thead th {
+  background: var(--surface-variant);
+  color: var(--text-strong);
+  font-weight: 700;
+  text-align: left;
+}
+.data-table tbody tr:hover {
+  background: rgba(var(--accent-rgb), 0.03);
+}
+
+/* Forms */
+.form-input,
+input[type="text"],
+input[type="number"],
+textarea,
+select {
+  padding: 10px 12px;
+  border-radius: 10px;
+  border: 1px solid var(--neutral-300);
+  background: var(--surface);
+  color: var(--text);
+  outline: none;
+  font-size: 0.95rem;
+}
+.form-input:focus,
+input:focus,
+textarea:focus,
+select:focus {
+  box-shadow: 0 0 0 5px var(--focus-ring-color);
+  border-color: var(--accent);
+}
+
+/* Utilities */
+.controls {
+  display: flex;
+  gap: 0.75rem;
+  align-items: center;
+  flex-wrap: wrap;
+}
+.chips {
+  display: flex;
+  gap: 0.5rem;
+  flex-wrap: wrap;
+}
+.badge-soft {
+  background: var(--surface-variant);
+  padding: 6px 10px;
+  border-radius: 8px;
+  font-weight: 700;
+}
+
+/* Modal helper */
+.modal {
+  position: fixed;
+  inset: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 1.25rem;
+  background: rgba(2, 6, 23, 0.35);
+}
+.modal .modal-content {
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  padding: 1rem;
+  box-shadow: var(--shadow-md);
+  width: 100%;
+  max-width: 720px;
+}
+
+@media (max-width: 720px) {
+  .panel-grid,
+  .grid {
+    grid-template-columns: 1fr;
+  }
+  .app-card {
+    padding: 0.85rem;
+  }
+}
+
+/* Custom select (mobile modal picker) */
+.custom-select {
+  width: 100%;
+}
+.custom-select-button {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 8px;
+  padding: 10px 12px;
+  background: var(--surface);
+  border: 1px solid var(--surface-border);
+  border-radius: 12px;
+  min-height: 44px;
+  cursor: pointer;
+}
+.custom-select-button:focus {
+  outline: none;
+  box-shadow: 0 0 0 5px var(--focus-ring-color);
+}
+.custom-select-value.placeholder {
+  color: var(--text-muted);
+}
+.custom-select-caret {
+  color: var(--text-muted);
+}
+.custom-select-modal {
+  position: fixed;
+  inset: 0;
+  padding: 0;
+  background: rgba(2, 6, 23, 0.35);
+  z-index: 2000;
+}
+.custom-select-panel {
+  position: absolute;
+  background: var(--surface);
+  border-radius: var(--radius-md);
+  overflow: hidden;
+  box-shadow: var(--shadow-md);
+  max-height: 60vh;
+  overflow-y: auto;
+  min-width: 220px;
+}
+.custom-select-option {
+  padding: 14px 16px;
+  border-bottom: 1px solid var(--surface-border);
+  cursor: pointer;
+}
+.custom-select-option:last-child {
+  border-bottom: none;
+}
+.custom-select-option:hover {
+  background: var(--surface-variant);
+}
+.custom-select-option.selected {
+  background: rgba(var(--accent-rgb), 0.06);
+  color: var(--accent-600);
+  font-weight: 700;
+}
+.custom-select-option.disabled {
+  opacity: 0.55;
+  cursor: not-allowed;
+}

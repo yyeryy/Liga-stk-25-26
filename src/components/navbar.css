@@ -1,41 +1,61 @@
 .app-navbar {
   background: var(--surface);
-  border-bottom: 1px solid rgba(2, 6, 23, 0.04);
+  border-bottom: 1px solid var(--surface-border);
+  display: flex;
+  align-items: center;
+  padding: 0.5rem 0;
+  box-shadow: 0 6px 18px rgba(15, 23, 42, 0.04);
+  backdrop-filter: blur(6px);
+  -webkit-backdrop-filter: blur(6px);
+  z-index: 1000;
 }
+
 .app-navbar .navbar-brand {
   color: var(--accent);
-  font-weight: 900;
+  font-weight: 800;
   font-size: 1.15rem;
+  letter-spacing: -0.02em;
 }
+
 .app-navbar .nav-link {
   color: var(--text-muted) !important;
   font-weight: 600;
-  padding: 0.5rem 1rem;
+  padding: 0.45rem 0.75rem;
+  border-radius: 10px;
+  transition:
+    color 0.12s ease,
+    background 0.12s ease,
+    transform 0.12s ease;
 }
+
 .app-navbar .nav-link:hover {
   color: var(--text) !important;
+  background: var(--surface-variant);
+  transform: translateY(-1px);
 }
+
 .app-navbar .nav-link.active {
   color: var(--accent) !important;
+  background: linear-gradient(
+    90deg,
+    rgba(var(--accent-rgb), 0.08),
+    transparent
+  );
   font-weight: 800;
-  position: relative;
 }
-.app-navbar .nav-link.active::after {
-  content: "";
-  position: absolute;
-  left: 12px;
-  right: 12px;
-  bottom: -10px;
-  height: 3px;
-  background: linear-gradient(90deg, var(--accent), var(--primary));
-  border-radius: 4px;
-}
+
 .app-navbar .navbar-toggler {
-  border-color: rgba(2, 6, 23, 0.06);
+  border-color: var(--surface-border);
 }
 
 @media (max-width: 768px) {
   .app-navbar .nav-link {
-    padding: 0.5rem 0.6rem;
+    padding: 0.45rem 0.6rem;
+  }
+  .app-navbar .navbar-collapse {
+    background: var(--surface);
+    padding: 0.5rem;
+    border-radius: 8px;
+    box-shadow: var(--shadow-sm);
   }
 }

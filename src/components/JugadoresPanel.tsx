@@ -210,6 +210,7 @@ export const JugadoresPanel = () => {
             const expediente = isExpanded
               ? generarExpedienteUltra(jugador)
               : null;
+            const safeId = String(jugador).replace(/\s+/g, "-");
             return (
               <div
                 key={jugador}
@@ -218,6 +219,16 @@ export const JugadoresPanel = () => {
                 {/* CABECERA DE LA FILA */}
                 <div
                   onClick={() => handleToggle(jugador)}
+                  onKeyDown={(e) => {
+                    if (e.key === "Enter" || e.key === " ") {
+                      e.preventDefault();
+                      handleToggle(jugador);
+                    }
+                  }}
+                  role="button"
+                  tabIndex={0}
+                  aria-expanded={isExpanded}
+                  aria-controls={`collapse-${safeId}`}
                   className="jugador-header"
                 >
                   <div className="jugador-left">
@@ -226,6 +237,7 @@ export const JugadoresPanel = () => {
                   </div>
                   <div
                     className={`jugador-toggle ${isExpanded ? "jugador-toggle--expanded" : ""}`}
+                    aria-hidden="true"
                   >
                     ▼
                   </div>
@@ -233,6 +245,7 @@ export const JugadoresPanel = () => {
 
                 {/* CONTENIDO DESPLEGABLE */}
                 <div
+                  id={`collapse-${safeId}`}
                   className={`jugador-collapse ${isExpanded ? "jugador-collapse--open" : ""}`}
                 >
                   {expediente && (

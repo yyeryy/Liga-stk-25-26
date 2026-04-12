@@ -28,11 +28,14 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
       className="app-navbar shadow-sm py-2"
     >
       <Container>
-        <Navbar.Brand className="fw-bold fs-4">⚽ Liga STK</Navbar.Brand>
+        <Navbar.Brand className="fw-bold fs-4" aria-label="Liga STK">
+          ⚽ Liga STK
+        </Navbar.Brand>
 
         {/* Botón de hamburguesa para móviles */}
         <Navbar.Toggle
           aria-controls="basic-navbar-nav"
+          aria-label="Toggle navigation"
           onClick={() => setExpanded(!expanded)}
         />
 
@@ -43,6 +46,9 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             {/* ms-auto empuja los enlaces a la derecha */}
             <Nav.Link
               active={vistaActual === TiposVista.Jornadas}
+              aria-current={
+                vistaActual === TiposVista.Jornadas ? "page" : undefined
+              }
               onClick={() => handleSelect(TiposVista.Jornadas)}
               className="px-3"
             >
@@ -50,6 +56,9 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             </Nav.Link>
             <Nav.Link
               active={vistaActual === TiposVista.Pagos}
+              aria-current={
+                vistaActual === TiposVista.Pagos ? "page" : undefined
+              }
               onClick={() => handleSelect(TiposVista.Pagos)}
               className="px-3"
             >
@@ -57,6 +66,9 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             </Nav.Link>
             <Nav.Link
               active={vistaActual === TiposVista.Comida}
+              aria-current={
+                vistaActual === TiposVista.Comida ? "page" : undefined
+              }
               onClick={() => handleSelect(TiposVista.Comida)}
               className="px-3"
             >
@@ -64,6 +76,9 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             </Nav.Link>
             <Nav.Link
               active={vistaActual === TiposVista.Estadisticas}
+              aria-current={
+                vistaActual === TiposVista.Estadisticas ? "page" : undefined
+              }
               onClick={() => handleSelect(TiposVista.Estadisticas)}
               className="px-3"
             >
@@ -71,6 +86,9 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             </Nav.Link>
             <Nav.Link
               active={vistaActual === TiposVista.Jugadores}
+              aria-current={
+                vistaActual === TiposVista.Jugadores ? "page" : undefined
+              }
               onClick={() => handleSelect(TiposVista.Jugadores)}
               className="px-3"
             >
@@ -78,6 +96,9 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             </Nav.Link>
             <Nav.Link
               active={vistaActual === TiposVista.Rachas}
+              aria-current={
+                vistaActual === TiposVista.Rachas ? "page" : undefined
+              }
               onClick={() => handleSelect(TiposVista.Rachas)}
               className="px-3"
             >
@@ -85,6 +106,9 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             </Nav.Link>
             <Nav.Link
               active={vistaActual === TiposVista.CaraACara}
+              aria-current={
+                vistaActual === TiposVista.CaraACara ? "page" : undefined
+              }
               onClick={() => handleSelect(TiposVista.CaraACara)}
               className="px-3"
             >
@@ -92,6 +116,9 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             </Nav.Link>
             <Nav.Link
               active={vistaActual === TiposVista.Predicciones}
+              aria-current={
+                vistaActual === TiposVista.Predicciones ? "page" : undefined
+              }
               onClick={() => handleSelect(TiposVista.Predicciones)}
               className="px-3"
             >
@@ -99,6 +126,9 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             </Nav.Link>{" "}
             <Nav.Link
               active={vistaActual === TiposVista.ManagerMes}
+              aria-current={
+                vistaActual === TiposVista.ManagerMes ? "page" : undefined
+              }
               onClick={() => handleSelect(TiposVista.ManagerMes)}
               className="px-3"
             >
@@ -106,6 +136,9 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             </Nav.Link>
             <Nav.Link
               active={vistaActual === TiposVista.Evolucion}
+              aria-current={
+                vistaActual === TiposVista.Evolucion ? "page" : undefined
+              }
               onClick={() => handleSelect(TiposVista.Evolucion)}
               className="px-3"
             >
@@ -113,6 +146,9 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             </Nav.Link>
             <Nav.Link
               active={vistaActual === TiposVista.Historico}
+              aria-current={
+                vistaActual === TiposVista.Historico ? "page" : undefined
+              }
               onClick={() => handleSelect(TiposVista.Historico)}
               className="px-3"
             >

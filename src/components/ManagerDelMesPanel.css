@@ -22,33 +22,35 @@
 .manager-month-chip {
   padding: 8px 16px;
   border-radius: 20px;
-  background-color: var(--bg);
+  background-color: var(--surface-variant);
   color: var(--text-muted);
   font-weight: 600;
-  border: 1px solid rgba(2, 6, 23, 0.04);
+  border: 1px solid var(--surface-border);
   cursor: pointer;
   white-space: nowrap;
-  transition: all 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 }
 .manager-month-chip--active {
   background-color: var(--accent);
   color: white;
   font-weight: 700;
-  border-color: rgba(2, 6, 23, 0.06);
-  box-shadow: 0 4px 10px rgba(52, 152, 219, 0.15);
+  border-color: rgba(var(--accent-rgb), 0.14);
+  box-shadow: var(--shadow-md);
 }
 
 .manager-header {
   text-align: center;
   margin-bottom: 20px;
   padding: 10px;
-  background-color: #f8f9fa;
-  border-radius: 10px;
-  border: 1px dashed #dee2e6;
+  background-color: var(--surface-variant);
+  border-radius: var(--radius-sm);
+  border: 1px dashed var(--neutral-300);
 }
 .manager-header h5 {
   margin: 0;
-  color: #2c3e50;
+  color: var(--text-strong);
   font-weight: 700;
 }
 .manager-header .meta {
@@ -60,12 +62,12 @@
 .manager-empty {
   text-align: center;
   padding: 40px 20px;
-  background-color: #fffcf0;
-  border-radius: 12px;
-  border: 1px dashed #fde08b;
+  background-color: var(--neutral-100);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--warning-300);
 }
 .manager-empty h5 {
-  color: #b8860b;
+  color: var(--gold);
 }
 .manager-empty p {
   font-size: 0.85rem;
@@ -91,16 +93,20 @@
 }
 
 .manager-mvp {
-  background: linear-gradient(135deg, #f6d365 0%, #fda085 100%);
+  background: linear-gradient(
+    135deg,
+    var(--gradient-warm-start),
+    var(--gradient-warm-end)
+  );
   border-radius: var(--radius-md);
   padding: 20px;
   color: white;
   display: flex;
   align-items: center;
   justify-content: space-between;
-  box-shadow: 0 8px 20px rgba(253, 160, 133, 0.4);
+  box-shadow: var(--shadow-md);
   cursor: pointer;
-  transform: scale(1.02);
+  transform: translateY(-2px);
 }
 .manager-mvp__label {
   font-size: 0.8rem;
@@ -136,14 +142,17 @@
   align-items: center;
   justify-content: space-between;
   background-color: var(--surface);
-  border: 1px solid #eee;
-  border-radius: 10px;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-sm);
   padding: 12px 15px;
   cursor: pointer;
-  transition: transform 0.18s ease;
+  transition:
+    transform 0.18s ease,
+    box-shadow 0.18s ease;
 }
 .manager-item:hover {
-  transform: translateX(5px);
+  transform: translateX(4px);
+  box-shadow: var(--shadow-sm);
 }
 .manager-item__left {
   display: flex;
@@ -154,11 +163,11 @@
   width: 25px;
   text-align: center;
   font-weight: 700;
-  color: #7f8c8d;
+  color: var(--text-muted);
 }
 .manager-player {
   font-weight: 600;
-  color: #2c3e50;
+  color: var(--text);
   font-size: 1.05rem;
 }
 
@@ -180,7 +189,7 @@
 }
 .manager-points {
   font-size: 0.75rem;
-  color: #95a5a6;
+  color: var(--muted-2);
   font-weight: 600;
   margin-top: 2px;
 }

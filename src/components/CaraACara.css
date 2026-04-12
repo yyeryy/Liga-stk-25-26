@@ -63,8 +63,8 @@
 .compare-table {
   display: flex;
   flex-direction: column;
-  border: 1px solid rgba(0, 0, 0, 0.04);
-  border-radius: 12px;
+  border: 1px solid var(--surface-border);
+  border-radius: var(--radius-md);
   overflow: hidden;
   background: var(--surface);
 }
@@ -72,7 +72,7 @@
   display: flex;
   background-color: var(--surface-variant);
   padding: 12px 0;
-  border-bottom: 2px solid var(--surface-border);
+  border-bottom: 1px solid var(--surface-border);
 }
 .col {
   text-align: center;

@@ -2,14 +2,14 @@
   padding: 25px;
   font-family: var(--font-sans);
   background: var(--surface);
-  border-radius: 15px;
+  border-radius: var(--radius-md);
 }
 .modal-header-info {
   display: flex;
   align-items: center;
   gap: 20px;
   margin-bottom: 25px;
-  border-bottom: 2px solid #f0f0f0;
+  border-bottom: 1px solid var(--surface-border);
   padding-bottom: 15px;
 }
 .profile-img {
@@ -17,25 +17,25 @@
   height: 70px;
   border-radius: 50%;
   object-fit: cover;
-  border: 4px solid #f8f9fa;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+  border: 4px solid var(--surface-variant);
+  box-shadow: var(--shadow-sm);
 }
 .player-name {
   margin: 0;
   font-weight: 900;
-  color: #2c3e50;
+  color: var(--text-strong);
   font-size: 1.8rem;
   letter-spacing: -1px;
 }
 .player-subtitle {
   margin: 0;
-  color: #7f8c8d;
+  color: var(--text-muted);
   font-weight: 600;
   font-size: 0.9rem;
 }
 .section-title {
   text-transform: uppercase;
-  color: #b2bec3;
+  color: var(--text-muted);
   font-size: 0.75rem;
   font-weight: 900;
   letter-spacing: 1px;
@@ -65,34 +65,34 @@
 }
 .insignia-desc {
   font-size: 0.75rem;
-  color: #7f8c8d;
+  color: var(--text-muted);
   margin-top: 1px;
   line-height: 1.2;
 }
 .stat-card {
   text-align: center;
-  background: #f8f9fa;
+  background: var(--surface-variant);
   padding: 15px;
-  border-radius: 12px;
-  border: 1px solid #eee;
+  border-radius: var(--radius-md);
+  border: 1px solid var(--surface-border);
   height: 100%;
 }
 .stat-number {
   font-size: 2rem;
   font-weight: 900;
-  color: var(--stat-number-color, #2c3e50);
+  color: var(--stat-number-color, var(--text-strong));
   line-height: 1;
 }
 .stat-label {
   font-size: 0.7rem;
   text-transform: uppercase;
-  color: #7f8c8d;
+  color: var(--text-muted);
   font-weight: 700;
   margin-top: 5px;
 }
 .stat-sub {
   font-size: 0.8rem;
-  color: #7f8c8d;
+  color: var(--text-muted);
   margin-top: 2px;
 }
 .modal-footer-custom {
@@ -107,8 +107,8 @@
   padding: 10px;
 }
 .debt-negative {
-  color: #e74c3c;
+  color: var(--danger);
 }
 .debt-positive {
-  color: #27ae60;
+  color: var(--success);
 }

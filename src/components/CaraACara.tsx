@@ -1,5 +1,6 @@
 import React, { useMemo, useState } from "react";
 import "./CaraACara.css";
+import CustomSelect from "./CustomSelect.tsx";
 import { Apodos } from "../models/models.ts";
 import { data } from "../data/data.ts";
 import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
@@ -84,33 +85,33 @@ export const CaraACaraPanel = () => {
 
         {/* Zona de Selectores */}
         <div className="selectors">
-          <select
+          <CustomSelect
+            id="cara-jugador-a"
             value={jugadorA}
-            onChange={(e) => setJugadorA(e.target.value as Apodos)}
+            onChange={(v) => setJugadorA(v as Apodos)}
+            options={Object.values(Apodos).map((j) => ({
+              value: j,
+              label: j,
+              disabled: j === jugadorB,
+            }))}
+            placeholder="Selecciona Jugador 1..."
             className="select-primary"
-          >
-            <option value="">Selecciona Jugador 1...</option>
-            {Object.values(Apodos).map((j) => (
-              <option key={`A-${j}`} value={j} disabled={j === jugadorB}>
-                {j}
-              </option>
-            ))}
-          </select>
+          />
 
           <div className="vs-label">VS</div>
 
-          <select
+          <CustomSelect
+            id="cara-jugador-b"
             value={jugadorB}
-            onChange={(e) => setJugadorB(e.target.value as Apodos)}
+            onChange={(v) => setJugadorB(v as Apodos)}
+            options={Object.values(Apodos).map((j) => ({
+              value: j,
+              label: j,
+              disabled: j === jugadorA,
+            }))}
+            placeholder="Selecciona Jugador 2..."
             className="select-primary select-danger"
-          >
-            <option value="">Selecciona Jugador 2...</option>
-            {Object.values(Apodos).map((j) => (
-              <option key={`B-${j}`} value={j} disabled={j === jugadorA}>
-                {j}
-              </option>
-            ))}
-          </select>
+          />
         </div>
 
         {/* Resultados */}

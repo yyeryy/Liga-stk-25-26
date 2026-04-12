@@ -4,6 +4,7 @@ import { data } from "../data/data.ts";
 import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
 import Badge from "react-bootstrap/Badge";
 import "./RachasPanel.css";
+import CustomSelect from "./CustomSelect.tsx";
 
 export const RachasPanel = () => {
   const [numJornadas, setNumJornadas] = useState<number>(5);
@@ -110,15 +111,18 @@ export const RachasPanel = () => {
         <h2 className="h2">🔥 Estado de Forma</h2>
 
         <div className="rachas-controls">
-          <select
-            value={numJornadas}
-            onChange={(e) => setNumJornadas(Number(e.target.value))}
+          <CustomSelect
+            id="rachas-num"
+            value={String(numJornadas)}
+            onChange={(v) => setNumJornadas(Number(v))}
+            options={[
+              { value: "5", label: "Últimas 5 Jornadas" },
+              { value: "10", label: "Últimas 10 Jornadas" },
+              { value: "15", label: "Últimas 15 Jornadas" },
+            ]}
             className="select-primary rachas-select"
-          >
-            <option value={5}>Últimas 5 Jornadas</option>
-            <option value={10}>Últimas 10 Jornadas</option>
-            <option value={15}>Últimas 15 Jornadas</option>
-          </select>
+            placeholder="Últimas Jornadas"
+          />
         </div>
 
         {mvp && (

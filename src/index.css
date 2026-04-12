@@ -1,3 +1,4 @@
 @import "./styles/theme.css";
+@import "./styles/components.css";
 
-/* index.css ahora reexporta el tema global. Evita reglas locales aquí. */
+/* index.css ahora reexporta el tema global y utilidades compartidas. Evita reglas locales aquí. */

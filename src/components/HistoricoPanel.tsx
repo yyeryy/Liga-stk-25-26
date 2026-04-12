@@ -177,7 +177,7 @@ export const HistoricoPanel = () => {
             textAlign: "center",
             fontSize: "0.75rem",
             color: "var(--muted-2)",
-            borderTop: "1px dashed #eee",
+            borderTop: "1px dashed var(--neutral-300)",
           }}
         >
           <span style={{ fontWeight: "bold", color: "var(--danger)" }}>

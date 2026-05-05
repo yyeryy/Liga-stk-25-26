@@ -498,5 +498,20 @@ export const data = {
         { jugador: Apodos.Fognini, puntos: 37 },
       ],
     },
+    {
+      numero: 34,
+      resultados: [
+        { jugador: Apodos.LesbianaMadamme, puntos: 82 },
+        { jugador: Apodos.ElManito, puntos: 79 },
+        { jugador: Apodos.Steven, puntos: 64 },
+        { jugador: Apodos.Golo, puntos: 63 },
+        { jugador: Apodos.Fognini, puntos: 60 },
+        { jugador: Apodos.Karabinieri, puntos: 59 },
+        { jugador: Apodos.Dennis, puntos: 55 },
+        { jugador: Apodos.Acierillo, puntos: 54 },
+        { jugador: Apodos.MitxiJR, puntos: 42 },
+        { jugador: Apodos.Pitxu15pesos, puntos: 41 },
+      ],
+    },
   ],
 };

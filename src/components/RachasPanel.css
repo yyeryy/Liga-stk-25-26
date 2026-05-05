@@ -174,3 +174,44 @@
 .rachas-legend--bottom {
   font-size: 0.75rem;
 }
+
+@media (max-width: 720px) {
+  .rachas-panel {
+    padding: 0.85rem;
+  }
+
+  .rachas-content {
+    padding: 0.9rem;
+  }
+
+  .rachas-controls {
+    margin-bottom: 1rem;
+  }
+
+  .rachas-select {
+    width: 100%;
+  }
+
+  .rachas-mvp {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+  }
+
+  .rachas-mvp__score {
+    font-size: 1.5rem;
+  }
+
+  .rachas-item {
+    padding: 0.95rem;
+  }
+
+  .rachas-item__footer {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .rachas-dots {
+    justify-content: flex-start;
+  }
+}

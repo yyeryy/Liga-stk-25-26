@@ -112,3 +112,44 @@
 .debt-positive {
   color: var(--success);
 }
+
+@media (max-width: 720px) {
+  .modal-expediente .modal-body-panel {
+    padding: 1rem;
+  }
+
+  .modal-header-info {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.9rem;
+  }
+
+  .profile-img {
+    width: 60px;
+    height: 60px;
+  }
+
+  .player-name {
+    font-size: 1.45rem;
+  }
+
+  .insignias-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .insignia {
+    align-items: flex-start;
+  }
+
+  .stat-card {
+    padding: 0.9rem;
+  }
+
+  .stat-number {
+    font-size: 1.6rem;
+  }
+
+  .modal-footer-custom {
+    padding: 0 1rem 1rem;
+  }
+}

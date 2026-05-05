@@ -165,3 +165,48 @@
   color: var(--text-muted);
   margin-top: 2px;
 }
+
+@media (max-width: 720px) {
+  .jugadores-panel {
+    padding: 0.85rem;
+  }
+
+  .jugadores-content {
+    padding: 0.9rem;
+  }
+
+  .jugador-header {
+    padding: 0.95rem;
+    gap: 0.75rem;
+  }
+
+  .jugador-left {
+    gap: 0.75rem;
+  }
+
+  .jugador-avatar {
+    width: 40px;
+    height: 40px;
+    font-size: 1.2rem;
+  }
+
+  .jugador-name {
+    font-size: 1rem;
+  }
+
+  .jugador-collapse-inner {
+    padding: 1rem;
+  }
+
+  .insignias-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .stats-grid .stat-card {
+    padding: 0.9rem;
+  }
+
+  .stat-value {
+    font-size: 1.7rem;
+  }
+}

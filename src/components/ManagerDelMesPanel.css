@@ -193,3 +193,59 @@
   font-weight: 600;
   margin-top: 2px;
 }
+
+@media (max-width: 720px) {
+  .manager-panel {
+    padding: 0.85rem;
+  }
+
+  .manager-content {
+    padding: 0.9rem;
+  }
+
+  .manager-months {
+    gap: 8px;
+    padding-bottom: 10px;
+    margin-bottom: 12px;
+  }
+
+  .manager-month-chip {
+    padding: 0.7rem 0.9rem;
+  }
+
+  .manager-header,
+  .manager-empty,
+  .manager-mvp,
+  .manager-item {
+    border-radius: 14px;
+  }
+
+  .manager-mvp {
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 1rem;
+  }
+
+  .manager-mvp__name {
+    font-size: 1.45rem;
+  }
+
+  .manager-mvp__price {
+    font-size: 2rem;
+  }
+
+  .manager-item {
+    align-items: flex-start;
+    gap: 0.75rem;
+    padding: 0.95rem 1rem;
+  }
+
+  .manager-item__right {
+    align-items: flex-start;
+  }
+
+  .manager-player {
+    font-size: 1rem;
+  }
+}

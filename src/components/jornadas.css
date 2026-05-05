@@ -61,14 +61,6 @@
   background-color: rgba(var(--accent-rgb), 0.03);
 }
 
-.jornadas-panel .table th {
-  background-color: rgba(52, 152, 219, 0.08);
-}
-
-.jornadas-panel .table tr:hover {
-  background-color: rgba(52, 152, 219, 0.03);
-}
-
 .jornadas-panel .input {
   width: 60px;
   text-align: center;
@@ -247,4 +239,59 @@
 }
 .amount--owed {
   color: var(--danger);
+}
+
+@media (max-width: 720px) {
+  .jornadas-panel {
+    padding: 0.85rem;
+  }
+
+  .jornadas-panel .panel:not(.panel-screen) {
+    padding: 1rem;
+  }
+
+  .jornada-header,
+  .jornadas-panel .table {
+    font-size: 0.92rem;
+  }
+
+  .jornadas-panel .tableWrapper {
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+  }
+
+  .jornadas-panel .table th,
+  .jornadas-panel .table td {
+    padding: 0.72rem 0.55rem;
+    white-space: nowrap;
+  }
+
+  .jornada-row {
+    padding: 0.9rem 0.8rem;
+  }
+
+  .jornada-pos,
+  .col-pos {
+    width: 14%;
+  }
+
+  .jornada-player,
+  .col-jugador {
+    width: 38%;
+  }
+
+  .jornada-pts,
+  .col-puntos {
+    width: 20%;
+  }
+
+  .jornada-amount,
+  .col-pago {
+    width: 28%;
+  }
+
+  .jornadas-panel .btn,
+  .jornadas-panel .btnGreen {
+    width: 100%;
+  }
 }

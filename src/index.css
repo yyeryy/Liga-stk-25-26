@@ -1,4 +1,3 @@
-@import "./styles/theme.css";
-@import "./styles/components.css";
+@import "./styles.css";
 
-/* index.css ahora reexporta el tema global y utilidades compartidas. Evita reglas locales aquí. */
+/* Punto de entrada global: esta hoja centraliza el tema y las utilidades compartidas. */

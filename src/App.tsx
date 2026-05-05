@@ -1,5 +1,4 @@
 import React, { useState } from "react";
-import "./styles.css";
 import { TiposVista } from "./models/models.ts";
 import NavBar from "./components/navbar.tsx";
 import { JornadasPanel } from "./components/jornadas.tsx";

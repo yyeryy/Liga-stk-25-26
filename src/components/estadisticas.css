@@ -99,3 +99,21 @@
   text-align: center;
   margin-top: 40px;
 }
+
+@media (max-width: 720px) {
+  .estadisticas-panel {
+    padding: 0.85rem;
+  }
+
+  .estadisticas-panel .mini-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .mini-table-body {
+    padding: 0.85rem;
+  }
+
+  .stat-row {
+    padding: 0.75rem 0.85rem;
+  }
+}

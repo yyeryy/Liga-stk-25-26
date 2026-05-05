@@ -86,3 +86,38 @@
   min-width: 700px;
   height: 400px;
 }
+
+@media (max-width: 720px) {
+  .evolucion-panel {
+    padding: 0.85rem;
+  }
+
+  .evolucion-panel .panel {
+    padding: 0.9rem;
+  }
+
+  .toggle-controls {
+    margin-bottom: 14px;
+  }
+
+  .toggle-group {
+    width: 100%;
+  }
+
+  .toggle-button {
+    padding: 0.75rem 0.8rem;
+  }
+
+  .chip-container {
+    justify-content: flex-start;
+  }
+
+  .chart-scroll {
+    margin-inline: -0.2rem;
+  }
+
+  .chart-inner {
+    min-width: 560px;
+    height: 320px;
+  }
+}

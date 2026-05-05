@@ -152,3 +152,49 @@
   font-size: 0.9rem;
   color: var(--text-muted);
 }
+
+@media (max-width: 720px) {
+  .cara-panel {
+    padding: 0.85rem;
+  }
+
+  .selectors {
+    gap: 10px;
+  }
+
+  .vs-label {
+    font-size: 1rem;
+    margin: 0;
+  }
+
+  .compare-table {
+    overflow: hidden;
+  }
+
+  .compare-header,
+  .row {
+    padding-left: 0.65rem;
+    padding-right: 0.65rem;
+  }
+
+  .compare-header {
+    font-size: 0.82rem;
+  }
+
+  .row {
+    padding-top: 0.8rem;
+    padding-bottom: 0.8rem;
+  }
+
+  .row .value {
+    font-size: 1.15rem;
+  }
+
+  .row .label {
+    font-size: 0.8rem;
+  }
+
+  .desc {
+    font-size: 0.82rem;
+  }
+}

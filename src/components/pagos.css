@@ -116,3 +116,61 @@
 .alert-row--mt {
   margin-top: 4px;
 }
+
+@media (max-width: 720px) {
+  .pagos-panel {
+    padding: 0.85rem;
+  }
+
+  .pagos-header {
+    display: none;
+  }
+
+  .pagos-row {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+      "player pago"
+      "meta meta";
+    gap: 0.35rem 0.75rem;
+    align-items: start;
+    padding: 0.95rem 0.9rem;
+  }
+
+  .pagos-col-pos {
+    display: none;
+  }
+
+  .pagos-col-player {
+    grid-area: player;
+    width: auto;
+    white-space: normal;
+    overflow: visible;
+    text-overflow: unset;
+  }
+
+  .pagos-col-puntos {
+    grid-area: meta;
+    width: auto;
+    text-align: left;
+    font-size: 0.84rem;
+  }
+
+  .pagos-col-pago {
+    grid-area: pago;
+    width: auto;
+    align-items: flex-end;
+  }
+
+  .pagos-row .amount {
+    font-size: 1rem;
+  }
+
+  .alert-card {
+    padding: 1rem;
+  }
+
+  .alert-card .alert-row {
+    gap: 0.5rem;
+  }
+}

@@ -138,7 +138,7 @@ export const calcularAcumulado = (
 
     const pagosPos = getPagosPorPosicion(jornada.numero);
 
-    const factor = jornada.numero % 5 === 0 ? 2 : 1;
+    const factor = jornada.numero === 38 ? 3 : jornada.numero % 5 === 0 ? 2 : 1;
 
     const conPosiciones = resultados
       .map((r, idx) => {

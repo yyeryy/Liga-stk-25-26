@@ -45,6 +45,16 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             {" "}
             {/* ms-auto empuja los enlaces a la derecha */}
             <Nav.Link
+              active={vistaActual === TiposVista.Final}
+              aria-current={
+                vistaActual === TiposVista.Final ? "page" : undefined
+              }
+              onClick={() => handleSelect(TiposVista.Final)}
+              className="px-3"
+            >
+              🏁 Final
+            </Nav.Link>
+            <Nav.Link
               active={vistaActual === TiposVista.Jornadas}
               aria-current={
                 vistaActual === TiposVista.Jornadas ? "page" : undefined

@@ -1,4 +1,5 @@
 export enum TiposVista {
+  Final,
   Jornadas,
   Pagos,
   Estadisticas,

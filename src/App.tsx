@@ -11,14 +11,16 @@ import { EvolucionPanel } from "./components/EvolucionPanel.tsx";
 import { ManagerDelMesPanel } from "./components/ManagerDelMesPanel.tsx";
 import { JugadoresPanel } from "./components/JugadoresPanel.tsx";
 import { HistoricoPanel } from "./components/HistoricoPanel.tsx";
+import { FinalMenuPanel } from "./components/FinalMenuPanel.tsx";
 import ComidaPanel from "./components/ComidaPanel.tsx";
 
 const App: React.FC = () => {
-  const [vista, setVista] = useState<TiposVista>(TiposVista.Pagos);
+  const [vista, setVista] = useState<TiposVista>(TiposVista.Final);
   return (
     <div>
       <NavBar onSelect={setVista} vistaActual={vista} />
       <main className="container-centered app-main">
+        {vista === TiposVista.Final && <FinalMenuPanel />}
         {vista === TiposVista.Jornadas && <JornadasPanel></JornadasPanel>}
         {vista === TiposVista.Pagos && <PagosPanel></PagosPanel>}
         {vista === TiposVista.Comida && <ComidaPanel />}

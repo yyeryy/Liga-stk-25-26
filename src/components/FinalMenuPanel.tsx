@@ -24,7 +24,9 @@ export const FinalMenuPanel = () => {
   const [selectedImage, setSelectedImage] = useState<string | null>(null);
   const rankingGeneral = useMemo(() => {
     const resultado = calcularAcumulado(1, 38);
-    const ordenado = [...resultado].sort((a, b) => a.pago - b.pago || b.puntos - a.puntos);
+    const ordenado = [...resultado].sort(
+      (a, b) => a.pago - b.pago || b.puntos - a.puntos,
+    );
 
     let lastPago: number | null = null;
     let lastPos = 0;
@@ -65,7 +67,8 @@ export const FinalMenuPanel = () => {
                   onClick={() => setSelectedImage(String(subcampeon.jugador))}
                   onError={(e) => {
                     const img = e.currentTarget;
-                    if (img.src.endsWith(".png")) img.src = getPhotoSrc(subcampeon.jugador, "jpg");
+                    if (img.src.endsWith(".png"))
+                      img.src = getPhotoSrc(subcampeon.jugador, "jpg");
                     else img.src = "../imagenes/spinner.jpg";
                   }}
                 />
@@ -86,12 +89,15 @@ export const FinalMenuPanel = () => {
                   onClick={() => setSelectedImage(String(campeon.jugador))}
                   onError={(e) => {
                     const img = e.currentTarget;
-                    if (img.src.endsWith(".png")) img.src = getPhotoSrc(campeon.jugador, "jpg");
+                    if (img.src.endsWith(".png"))
+                      img.src = getPhotoSrc(campeon.jugador, "jpg");
                     else img.src = "../imagenes/spinner.jpg";
                   }}
                 />
               </div>
-              <div className="podium-name podium-name--gold">{campeon.jugador}</div>
+              <div className="podium-name podium-name--gold">
+                {campeon.jugador}
+              </div>
               <div className="podium-label">Ganador</div>
             </article>
           )}
@@ -107,7 +113,8 @@ export const FinalMenuPanel = () => {
                   onClick={() => setSelectedImage(String(tercero.jugador))}
                   onError={(e) => {
                     const img = e.currentTarget;
-                    if (img.src.endsWith(".png")) img.src = getPhotoSrc(tercero.jugador, "jpg");
+                    if (img.src.endsWith(".png"))
+                      img.src = getPhotoSrc(tercero.jugador, "jpg");
                     else img.src = "../imagenes/spinner.jpg";
                   }}
                 />
@@ -139,7 +146,8 @@ export const FinalMenuPanel = () => {
                   onClick={() => setSelectedImage(String(jugador.jugador))}
                   onError={(e) => {
                     const img = e.currentTarget;
-                    if (img.src.endsWith(".png")) img.src = getPhotoSrc(jugador.jugador, "jpg");
+                    if (img.src.endsWith(".png"))
+                      img.src = getPhotoSrc(jugador.jugador, "jpg");
                     else img.src = "../imagenes/spinner.jpg";
                   }}
                 />
@@ -149,13 +157,15 @@ export const FinalMenuPanel = () => {
           ))}
         </div>
       </div>
-      
+
       {/* Mención honorífica a los participantes temporales */}
-      <div className="final-honor"> 
+      <div className="final-honor">
         <h3 className="final-honor-title">Mención honorífica</h3>
-        <p className="final-honor-sub">Agradecimiento a los que estuvieron temporalmente en la liga</p>
+        <p className="final-honor-sub">
+          Agradecimiento a los que estuvieron temporalmente en la liga
+        </p>
         <div className="final-honor-list">
-          {[("Zarrakatz" as Apodos), ("Polfovich" as Apodos)].map((j) => (
+          {["Zarrakatz" as Apodos, "Polfovich" as Apodos].map((j) => (
             <div key={j} className="final-honor-card">
               <img
                 src={getPhotoSrc(j, "png")}
@@ -169,12 +179,14 @@ export const FinalMenuPanel = () => {
                 }}
               />
               <div className="final-honor-name">{j}</div>
-              <div className="final-honor-note">Participó temporalmente — gracias</div>
+              <div className="final-honor-note">
+                Participó temporalmente — gracias
+              </div>
             </div>
           ))}
         </div>
       </div>
-      
+
       {/* Modal para ver imagen ampliada */}
       {selectedImage && (
         <div
@@ -183,17 +195,26 @@ export const FinalMenuPanel = () => {
           aria-modal="true"
           onClick={() => setSelectedImage(null)}
         >
-          <div className="final-image-modal-content" onClick={(e) => e.stopPropagation()}>
+          <div
+            className="final-image-modal-content"
+            onClick={(e) => e.stopPropagation()}
+          >
             <img
               src={getPhotoSrc(selectedImage as Apodos, "png")}
               alt={selectedImage}
               onError={(e) => {
                 const img = e.currentTarget;
-                if (img.src.endsWith(".png")) img.src = getPhotoSrc(selectedImage as Apodos, "jpg");
+                if (img.src.endsWith(".png"))
+                  img.src = getPhotoSrc(selectedImage as Apodos, "jpg");
                 else img.src = "../imagenes/spinner.jpg";
               }}
             />
-            <button className="final-image-modal-close" onClick={() => setSelectedImage(null)}>Cerrar</button>
+            <button
+              className="final-image-modal-close"
+              onClick={() => setSelectedImage(null)}
+            >
+              Cerrar
+            </button>
           </div>
         </div>
       )}

@@ -1,29 +1,49 @@
 import React, { useMemo, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { historico24_25 } from "../data/historico24_25.ts";
+import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
 import "./HistoricoPanel.css";
 
-export const HistoricoPanel = () => {
-  const [temporadaSeleccionada] = useState("24/25");
+export const Historico2526Panel = () => {
+  const [temporadaSeleccionada] = useState("25/26");
 
-  // Procesamos los datos históricos
   const estadisticas = useMemo(() => {
-    const rankingGeneral = [...historico24_25].sort(
+    // Desertores en 25/26
+    const desertersNames = ["Zarrakatz", "Polfovich"];
+
+    // solicitar esEstadistica=true para incluir players que luego mostraremos como desertores
+    const resultado = calcularAcumulado(1, 38, true);
+    const rankingGeneral = [...resultado].sort(
       (a, b) => a.pago - b.pago || b.puntos - a.puntos,
     );
 
-    rankingGeneral.forEach((j, idx) => {
-      (j as any).posicion = idx + 1;
-    });
+    const desertersLocal = rankingGeneral.filter((j: any) =>
+      desertersNames.includes(j.jugador),
+    );
+    const mainRankingLocal = rankingGeneral.filter(
+      (j: any) => !desertersNames.includes(j.jugador),
+    );
 
-    const maxPago = Math.max(...rankingGeneral.map((j) => j.pago));
-    const mecenas = rankingGeneral.find((j) => j.pago === maxPago);
-    const totalBote = rankingGeneral.reduce((acc, curr) => acc + curr.pago, 0);
+    // Recalcular orden y posiciones de la clasificación principal (sin desertores)
+    const mainRankingSorted = [...mainRankingLocal].sort(
+      (a: any, b: any) => a.pago - b.pago || b.puntos - a.puntos,
+    );
+    mainRankingSorted.forEach((j: any, idx: number) => (j.posicion = idx + 1));
+
+    const maxPago = mainRankingSorted.length
+      ? Math.max(...mainRankingSorted.map((j: any) => j.pago))
+      : 0;
+    const mecenas = mainRankingSorted.find((j: any) => j.pago === maxPago);
+    const totalBote = mainRankingLocal.reduce(
+      (acc: number, curr: any) => acc + curr.pago,
+      0,
+    );
 
     return {
       ranking: rankingGeneral,
-      campeon: rankingGeneral[0],
+      mainRanking: mainRankingSorted,
+      deserters: desertersLocal,
+      campeon: mainRankingSorted[0],
       mecenas: mecenas,
       maxPago: maxPago,
       totalBote: totalBote,
@@ -45,7 +65,14 @@ export const HistoricoPanel = () => {
     return num % 1 === 0 ? num : num.toFixed(2);
   };
 
-  const { ranking, campeon, mecenas, maxPago, totalBote } = estadisticas;
+  const { mainRanking, deserters, campeon, mecenas, maxPago, totalBote } =
+    estadisticas as any;
+
+  // Override specific owed amounts requested by user
+  const overrideAmounts: Record<string, number> = {
+    Zarrakatz: 14.0,
+    Polfovich: 19.0,
+  };
 
   return (
     <div className="historico-panel">
@@ -56,7 +83,6 @@ export const HistoricoPanel = () => {
           {temporadaSeleccionada}
         </p>
 
-        {/* --- Cuadro de Honor --- */}
         <Row className="g-3 mb-4">
           <Col xs={6}>
             <div className="honor-card honor-card--campeon">
@@ -83,7 +109,6 @@ export const HistoricoPanel = () => {
           </Col>
         </Row>
 
-        {/* Resumen de la temporada */}
         <div className="historico-summary">
           <div className="summary-item">
             <div className="small">Bote Total</div>
@@ -95,12 +120,11 @@ export const HistoricoPanel = () => {
           <div className="summary-item">
             <div className="small">Participantes</div>
             <div className="large" style={{ color: "var(--accent)" }}>
-              {ranking.length}
+              {mainRanking.length}
             </div>
           </div>
         </div>
 
-        {/* Cabecera de la Tabla */}
         <div className="historico-table-header">
           <div className="col-pos">Pos</div>
           <div className="col-player">Jugador</div>
@@ -108,25 +132,19 @@ export const HistoricoPanel = () => {
           <div className="col-total">Total €</div>
         </div>
 
-        {/* Lista Histórica */}
         <div className="historico-list">
-          {ranking.map((j: any) => {
-            const isDeserter = j.jugador === "Manchester Piti";
-            const isFree = j.pago === 0 && !isDeserter;
-            const rowColor = isDeserter
-              ? "var(--surface-variant)"
-              : getColorByPago(j.pago, maxPago);
+          {mainRanking.map((j: any) => {
+            const isFree = j.pago === 0;
+            const rowColor = getColorByPago(j.pago, maxPago);
 
             return (
               <div
                 key={j.jugador}
-                className={`historico-row ${isDeserter ? "historico-row--deserter" : ""} ${isFree ? "historico-row--free" : ""}`}
+                className={`historico-row ${isFree ? "historico-row--free" : ""}`}
                 style={{ ["--row-bg" as any]: rowColor }}
               >
                 <div className="historico-pos">
-                  {isDeserter ? (
-                    "🏳️"
-                  ) : j.posicion === 1 ? (
+                  {j.posicion === 1 ? (
                     "🥇"
                   ) : j.posicion === 2 ? (
                     "🥈"
@@ -138,28 +156,23 @@ export const HistoricoPanel = () => {
                 </div>
 
                 <div
-                  className={`historico-player ${isDeserter ? "player--deserter" : ""}`}
+                  className={`historico-player`}
                   style={{
-                    fontWeight: j.posicion <= 3 && !isDeserter ? 800 : 600,
+                    fontWeight: j.posicion <= 3 ? 800 : 600,
                   }}
                 >
                   <span>{j.jugador}</span>
-                  {isDeserter && (
-                    <span style={{ fontSize: "0.8rem", marginLeft: "4px" }}>
-                      🏃💨
-                    </span>
-                  )}
                 </div>
 
                 <div
-                  className={`historico-pts ${j.posicion === 1 && !isDeserter ? "pts-top" : "pts-default"}`}
+                  className={`historico-pts ${j.posicion === 1 ? "pts-top" : "pts-default"}`}
                 >
                   {j.puntos}
                 </div>
 
                 <div className="historico-amount">
                   <span
-                    className={`amount ${isFree ? "amount--free" : isDeserter ? "amount--deserter" : "amount--owed"}`}
+                    className={`amount ${isFree ? "amount--free" : "amount--owed"}`}
                   >
                     {formatEuros(j.pago)}€
                   </span>
@@ -169,23 +182,39 @@ export const HistoricoPanel = () => {
           })}
         </div>
 
-        {/* Nota del Desertor */}
-        <div
-          style={{
-            marginTop: "20px",
-            padding: "10px",
-            textAlign: "center",
-            fontSize: "0.75rem",
-            color: "var(--muted-2)",
-            borderTop: "1px dashed var(--neutral-300)",
-          }}
-        >
-          <span style={{ fontWeight: "bold", color: "var(--danger)" }}>
-            * Nota histórica:
-          </span>{" "}
-          Manchester Piti abandonó la competición a mitad de temporada.
-        </div>
+        {deserters.length > 0 && (
+          <div style={{ marginTop: 20 }}>
+            <h5 style={{ marginBottom: 8 }}>
+              <span>⚠️</span> Desertores Pendientes
+            </h5>
+            <div className="historico-list">
+              {deserters.map((d: any) => (
+                <div
+                  key={d.jugador}
+                  className={`historico-row historico-row--deserter`}
+                  style={{ ["--row-bg" as any]: "var(--surface-variant)" }}
+                >
+                  <div className="historico-pos">🏳️</div>
+                  <div className={`historico-player player--deserter`}>
+                    <span>{d.jugador}</span>
+                    <span style={{ fontSize: "0.8rem", marginLeft: 8 }}>
+                      🏃💨
+                    </span>
+                  </div>
+                  <div className="historico-pts">—</div>
+                  <div className="historico-amount">
+                    <span className={`amount amount--deserter`}>
+                      {formatEuros(overrideAmounts[d.jugador] ?? d.pago)}€
+                    </span>
+                  </div>
+                </div>
+              ))}
+            </div>
+          </div>
+        )}
       </div>
     </div>
   );
 };
+
+export default Historico2526Panel;

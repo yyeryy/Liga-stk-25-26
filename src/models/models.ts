@@ -10,6 +10,7 @@ export enum TiposVista {
   ManagerMes,
   Jugadores,
   Historico,
+  Historico2526,
   Comida,
 }
 

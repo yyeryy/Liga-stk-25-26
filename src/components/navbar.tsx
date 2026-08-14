@@ -164,6 +164,16 @@ const NavBar: React.FC<NavBarProps> = ({ onSelect, vistaActual }) => {
             >
               🏆 Temporada 24-25
             </Nav.Link>
+            <Nav.Link
+              active={vistaActual === TiposVista.Historico2526}
+              aria-current={
+                vistaActual === TiposVista.Historico2526 ? "page" : undefined
+              }
+              onClick={() => handleSelect(TiposVista.Historico2526)}
+              className="px-3"
+            >
+              🏆 Temporada 25-26
+            </Nav.Link>
           </Nav>
         </Navbar.Collapse>
       </Container>

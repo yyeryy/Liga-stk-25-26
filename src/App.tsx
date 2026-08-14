@@ -10,7 +10,8 @@ import { PrediccionesPanel } from "./components/PrediccionesPanel.tsx";
 import { EvolucionPanel } from "./components/EvolucionPanel.tsx";
 import { ManagerDelMesPanel } from "./components/ManagerDelMesPanel.tsx";
 import { JugadoresPanel } from "./components/JugadoresPanel.tsx";
-import { HistoricoPanel } from "./components/HistoricoPanel.tsx";
+import { Historico2425Panel } from "./components/Historico2425Panel.tsx";
+import { Historico2526Panel } from "./components/Historico2526Panel.tsx";
 import { FinalMenuPanel } from "./components/FinalMenuPanel.tsx";
 import ComidaPanel from "./components/ComidaPanel.tsx";
 
@@ -33,7 +34,8 @@ const App: React.FC = () => {
         {vista === TiposVista.Predicciones && <PrediccionesPanel />}
         {vista === TiposVista.ManagerMes && <ManagerDelMesPanel />}
         {vista === TiposVista.Evolucion && <EvolucionPanel />}
-        {vista === TiposVista.Historico && <HistoricoPanel />}
+        {vista === TiposVista.Historico && <Historico2425Panel />}
+        {vista === TiposVista.Historico2526 && <Historico2526Panel />}
       </main>
     </div>
   );

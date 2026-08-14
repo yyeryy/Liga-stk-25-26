@@ -73,7 +73,6 @@ export const calcularAcumulado = (
     const conPosiciones = resultados
       .map((r, idx) => {
         if (!r) return null;
-        // posición real siempre idx + 1 (no repetir)
         return { ...r, posicion: idx + 1 };
       })
       .filter(

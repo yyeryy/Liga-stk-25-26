@@ -77,8 +77,11 @@
   background-color: var(--surface-variant);
   border: 1px solid var(--surface-border);
   border-radius: var(--radius-sm);
-  padding: 15px;
+  padding: 12px 15px;
   margin-bottom: 10px;
+  min-height: 64px;
+  display: flex;
+  flex-direction: column;
 }
 .rachas-item--top {
   background-color: var(--neutral-100);
@@ -157,15 +160,71 @@
   background-color: var(--neutral-500);
 }
 
+/* New specific medal colors */
+.rachas-dot--gold {
+  background-color: #ffd700;
+  color: #111;
+}
+.rachas-dot--silver {
+  background-color: #b0c4de; /* light steel blue for clear contrast */
+  color: #06213a;
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06) inset;
+}
+.rachas-dot--bronze {
+  background-color: #cd7f32;
+  color: #fff;
+}
+.rachas-dot--fourth {
+  background-color: #6c757d; /* darker grey to separate from silver */
+  color: #fff;
+}
+.rachas-dot--neutral {
+  background-color: var(--neutral-400);
+  color: #fff;
+}
+
+/* Item-level medal backgrounds */
+.rachas-item--gold {
+  background: linear-gradient(135deg, #fff6de, #ffe08a);
+  border-color: rgba(255, 193, 7, 0.28);
+}
+.rachas-item--silver {
+  background: linear-gradient(135deg, #eef4fb, #d7dee7);
+  border-color: rgba(160, 160, 160, 0.28);
+}
+.rachas-item--bronze {
+  background: linear-gradient(135deg, #f5e6d6, #cf8b5a);
+  border-color: rgba(199, 107, 43, 0.25);
+}
+.rachas-item--fourth {
+  background: linear-gradient(135deg, #f7f9fa, #eef2f5);
+  border-color: rgba(141, 148, 158, 0.12);
+}
+.rachas-item--owed {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02) inset;
+}
+
+.rachas-item__header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
 .legend-dot {
   font-size: 1rem;
   margin-right: 4px;
 }
-.legend-dot.podio {
-  color: var(--success);
+.legend-dot.gold {
+  color: #ffd700;
 }
-.legend-dot.avg {
-  color: var(--neutral-500);
+.legend-dot.silver {
+  color: #c0c0c0;
+}
+.legend-dot.bronze {
+  color: #cd7f32;
+}
+.legend-dot.fourth {
+  color: #8d949e;
 }
 .legend-dot.paid {
   color: var(--danger);

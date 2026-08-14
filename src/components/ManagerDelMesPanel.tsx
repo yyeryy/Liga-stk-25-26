@@ -75,6 +75,10 @@ export const ManagerDelMesPanel = () => {
     return num % 1 === 0 ? num : num.toFixed(2);
   };
 
+  const maxPagoMonth = mesData?.ranking?.length
+    ? Math.max(...mesData.ranking.map((j: any) => j.pago || 0))
+    : 0;
+
   return (
     <div className="manager-panel">
       <div className="panel manager-content panel-screen">
@@ -153,8 +157,35 @@ export const ManagerDelMesPanel = () => {
 
             {mesData.ranking.slice(1).map((j, idx) => {
               const posReales = j.posicion ?? idx + 2;
+
+              const medalClass =
+                posReales === 1
+                  ? "manager-item--gold"
+                  : posReales === 2
+                    ? "manager-item--silver"
+                    : posReales === 3
+                      ? "manager-item--bronze"
+                      : posReales === 4
+                        ? "manager-item--fourth"
+                        : "";
+
+              const borderLeftWidth =
+                maxPagoMonth && j.pago > 0
+                  ? Math.max(2, Math.round((j.pago / maxPagoMonth) * 6))
+                  : 0;
+
               return (
-                <div key={j.jugador} className="manager-item">
+                <div
+                  key={j.jugador}
+                  className={`manager-item ${medalClass}`}
+                  style={
+                    borderLeftWidth
+                      ? {
+                          borderLeft: `${borderLeftWidth}px solid var(--danger)`,
+                        }
+                      : undefined
+                  }
+                >
                   <div className="manager-item__left">
                     <div className="manager-rank">
                       {posReales === 2

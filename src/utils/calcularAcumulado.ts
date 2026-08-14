@@ -59,11 +59,16 @@ export const calcularAcumulado = (
 
     const pagosPos = getPagosPorPosicion(jornada.numero);
 
-    // Factor: jornadas múltiplos de 5 -> doble; última jornada -> triple.
+    // Factor:
+    // - Jornadas múltiplos de 5 -> doble (x2).
+    // - La última jornada -> triple (x3) ONLY si la temporada completa tiene 38 jornadas.
     const numeros = data.jornadas.map((x) => x.numero);
     const maxNumero = numeros.length ? Math.max(...numeros) : 38;
-    const factor =
-      jornada.numero === maxNumero ? 3 : jornada.numero % 5 === 0 ? 2 : 1;
+    const isMultipleOf5 = jornada.numero % 5 === 0;
+    const isSeasonComplete38 = maxNumero === 38;
+    let factor = 1;
+    if (isMultipleOf5) factor = 2;
+    else if (jornada.numero === maxNumero && isSeasonComplete38) factor = 3;
 
     const conPosiciones = resultados
       .map((r, idx) => {

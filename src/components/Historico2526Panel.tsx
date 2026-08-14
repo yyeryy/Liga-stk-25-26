@@ -1,103 +1,50 @@
 import React, { useMemo, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
-import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
 import { historico25_26 } from "../data/historico25_26.ts";
-import { data } from "../data/data.ts";
 import "./HistoricoPanel.css";
 
 export const Historico2526Panel = () => {
   const [temporadaSeleccionada] = useState("25/26");
 
   const estadisticas = useMemo(() => {
-    const tieneJornadas =
-      Array.isArray(data.jornadas) && data.jornadas.length > 0;
-    const resultado = tieneJornadas
-      ? calcularAcumulado(1, 38, true)
-      : undefined;
-    const rawRanking: any[] = resultado ?? historico25_26;
-    const rankingGeneral = [...rawRanking].sort(
-      (a, b) => a.pago - b.pago || b.puntos - a.puntos,
-    );
-
-    // Desertores en 25/26
+    // For season 25/26 always use the static historic snapshot to avoid
+    // pulling current-season live data.
     const desertersNames = ["Zarrakatz", "Polfovich"];
-    const deserters = rankingGeneral.filter((j: any) =>
+    const staticRanking = historico25_26.map((h) => ({ ...h }));
+    const sortedStatic = staticRanking.sort(
+      (a: any, b: any) => a.pago - b.pago || b.puntos - a.puntos,
+    );
+    sortedStatic.forEach((j: any, idx: number) => (j.posicion = idx + 1));
+
+    const staticDeserters = sortedStatic.filter((j: any) =>
       desertersNames.includes(j.jugador),
     );
-    const mainRankingFiltered = rankingGeneral.filter(
+    const staticMain = sortedStatic.filter(
       (j: any) => !desertersNames.includes(j.jugador),
     );
 
-    const mainRankingSorted = [...rankingGeneral].sort(
-      (a: any, b: any) => a.pago - b.pago || b.puntos - a.puntos,
-    );
-    mainRankingSorted.forEach((j: any, idx: number) => (j.posicion = idx + 1));
+    // Recalcular posiciones para la lista principal (sin deserters)
+    staticMain.forEach((j: any, idx: number) => (j.posicion = idx + 1));
 
-    const maxPago = mainRankingSorted.length
-      ? Math.max(...mainRankingSorted.map((j: any) => j.pago))
+    const staticMaxPago = sortedStatic.length
+      ? Math.max(...sortedStatic.map((j: any) => j.pago))
       : 0;
-    const mecenas = mainRankingSorted.find((j: any) => j.pago === maxPago);
-    const totalBote = mainRankingSorted.reduce(
-      (acc: number, curr: any) => acc + curr.pago,
-      0,
-    );
-
-    // Si no hay jornadas activas, usamos el historico estático (fallback)
-    if (!tieneJornadas) {
-      const staticRanking = historico25_26.map((h) => ({ ...h }));
-      const sortedStatic = staticRanking.sort(
-        (a: any, b: any) => a.pago - b.pago || b.puntos - a.puntos,
-      );
-      sortedStatic.forEach((j: any, idx: number) => (j.posicion = idx + 1));
-
-      const staticDeserters = sortedStatic.filter((j: any) =>
-        desertersNames.includes(j.jugador),
-      );
-      const staticMain = sortedStatic.filter(
-        (j: any) => !desertersNames.includes(j.jugador),
-      );
-
-      const staticMaxPago = sortedStatic.length
-        ? Math.max(...sortedStatic.map((j: any) => j.pago))
-        : 0;
-      return {
-        ranking: sortedStatic,
-        mainRanking: staticMain,
-        deserters: staticDeserters,
-        campeon: staticMain[0],
-        mecenas: sortedStatic.find((j: any) => j.pago === staticMaxPago),
-        maxPago: staticMaxPago,
-        totalBote: sortedStatic.reduce(
-          (acc: number, curr: any) => acc + curr.pago,
-          0,
-        ),
-        overrideAmounts: {},
-      };
-    }
 
     return {
-      ranking: rankingGeneral,
-      mainRanking: mainRankingFiltered,
-      deserters: deserters,
-      campeon: mainRankingFiltered[0],
-      mecenas: mecenas,
-      maxPago: maxPago,
-      totalBote: totalBote,
+      ranking: sortedStatic,
+      mainRanking: staticMain,
+      deserters: staticDeserters,
+      campeon: staticMain[0],
+      mecenas: sortedStatic.find((j: any) => j.pago === staticMaxPago),
+      maxPago: staticMaxPago,
+      totalBote: sortedStatic.reduce(
+        (acc: number, curr: any) => acc + curr.pago,
+        0,
+      ),
       overrideAmounts: {},
     };
   }, []);
-
-  const getColorByPago = (pago: number, maxPago: number) => {
-    if (maxPago === 0 || pago === 0) return "var(--success-100)";
-    const ratio = Math.min(1, pago / maxPago);
-    const start = { r: 255, g: 245, b: 245 };
-    const end = { r: 255, g: 205, b: 210 };
-    const r = Math.round(start.r + (end.r - start.r) * ratio);
-    const g = Math.round(start.g + (end.g - start.g) * ratio);
-    const b = Math.round(start.b + (end.b - start.b) * ratio);
-    return `rgb(${r},${g},${b})`;
-  };
 
   const formatEuros = (num: number) => {
     return num % 1 === 0 ? num : num.toFixed(2);
@@ -174,13 +121,32 @@ export const Historico2526Panel = () => {
         <div className="historico-list">
           {mainRanking.map((j: any) => {
             const isFree = j.pago === 0;
-            const rowColor = getColorByPago(j.pago, maxPago);
+
+            const medalClass =
+              j.posicion === 1
+                ? "historico-row--gold"
+                : j.posicion === 2
+                  ? "historico-row--silver"
+                  : j.posicion === 3
+                    ? "historico-row--bronze"
+                    : j.posicion === 4
+                      ? "historico-row--fourth"
+                      : "";
+
+            const borderLeftWidth =
+              maxPago && j.pago > 0
+                ? Math.max(2, Math.round((j.pago / maxPago) * 6))
+                : 0;
 
             return (
               <div
                 key={j.jugador}
-                className={`historico-row ${isFree ? "historico-row--free" : ""}`}
-                style={{ ["--row-bg" as any]: rowColor }}
+                className={`historico-row ${isFree ? "historico-row--free" : ""} ${medalClass} ${j.pago > 0 ? "historico-row--owed" : ""}`}
+                style={
+                  borderLeftWidth
+                    ? { borderLeft: `${borderLeftWidth}px solid var(--danger)` }
+                    : undefined
+                }
               >
                 <div className="historico-pos">
                   {j.posicion === 1 ? (

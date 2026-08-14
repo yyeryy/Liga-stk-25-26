@@ -11,7 +11,7 @@ import { Historico2425Panel } from "./components/Historico2425Panel.tsx";
 import { Historico2526Panel } from "./components/Historico2526Panel.tsx";
 
 const App: React.FC = () => {
-  const [vista, setVista] = useState<TiposVista>(TiposVista.Jornadas);
+  const [vista, setVista] = useState<TiposVista>(TiposVista.Pagos);
   return (
     <div>
       <NavBar onSelect={setVista} vistaActual={vista} />

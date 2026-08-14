@@ -11,16 +11,9 @@ export const JornadasPanel = () => {
     setJornada(calcularAcumulado(selectedJornada, selectedJornada));
   }, [selectedJornada]);
 
-  const getColorByPago = (pago: number, maxPago: number) => {
-    if (maxPago === 0 || pago === 0) return "#e8f5e9";
-    const ratio = Math.min(1, pago / maxPago);
-    const start = { r: 232, g: 245, b: 233 };
-    const end = { r: 255, g: 205, b: 210 };
-    const r = Math.round(start.r + (end.r - start.r) * ratio);
-    const g = Math.round(start.g + (end.g - start.g) * ratio);
-    const b = Math.round(start.b + (end.b - start.b) * ratio);
-    return `rgb(${r},${g},${b})`;
-  };
+  // We now use fixed medal backgrounds for the podium and a neutral
+  // background for the rest. Additionally, if a player has a payment,
+  // we add a red left indicator proportional to the amount paid.
 
   const getMedal = (pos: number) => {
     if (pos === 1) return "🥇";
@@ -82,13 +75,38 @@ export const JornadasPanel = () => {
                 {jornada.map((j, idx) => {
                   const isFree = (j.pago ?? 0) === 0;
                   const esPodio = (j.posicion ?? 0) <= 3;
-                  const rowColor = getColorByPago(j.pago ?? 0, maxPagoJornada);
+                  // compute medal class
+                  const medalClass =
+                    (j.posicion ?? 0) === 1
+                      ? "jornada-row--gold"
+                      : (j.posicion ?? 0) === 2
+                        ? "jornada-row--silver"
+                        : (j.posicion ?? 0) === 3
+                          ? "jornada-row--bronze"
+                          : (j.posicion ?? 0) === 4
+                            ? "jornada-row--fourth"
+                            : "";
+
+                  // border thickness proportional to pago (min 0, max 6px)
+                  const borderLeftWidth =
+                    maxPagoJornada > 0 && (j.pago ?? 0) > 0
+                      ? Math.max(
+                          2,
+                          Math.round(((j.pago ?? 0) / maxPagoJornada) * 6),
+                        )
+                      : 0;
 
                   return (
                     <div
                       key={idx}
-                      className={`jornada-row ${isFree ? "jornada-row--free" : ""}`}
-                      style={{ ["--row-bg" as any]: rowColor }}
+                      className={`jornada-row ${isFree ? "jornada-row--free" : ""} ${medalClass} ${(j.pago ?? 0) > 0 ? "jornada-row--owed" : ""}`}
+                      style={
+                        borderLeftWidth
+                          ? {
+                              borderLeft: `${borderLeftWidth}px solid var(--danger)`,
+                            }
+                          : undefined
+                      }
                     >
                       <div className="jornada-pos">
                         {getMedal(j.posicion ?? 0)}

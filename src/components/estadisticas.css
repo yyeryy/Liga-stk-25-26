@@ -63,6 +63,31 @@
   box-shadow: var(--shadow-md);
 }
 
+/* Medal backgrounds for stats rows */
+.stat-row--gold {
+  background: linear-gradient(135deg, #fff6de, #ffe08a);
+  border: 1px solid rgba(255, 193, 7, 0.28);
+}
+.stat-row--silver {
+  background: linear-gradient(135deg, #eef4fb, #d7dee7);
+  border: 1px solid rgba(160, 160, 160, 0.28);
+}
+.stat-row--bronze {
+  background: linear-gradient(135deg, #f5e6d6, #cf8b5a);
+  border: 1px solid rgba(199, 107, 43, 0.25);
+}
+.stat-row--fourth {
+  background: linear-gradient(135deg, #f7f9fa, #eef2f5);
+  border: 1px solid rgba(141, 148, 158, 0.12);
+}
+
+.stat-row--gold .stat-player,
+.stat-row--silver .stat-player,
+.stat-row--bronze .stat-player,
+.stat-row--fourth .stat-player {
+  color: #111;
+}
+
 .stat-left {
   display: flex;
   align-items: center;

@@ -14,16 +14,19 @@ export const CaraACaraPanel = () => {
 
     const tablaGeneralA = calcularAcumulado(1, 38, true);
 
-    const ordenadaA = [...tablaGeneralA].sort((a, b) => b.puntos - a.puntos);
+    // Ordenar por deuda (pago) ascendente: menos deuda es mejor. Usamos puntos como desempate.
+    const ordenadaA = [...tablaGeneralA].sort((a, b) =>
+      a.pago === b.pago ? b.puntos - a.puntos : a.pago - b.pago,
+    );
 
-    let lastPuntos: number | null = null;
+    let lastPago: number | null = null;
     let lastPos = 0;
     ordenadaA.forEach((j, idx) => {
-      if (j.puntos === lastPuntos) {
+      if (j.pago === lastPago) {
         j.posicion = lastPos;
       } else {
         lastPos = idx + 1;
-        lastPuntos = j.puntos;
+        lastPago = j.pago;
         j.posicion = lastPos;
       }
     });
@@ -63,14 +66,14 @@ export const CaraACaraPanel = () => {
     };
   }, [jugadorA, jugadorB]);
 
-  const difPuntos = comparativa
+  const difPago = comparativa
     ? Math.abs(
-        (comparativa.datosA?.puntos || 0) - (comparativa.datosB?.puntos || 0),
+        (comparativa.datosA?.pago || 0) - (comparativa.datosB?.pago || 0),
       )
     : 0;
   const lider =
     comparativa &&
-    (comparativa.datosA?.puntos || 0) >= (comparativa.datosB?.puntos || 0)
+    (comparativa.datosA?.pago || 0) <= (comparativa.datosB?.pago || 0)
       ? comparativa.datosA?.jugador
       : comparativa?.datosB?.jugador;
 
@@ -122,10 +125,10 @@ export const CaraACaraPanel = () => {
           </div>
         ) : (
           <div>
-            {/* Diferencia Puntos Destacada */}
+            {/* Diferencia Deuda Destacada */}
             <div className="diff-card">
               <div className="label">Diferencia en la general</div>
-              <div className="value">{difPuntos} pts</div>
+              <div className="value">{difPago.toFixed(2)} €</div>
               <div className="desc">
                 a favor de <strong className="leader">{lider}</strong>
               </div>

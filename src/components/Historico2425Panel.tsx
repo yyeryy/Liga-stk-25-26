@@ -32,17 +32,6 @@ export const Historico2425Panel = () => {
     };
   }, []);
 
-  const getColorByPago = (pago: number, maxPago: number) => {
-    if (maxPago === 0 || pago === 0) return "var(--success-100)";
-    const ratio = Math.min(1, pago / maxPago);
-    const start = { r: 255, g: 245, b: 245 };
-    const end = { r: 255, g: 205, b: 210 };
-    const r = Math.round(start.r + (end.r - start.r) * ratio);
-    const g = Math.round(start.g + (end.g - start.g) * ratio);
-    const b = Math.round(start.b + (end.b - start.b) * ratio);
-    return `rgb(${r},${g},${b})`;
-  };
-
   const formatEuros = (num: number) => {
     return num % 1 === 0 ? num : num.toFixed(2);
   };
@@ -58,6 +47,9 @@ export const Historico2425Panel = () => {
   const mainRanking = ranking.filter(
     (j: any) => !desertersNames.includes(j.jugador),
   );
+
+  // Recalcular posiciones para que la lista principal comience en 1
+  mainRanking.forEach((j: any, idx: number) => (j.posicion = idx + 1));
 
   return (
     <div className="historico-panel">
@@ -120,13 +112,32 @@ export const Historico2425Panel = () => {
         <div className="historico-list">
           {mainRanking.map((j: any) => {
             const isFree = j.pago === 0;
-            const rowColor = getColorByPago(j.pago, maxPago);
+
+            const medalClass =
+              j.posicion === 1
+                ? "historico-row--gold"
+                : j.posicion === 2
+                  ? "historico-row--silver"
+                  : j.posicion === 3
+                    ? "historico-row--bronze"
+                    : j.posicion === 4
+                      ? "historico-row--fourth"
+                      : "";
+
+            const borderLeftWidth =
+              maxPago && j.pago > 0
+                ? Math.max(2, Math.round((j.pago / maxPago) * 6))
+                : 0;
 
             return (
               <div
                 key={j.jugador}
-                className={`historico-row ${isFree ? "historico-row--free" : ""}`}
-                style={{ ["--row-bg" as any]: rowColor }}
+                className={`historico-row ${isFree ? "historico-row--free" : ""} ${medalClass} ${j.pago > 0 ? "historico-row--owed" : ""}`}
+                style={
+                  borderLeftWidth
+                    ? { borderLeft: `${borderLeftWidth}px solid var(--danger)` }
+                    : undefined
+                }
               >
                 <div className="historico-pos">
                   {j.posicion === 1 ? (

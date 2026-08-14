@@ -201,6 +201,52 @@
   text-align: center;
   font-weight: bold;
 }
+.jornada-row--gold {
+  background: linear-gradient(
+    135deg,
+    #fff6de,
+    #ffe08a
+  ); /* slightly softened gold */
+  border-color: rgba(255, 193, 7, 0.28);
+}
+.jornada-row--silver {
+  background: linear-gradient(135deg, #eef4fb, #d7dee7); /* softened silver */
+  border-color: rgba(160, 160, 160, 0.28);
+}
+.jornada-row--bronze {
+  background: linear-gradient(135deg, #f5e6d6, #cf8b5a); /* softened bronze */
+  border-color: rgba(199, 107, 43, 0.25);
+}
+
+.jornada-row--fourth {
+  background: linear-gradient(
+    135deg,
+    #f7f9fa,
+    #eef2f5
+  ); /* subtle card bg for 4th */
+  border-color: rgba(141, 148, 158, 0.12);
+}
+.jornada-row--owed {
+  /* left border is set inline proportional to the amount; add subtle shadow */
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02) inset;
+}
+
+/* High-contrast text for podium rows */
+.jornada-row--gold .jornada-player,
+.jornada-row--gold .jornada-pts,
+.jornada-row--gold .jornada-amount .amount {
+  color: #111;
+}
+.jornada-row--silver .jornada-player,
+.jornada-row--silver .jornada-pts,
+.jornada-row--silver .jornada-amount .amount {
+  color: #111;
+}
+.jornada-row--bronze .jornada-player,
+.jornada-row--bronze .jornada-pts,
+.jornada-row--bronze .jornada-amount .amount {
+  color: #111;
+}
 .jornada-player {
   width: 40%;
   white-space: nowrap;

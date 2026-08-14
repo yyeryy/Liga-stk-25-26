@@ -68,6 +68,25 @@
     box-shadow 0.18s ease;
   background: var(--row-bg, transparent);
 }
+.pagos-row--gold {
+  background: linear-gradient(135deg, #fff6de, #ffe08a);
+  border-color: rgba(255, 193, 7, 0.28);
+}
+.pagos-row--silver {
+  background: linear-gradient(135deg, #eef4fb, #d7dee7);
+  border-color: rgba(160, 160, 160, 0.28);
+}
+.pagos-row--bronze {
+  background: linear-gradient(135deg, #f5e6d6, #cf8b5a);
+  border-color: rgba(199, 107, 43, 0.25);
+}
+.pagos-row--fourth {
+  background: linear-gradient(135deg, #f7f9fa, #eef2f5);
+  border-color: rgba(141, 148, 158, 0.12);
+}
+.pagos-row--owed {
+  box-shadow: 0 1px 0 rgba(0, 0, 0, 0.02) inset;
+}
 .pagos-row:hover {
   transform: translateY(-2px);
   box-shadow: var(--shadow-md);
@@ -76,6 +95,43 @@
   font-weight: 900;
   font-size: 1.1rem;
   color: var(--row-amount, var(--danger));
+}
+/* When amount is zero, show neutral/black like in jornadas podiums */
+.amount--free {
+  color: #111;
+}
+.amount--owed {
+  color: var(--danger);
+}
+
+/* Empty placeholder matching jornadas style */
+.pagos-empty {
+  text-align: center;
+  padding: 40px 20px;
+  background-color: var(--neutral-100);
+  border-radius: var(--radius-md);
+  border: 1px dashed var(--neutral-300);
+}
+.pagos-empty__emoji {
+  font-size: 2.5rem;
+  display: block;
+}
+
+/* High-contrast text for podium rows */
+.pagos-row--gold .pagos-col-player,
+.pagos-row--gold .pagos-col-puntos,
+.pagos-row--gold .pagos-col-pago .amount {
+  color: #111;
+}
+.pagos-row--silver .pagos-col-player,
+.pagos-row--silver .pagos-col-puntos,
+.pagos-row--silver .pagos-col-pago .amount {
+  color: #111;
+}
+.pagos-row--bronze .pagos-col-player,
+.pagos-row--bronze .pagos-col-puntos,
+.pagos-row--bronze .pagos-col-pago .amount {
+  color: #111;
 }
 
 .pagos-list {

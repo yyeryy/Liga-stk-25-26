@@ -154,11 +154,22 @@ export const EstadisticasPanel = () => {
                         }).format(stat.data[j] || 0)
                       : (stat.data[j] || 0).toFixed(0);
 
+                    const medalClass =
+                      idx === 0
+                        ? "stat-row--gold"
+                        : idx === 1
+                          ? "stat-row--silver"
+                          : idx === 2
+                            ? "stat-row--bronze"
+                            : idx === 3
+                              ? "stat-row--fourth"
+                              : "";
+
                     return (
                       <div
                         key={j}
                         title={`Ver expediente de ${j}`}
-                        className="stat-row"
+                        className={`stat-row ${medalClass}`}
                         style={
                           {
                             ["--row-bg" as any]: podium.bg,

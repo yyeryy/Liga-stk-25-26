@@ -22,17 +22,7 @@ export const PagosPanel = () => {
     [],
   );
 
-  // RECUPERAMOS TU FUNCIÓN DE GRADIENTE
-  const getColorByPago = (pago: number, maxPago: number) => {
-    if (maxPago === 0 || pago === 0) return "var(--success-100)";
-    const ratio = Math.min(1, pago / maxPago);
-    const start = { r: 232, g: 245, b: 233 };
-    const end = { r: 255, g: 205, b: 210 };
-    const r = Math.round(start.r + (end.r - start.r) * ratio);
-    const g = Math.round(start.g + (end.g - start.g) * ratio);
-    const b = Math.round(start.b + (end.b - start.b) * ratio);
-    return `rgb(${r},${g},${b})`;
-  };
+  // We'll visualise medals and use a left red border proportional to the debt.
 
   const getMedal = (pos: number) => {
     if (pos === 1) return "🥇";
@@ -63,6 +53,9 @@ export const PagosPanel = () => {
 
   const maxPagoActual = Math.max(...pagos.map((p) => p.pago), 0);
 
+  const pagosNoDisputado =
+    pagos.length === 0 || pagos.every((p) => (p.puntos ?? 0) === 0);
+
   const formatEuros = (num: number) => {
     return num % 1 === 0 ? num : num.toFixed(2);
   };
@@ -87,42 +80,81 @@ export const PagosPanel = () => {
           />
         </div>
 
-        <div className="pagos-header">
-          <div className="pagos-col-pos">Pos</div>
-          <div className="pagos-col-player">Jugador</div>
-          <div className="pagos-col-puntos">Pts</div>
-          <div className="pagos-col-pago">Deuda</div>
-        </div>
+        {pagosNoDisputado ? (
+          <div className="pagos-empty">
+            <span className="pagos-empty__emoji">⏳</span>
+            <h5 className="mt-2 text-muted">Aún no hay datos</h5>
+            <p
+              className="text-muted"
+              style={{ fontSize: "0.85rem", margin: 0 }}
+            >
+              Todavía no se han registrado jornadas o pagos para este tramo.
+            </p>
+          </div>
+        ) : (
+          <>
+            <div className="pagos-header">
+              <div className="pagos-col-pos">Pos</div>
+              <div className="pagos-col-player">Jugador</div>
+              <div className="pagos-col-puntos">Pts</div>
+              <div className="pagos-col-pago">Deuda</div>
+            </div>
 
-        <div className="pagos-list">
-          {pagos.map((j, idx) => {
-            const isFree = (j.pago ?? 0) === 0;
-            const rowColor = getColorByPago(j.pago ?? 0, maxPagoActual);
+            <div className="pagos-list">
+              {pagos.map((j, idx) => {
+                const isFree = (j.pago ?? 0) === 0;
+                const medalClass =
+                  j.posicion === 1
+                    ? "pagos-row--gold"
+                    : j.posicion === 2
+                      ? "pagos-row--silver"
+                      : j.posicion === 3
+                        ? "pagos-row--bronze"
+                        : j.posicion === 4
+                          ? "pagos-row--fourth"
+                          : "";
 
-            return (
-              <div
-                key={idx}
-                className="pagos-row"
-                style={{
-                  ["--row-bg" as any]: rowColor,
-                  ["--row-amount" as any]: isFree
-                    ? "var(--success)"
-                    : "var(--danger)",
-                }}
-              >
-                <div className="pagos-col-pos">{getMedal(j.posicion ?? 0)}</div>
+                const borderLeftWidth =
+                  maxPagoActual && (j.pago ?? 0) > 0
+                    ? Math.max(
+                        2,
+                        Math.round(((j.pago ?? 0) / maxPagoActual) * 6),
+                      )
+                    : 0;
 
-                <div className="pagos-col-player">{j.jugador}</div>
+                return (
+                  <div
+                    key={idx}
+                    className={`pagos-row ${isFree ? "pagos-row--free" : ""} ${medalClass} ${(j.pago ?? 0) > 0 ? "pagos-row--owed" : ""}`}
+                    style={
+                      borderLeftWidth
+                        ? {
+                            borderLeft: `${borderLeftWidth}px solid var(--danger)`,
+                          }
+                        : undefined
+                    }
+                  >
+                    <div className="pagos-col-pos">
+                      {getMedal(j.posicion ?? 0)}
+                    </div>
 
-                <div className="pagos-col-puntos">{j.puntos}</div>
+                    <div className="pagos-col-player">{j.jugador}</div>
 
-                <div className="pagos-col-pago">
-                  <span className="amount">{formatEuros(j.pago ?? 0)}€</span>
-                </div>
-              </div>
-            );
-          })}
-        </div>
+                    <div className="pagos-col-puntos">{j.puntos}</div>
+
+                    <div className="pagos-col-pago">
+                      <span
+                        className={`amount ${isFree ? "amount--free" : "amount--owed"}`}
+                      >
+                        {formatEuros(j.pago ?? 0)}€
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          </>
+        )}
 
         {/* No hay desertores en la temporada actual */}
       </div>

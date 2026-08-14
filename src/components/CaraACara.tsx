@@ -14,11 +14,7 @@ export const CaraACaraPanel = () => {
 
     const tablaGeneralA = calcularAcumulado(1, 38, true);
 
-    const activosA = tablaGeneralA.filter(
-      (j) => j.jugador !== Apodos.Zarrakatz && j.jugador !== Apodos.Polfovich,
-    );
-
-    const ordenadaA = [...activosA].sort((a, b) => b.puntos - a.puntos);
+    const ordenadaA = [...tablaGeneralA].sort((a, b) => b.puntos - a.puntos);
 
     let lastPuntos: number | null = null;
     let lastPos = 0;

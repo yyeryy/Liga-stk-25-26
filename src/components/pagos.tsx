@@ -124,22 +124,7 @@ export const PagosPanel = () => {
           })}
         </div>
 
-        {selectedBloque === 0 && (
-          <div className="alert-card">
-            <div className="alert-title">
-              {" "}
-              <span>⚠️</span> Desertores Pendientes
-            </div>
-            <div className="alert-row">
-              <span>Zarrakatz</span>
-              <span>14.00€</span>
-            </div>
-            <div className="alert-row alert-row--mt">
-              <span>Polfovich</span>
-              <span>19.00€</span>
-            </div>
-          </div>
-        )}
+        {/* No hay desertores en la temporada actual */}
       </div>
     </div>
   );

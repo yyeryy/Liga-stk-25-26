@@ -29,16 +29,16 @@ export interface Jugador {
 }
 
 export enum Apodos {
-  Fognini = "Fognini",
-  Acierillo = "Acierillo",
-  Dennis = "Dennis",
-  Steven = "Steven",
-  Polfovich = "Polfovich",
-  LesbianaMadamme = "Lesbiana Madamme",
-  Golo = "Golo",
+  Yeray = "Yeray",
+  Gaizka = "Gaizka",
+  Gorka = "Gorka",
+  Alonso = "Alonso",
+  Gima = "Gima",
+  Asier = "Asier",
+  Aitor = "Aitor",
   ElManito = "El manito",
-  Karabinieri = "Karabinieri",
-  MitxiJR = "Mitxi Jr",
-  Zarrakatz = "Zarrakatz",
-  Pitxu15pesos = "Pitxu15pesos",
+  Etxabe = "Etxabe",
+  grz = "grz",
+  muna = "muna",
+  mitxi = "mitxi",
 }

@@ -21,9 +21,7 @@ export const RachasPanel = () => {
       clasificacion: calcularAcumulado(j.numero, j.numero),
     }));
 
-    const activos = Object.values(Apodos).filter(
-      (j) => j !== Apodos.Zarrakatz && j !== Apodos.Polfovich,
-    );
+    const activos = Object.values(Apodos);
 
     const historialJugadores = activos.map((jugador) => {
       let puntosEnForma = 0;

@@ -2,30 +2,34 @@ import React, { useMemo, useState } from "react";
 import Row from "react-bootstrap/Row";
 import Col from "react-bootstrap/Col";
 import { calcularAcumulado } from "../utils/calcularAcumulado.ts";
+import { historico25_26 } from "../data/historico25_26.ts";
+import { data } from "../data/data.ts";
 import "./HistoricoPanel.css";
 
 export const Historico2526Panel = () => {
   const [temporadaSeleccionada] = useState("25/26");
 
   const estadisticas = useMemo(() => {
-    // Desertores en 25/26
-    const desertersNames = ["Zarrakatz", "Polfovich"];
-
-    // solicitar esEstadistica=true para incluir players que luego mostraremos como desertores
-    const resultado = calcularAcumulado(1, 38, true);
-    const rankingGeneral = [...resultado].sort(
+    const tieneJornadas =
+      Array.isArray(data.jornadas) && data.jornadas.length > 0;
+    const resultado = tieneJornadas
+      ? calcularAcumulado(1, 38, true)
+      : undefined;
+    const rawRanking: any[] = resultado ?? historico25_26;
+    const rankingGeneral = [...rawRanking].sort(
       (a, b) => a.pago - b.pago || b.puntos - a.puntos,
     );
 
-    const desertersLocal = rankingGeneral.filter((j: any) =>
+    // Desertores en 25/26
+    const desertersNames = ["Zarrakatz", "Polfovich"];
+    const deserters = rankingGeneral.filter((j: any) =>
       desertersNames.includes(j.jugador),
     );
-    const mainRankingLocal = rankingGeneral.filter(
+    const mainRankingFiltered = rankingGeneral.filter(
       (j: any) => !desertersNames.includes(j.jugador),
     );
 
-    // Recalcular orden y posiciones de la clasificación principal (sin desertores)
-    const mainRankingSorted = [...mainRankingLocal].sort(
+    const mainRankingSorted = [...rankingGeneral].sort(
       (a: any, b: any) => a.pago - b.pago || b.puntos - a.puntos,
     );
     mainRankingSorted.forEach((j: any, idx: number) => (j.posicion = idx + 1));
@@ -34,19 +38,53 @@ export const Historico2526Panel = () => {
       ? Math.max(...mainRankingSorted.map((j: any) => j.pago))
       : 0;
     const mecenas = mainRankingSorted.find((j: any) => j.pago === maxPago);
-    const totalBote = mainRankingLocal.reduce(
+    const totalBote = mainRankingSorted.reduce(
       (acc: number, curr: any) => acc + curr.pago,
       0,
     );
 
+    // Si no hay jornadas activas, usamos el historico estático (fallback)
+    if (!tieneJornadas) {
+      const staticRanking = historico25_26.map((h) => ({ ...h }));
+      const sortedStatic = staticRanking.sort(
+        (a: any, b: any) => a.pago - b.pago || b.puntos - a.puntos,
+      );
+      sortedStatic.forEach((j: any, idx: number) => (j.posicion = idx + 1));
+
+      const staticDeserters = sortedStatic.filter((j: any) =>
+        desertersNames.includes(j.jugador),
+      );
+      const staticMain = sortedStatic.filter(
+        (j: any) => !desertersNames.includes(j.jugador),
+      );
+
+      const staticMaxPago = sortedStatic.length
+        ? Math.max(...sortedStatic.map((j: any) => j.pago))
+        : 0;
+      return {
+        ranking: sortedStatic,
+        mainRanking: staticMain,
+        deserters: staticDeserters,
+        campeon: staticMain[0],
+        mecenas: sortedStatic.find((j: any) => j.pago === staticMaxPago),
+        maxPago: staticMaxPago,
+        totalBote: sortedStatic.reduce(
+          (acc: number, curr: any) => acc + curr.pago,
+          0,
+        ),
+        overrideAmounts: {},
+      };
+    }
+
     return {
       ranking: rankingGeneral,
-      mainRanking: mainRankingSorted,
-      deserters: desertersLocal,
-      campeon: mainRankingSorted[0],
+      mainRanking: mainRankingFiltered,
+      deserters: deserters,
+      campeon: mainRankingFiltered[0],
       mecenas: mecenas,
       maxPago: maxPago,
       totalBote: totalBote,
+      overrideAmounts: {},
     };
   }, []);
 
@@ -65,14 +103,15 @@ export const Historico2526Panel = () => {
     return num % 1 === 0 ? num : num.toFixed(2);
   };
 
-  const { mainRanking, deserters, campeon, mecenas, maxPago, totalBote } =
-    estadisticas as any;
-
-  // Override specific owed amounts requested by user
-  const overrideAmounts: Record<string, number> = {
-    Zarrakatz: 14.0,
-    Polfovich: 19.0,
-  };
+  const {
+    mainRanking,
+    deserters,
+    campeon,
+    mecenas,
+    maxPago,
+    totalBote,
+    overrideAmounts,
+  } = estadisticas as any;
 
   return (
     <div className="historico-panel">
@@ -185,7 +224,7 @@ export const Historico2526Panel = () => {
         {deserters.length > 0 && (
           <div style={{ marginTop: 20 }}>
             <h5 style={{ marginBottom: 8 }}>
-              <span>⚠️</span> Desertores Pendientes
+              <span>⚠️</span> Desertores
             </h5>
             <div className="historico-list">
               {deserters.map((d: any) => (

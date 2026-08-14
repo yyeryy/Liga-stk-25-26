@@ -8,76 +8,25 @@ export type JugadorPago = {
   posicion: number;
 };
 
-const pagos11: Record<number, number> = {
+// Nuevo sistema de pagos para 12 jugadores:
+// Posiciones 1-4: 0€
+// Posiciones 5-12: 0.5€, 1.0€, 1.5€, 2.0€, 2.5€, 3.0€, 3.5€, 4.0€
+const pagos12: Record<number, number> = {
   1: 0,
   2: 0,
   3: 0,
   4: 0,
-  5: 0,
-  6: 2,
-  7: 4,
-  8: 5,
-  9: 6,
-  10: 7,
-  11: 8,
+  5: 0.5,
+  6: 1,
+  7: 1.5,
+  8: 2,
+  9: 2.5,
+  10: 3,
+  11: 3.5,
+  12: 4,
 };
 
-const pagos10v1: Record<number, number> = {
-  1: 0,
-  2: 0,
-  3: 0,
-  4: 0,
-  5: 2,
-  6: 4,
-  7: 5,
-  8: 6,
-  9: 7,
-  10: 8,
-};
-
-const pagos10v2: Record<number, number> = {
-  1: 0,
-  2: 0,
-  3: 0,
-  4: 0,
-  5: 1,
-  6: 2,
-  7: 3,
-  8: 4,
-  9: 5,
-  10: 6,
-};
-
-const pagos9v1: Record<number, number> = {
-  1: 0,
-  2: 0,
-  3: 0,
-  4: 0,
-  5: 2,
-  6: 4,
-  7: 5,
-  8: 6,
-  9: 7,
-};
-
-// const pagos9v2: Record<number, number> = {
-//   1: 0,
-//   2: 0,
-//   3: 0,
-//   4: 0,
-//   5: 1,
-//   6: 2,
-//   7: 3,
-//   8: 4,
-//   9: 5,
-// };
-
-const getPagosPorPosicion = (numJornada: number) => {
-  if (numJornada <= 2) return pagos11;
-  if (numJornada <= 5) return pagos10v1;
-  if (numJornada <= 7) return pagos9v1;
-  return pagos10v2;
-};
+const getPagosPorPosicion = (_numJornada: number) => pagos12;
 
 /**
  * Calcula puntos y pagos acumulados de los jugadores en un rango de jornadas.
@@ -85,40 +34,12 @@ const getPagosPorPosicion = (numJornada: number) => {
 export const calcularAcumulado = (
   desde: number,
   hasta: number,
-  esEstadistica?: boolean
+  esEstadistica?: boolean,
 ): JugadorPago[] => {
   const todosJugadores = Object.values(Apodos);
 
-  let jugadoresFiltrados = [...todosJugadores];
-
-  if (!esEstadistica) {
-    if (desde === 1 && hasta === 38) {
-      jugadoresFiltrados = jugadoresFiltrados.filter(
-        (j) => j !== Apodos.Zarrakatz && j !== Apodos.Polfovich
-      );
-    } else {
-      if (desde > 2 || (desde === 1 && hasta === 5)) {
-        jugadoresFiltrados = jugadoresFiltrados.filter(
-          (j) => j !== Apodos.Zarrakatz
-        );
-      }
-      if (desde > 4 || (desde === 1 && hasta === 5)) {
-        jugadoresFiltrados = jugadoresFiltrados.filter(
-          (j) => j !== Apodos.Polfovich
-        );
-      }
-      if (desde < 5 && !(desde === 1 && hasta === 5)) {
-        jugadoresFiltrados = jugadoresFiltrados.filter(
-          (j) => j !== Apodos.Pitxu15pesos
-        );
-      }
-      if ((desde === 6 && hasta === 6) || (desde === 7 && hasta === 7)) {
-        jugadoresFiltrados = jugadoresFiltrados.filter(
-          (j) => j !== Apodos.ElManito
-        );
-      }
-    }
-  }
+  // Para la nueva temporada no excluimos desertores: todos son activos.
+  const jugadoresFiltrados = [...todosJugadores];
 
   const acumulado: Record<string, JugadorPago> = {};
   jugadoresFiltrados.forEach((j) => {
@@ -126,7 +47,7 @@ export const calcularAcumulado = (
   });
 
   const jornadasDelRango = data.jornadas.filter(
-    (j) => j.numero >= desde && j.numero <= hasta
+    (j) => j.numero >= desde && j.numero <= hasta,
   );
 
   jornadasDelRango.forEach((jornada) => {
@@ -138,7 +59,11 @@ export const calcularAcumulado = (
 
     const pagosPos = getPagosPorPosicion(jornada.numero);
 
-    const factor = jornada.numero === 38 ? 3 : jornada.numero % 5 === 0 ? 2 : 1;
+    // Factor: jornadas múltiplos de 5 -> doble; última jornada -> triple.
+    const numeros = data.jornadas.map((x) => x.numero);
+    const maxNumero = numeros.length ? Math.max(...numeros) : 38;
+    const factor =
+      jornada.numero === maxNumero ? 3 : jornada.numero % 5 === 0 ? 2 : 1;
 
     const conPosiciones = resultados
       .map((r, idx) => {
@@ -147,37 +72,32 @@ export const calcularAcumulado = (
         return { ...r, posicion: idx + 1 };
       })
       .filter(
-        (r): r is { jugador: Apodos; puntos: number; posicion: number } => !!r
+        (r): r is { jugador: Apodos; puntos: number; posicion: number } => !!r,
       );
 
     conPosiciones.forEach((r) => {
       if (!acumulado[r.jugador]) return;
 
       const empatados = conPosiciones.filter((x) => x.puntos === r.puntos);
+      const pagoBase = pagosPos[r.posicion] || 0;
       const pago =
         empatados.length > 1
           ? (empatados.reduce(
               (acc, x) => acc + (pagosPos[x.posicion] || 0),
-              0
+              0,
             ) /
               empatados.length) *
             factor
-          : (pagosPos[r.posicion] || 0) * factor;
+          : pagoBase * factor;
 
       acumulado[r.jugador].puntos += r.puntos;
       acumulado[r.jugador].pago += pago;
     });
   });
 
-  if ((desde === 1 && hasta === 38) || (desde === 1 && hasta === 5))
-    acumulado[Apodos.Pitxu15pesos].pago += 12;
-
-  if ((desde === 1 && hasta === 38) || (desde === 6 && hasta === 10))
-    acumulado[Apodos.ElManito].pago += 5;
-
   // Calcular posiciones finales del rango
   const listaFinal = Object.values(acumulado).sort(
-    (a, b) => b.puntos - a.puntos
+    (a, b) => b.puntos - a.puntos,
   );
   let lastPuntos: number | null = null;
   let lastPos = 0;
@@ -200,7 +120,7 @@ export const obtenerMaximos = (): Record<Apodos, number> => {
   Object.values(Apodos).forEach((j) => (maximos[j] = 0));
 
   const jornadasDelRango = data.jornadas.filter(
-    (j) => j.numero >= 1 && j.numero <= 38
+    (j) => j.numero >= 1 && j.numero <= 38,
   );
 
   jornadasDelRango.forEach((jornada) => {
@@ -221,7 +141,7 @@ export const obtenerMinimos = (): Record<Apodos, number> => {
   Object.values(Apodos).forEach((j) => (minimos[j] = Infinity));
 
   const jornadasDelRango = data.jornadas.filter(
-    (j) => j.numero >= 1 && j.numero <= 38
+    (j) => j.numero >= 1 && j.numero <= 38,
   );
 
   jornadasDelRango.forEach((jornada) => {
@@ -246,7 +166,7 @@ export const obtenerPromedios = (): Record<Apodos, number> => {
   });
 
   const jornadasDelRango = data.jornadas.filter(
-    (j) => j.numero >= 1 && j.numero <= 38
+    (j) => j.numero >= 1 && j.numero <= 38,
   );
 
   jornadasDelRango.forEach((jornada) => {
@@ -276,7 +196,7 @@ export const vecesTop1 = (): Record<Apodos, number> => {
       return;
 
     const resultados = [...jornada.resultados].sort(
-      (a, b) => b.puntos - a.puntos
+      (a, b) => b.puntos - a.puntos,
     );
 
     // puntos máximos de la jornada
@@ -302,7 +222,7 @@ export const vecesTop3 = (): Record<Apodos, number> => {
       return;
 
     const resultados = [...jornada.resultados].sort(
-      (a, b) => b.puntos - a.puntos
+      (a, b) => b.puntos - a.puntos,
     );
 
     // Asignamos posiciones con manejo de empates: si puntos iguales -> misma posición

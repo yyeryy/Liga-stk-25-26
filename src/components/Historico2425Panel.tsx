@@ -170,7 +170,7 @@ export const Historico2425Panel = () => {
         {deserters.length > 0 && (
           <div style={{ marginTop: 20 }}>
             <h5 style={{ marginBottom: 8 }}>
-              <span>⚠️</span> Desertores Pendientes
+              <span>⚠️</span> Desertores
             </h5>
             <div className="historico-list">
               {deserters.map((d: any) => (

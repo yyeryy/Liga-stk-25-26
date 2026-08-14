@@ -59,4 +59,7 @@ export const historico25_26 = [
     pago: 150,
     posicion: 10,
   },
+
+  { jugador: "Zarrakatz", puntos: 0, pago: 24 },
+  { jugador: "Polfovich", puntos: 0, pago: 19 },
 ];

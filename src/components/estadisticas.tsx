@@ -38,10 +38,8 @@ export const EstadisticasPanel = () => {
       <p className="text-muted centered-loading">Cargando estadísticas...</p>
     );
 
-  // Filtramos a los desertores para que no adulteren las estadísticas (medias, mínimos, etc.)
-  const jugadoresActivos = Object.values(Apodos).filter(
-    (j) => j !== Apodos.Zarrakatz && j !== Apodos.Polfovich,
-  );
+  // Lista de jugadores activos para la temporada actual
+  const jugadoresActivos = Object.values(Apodos);
 
   const miniTables = [
     {

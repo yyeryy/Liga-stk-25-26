@@ -20,9 +20,7 @@ export const ModalJugador: React.FC<ModalJugadorProps> = (props) => {
 
     // 1. Datos acumulados generales
     const tablaGeneral = calcularAcumulado(1, 38, true);
-    const activos = tablaGeneral.filter(
-      (j) => j.jugador !== Apodos.Zarrakatz && j.jugador !== Apodos.Polfovich,
-    );
+    const activos = tablaGeneral; // todos los jugadores activos en la nueva temporada
     const playerStats = tablaGeneral.find((j) => j.jugador === props.jugador);
     const rankingPuntos = [...activos].sort((a, b) => b.puntos - a.puntos);
     const rankingPagos = [...activos].sort((a, b) => a.pago - b.pago);
@@ -59,11 +57,7 @@ export const ModalJugador: React.FC<ModalJugadorProps> = (props) => {
     data.jornadas.forEach((jornada) => {
       if (!jornada.resultados.some((res) => res.puntos > 0)) return; // Ignoramos si no se jugó
       jornada.resultados.forEach((r) => {
-        if (
-          r.jugador !== Apodos.Zarrakatz &&
-          r.jugador !== Apodos.Polfovich &&
-          r.puntos < recordMinHolder.puntos
-        ) {
+        if (r.puntos < recordMinHolder.puntos) {
           recordMinHolder = {
             jugador: r.jugador,
             puntos: r.puntos,

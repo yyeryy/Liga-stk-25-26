@@ -1,17 +1,12 @@
 export enum TiposVista {
-  Final,
   Jornadas,
   Pagos,
   Estadisticas,
   Rachas,
   CaraACara,
-  Predicciones,
-  Evolucion,
   ManagerMes,
-  Jugadores,
   Historico,
   Historico2526,
-  Comida,
 }
 
 export interface Jornada {

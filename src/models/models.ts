@@ -29,16 +29,14 @@ export interface Jugador {
 }
 
 export enum Apodos {
-  Yeray = "Yeray",
-  Gaizka = "Gaizka",
-  Gorka = "Gorka",
-  Alonso = "Alonso",
-  Gima = "Gima",
-  Asier = "Asier",
-  Aitor = "Aitor",
+  Fognini = "Fognini",
+  Steven = "Steven",
+  Butchlivar = "Butchlivar",
+  CarniceroDeMondragon = "Carnicero de mondragon",
+  Acierillo = "Acierillo",
   ElManito = "El manito",
-  Etxabe = "Etxabe",
-  grz = "grz",
-  muna = "muna",
-  mitxi = "mitxi",
+  Mitxi = "Mitxi",
+  Fresnhel = "Fresnhel",
+  Dennis = "Dennis",
+  Golo = "Golo",
 }

@@ -8,10 +8,26 @@ export type JugadorPago = {
   posicion: number;
 };
 
-// Nuevo sistema de pagos para 12 jugadores:
+// Sistema de pagos para 10 jugadores activo actualmente:
 // Posiciones 1-4: 0€
-// Posiciones 5-12: 0.5€, 1.0€, 1.5€, 2.0€, 2.5€, 3.0€, 3.5€, 4.0€
-const pagos12: Record<number, number> = {
+// Posiciones 5-10: importes progresivos en saltos de 0,50€.
+// Con 38 jornadas (7 dobles y la última triple), la media teórica queda en
+// 61,10€ por jugador, la aproximación más cercana a 60€ con importes lineales.
+const pagos10: Record<number, number> = {
+  1: 0,
+  2: 0,
+  3: 0,
+  4: 0,
+  5: 1,
+  6: 1.5,
+  7: 2,
+  8: 2.5,
+  9: 3,
+  10: 3.5,
+};
+
+// Tabla conservada para el formato de 12 jugadores.
+export const pagos12: Record<number, number> = {
   1: 0,
   2: 0,
   3: 0,
@@ -26,7 +42,7 @@ const pagos12: Record<number, number> = {
   12: 4,
 };
 
-const getPagosPorPosicion = (_numJornada: number) => pagos12;
+const getPagosPorPosicion = (_numJornada: number) => pagos10;
 
 /**
  * Calcula puntos y pagos acumulados de los jugadores en un rango de jornadas.
